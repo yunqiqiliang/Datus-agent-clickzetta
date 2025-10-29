@@ -5,7 +5,12 @@
 import atexit
 import threading
 import weakref
-from typing import Any, Dict, List, override
+from typing import Any, Dict, List
+
+try:
+    from typing import override
+except ImportError:
+    from typing_extensions import override
 
 from datus.tools.db_tools.mysql_connector import MySQLConnectorBase, list_to_in_str
 from datus.utils.constants import DBType

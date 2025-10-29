@@ -192,6 +192,12 @@ class InteractiveInit:
                 "model": "qwen-plus",
                 "options": ["qwen3-max", "qwen3-coder", "qwen-plus", "qwen-flash"],
             },
+            "dashscope": {
+                "type": "dashscope",
+                "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+                "model": "qwen-plus",
+                "options": ["qwen3-max", "qwen3-coder", "qwen-plus", "qwen-flash"],
+            },
         }
 
         provider = Prompt.ask("- Which LLM provider?", choices=list(providers.keys()), default="openai")

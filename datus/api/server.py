@@ -18,8 +18,11 @@ from pathlib import Path
 from typing import Optional, Tuple
 
 import uvicorn
+from dotenv import load_dotenv
 
 from datus.utils.loggings import configure_logging, get_logger
+
+load_dotenv()
 
 logger = get_logger(__name__)
 

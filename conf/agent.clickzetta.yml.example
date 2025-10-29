@@ -1,0 +1,88 @@
+agent:
+  target: dashscope_main
+  models:
+    dashscope_main:
+      type: dashscope
+      vendor: aliyun
+      base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api_key: ${DASHSCOPE_API_KEY}
+      model: qwen-plus
+      enable_thinking: false
+
+    dashscope_reasoning:
+      type: dashscope
+      vendor: aliyun
+      base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api_key: ${DASHSCOPE_API_KEY}
+      model: qwen3-max
+      enable_thinking: true
+
+    deepseek_chat:
+      type: deepseek
+      vendor: deepseek
+      base_url: https://api.deepseek.com
+      api_key: ${DEEPSEEK_API_KEY}
+      model: deepseek-chat
+
+  nodes:
+    schema_linking:
+      model: deepseek_chat
+      matching_rate: fast
+      prompt_version: "1.0"
+
+    generate_sql:
+      model: dashscope_main
+      prompt_version: "1.0"
+      max_table_schemas_length: 6000
+      max_data_details_length: 4000
+      max_context_length: 8000
+      max_value_length: 500
+
+    reasoning:
+      model: dashscope_reasoning
+      prompt_version: "1.0"
+      max_table_schemas_length: 6000
+      max_data_details_length: 4000
+      max_context_length: 8000
+      max_value_length: 500
+      max_turns: 20
+
+    reflect:
+      prompt_version: "2.1"
+
+    output:
+      prompt_version: "1.0"
+      check_result: true
+
+  agentic_nodes:
+    chatbot:
+      model: dashscope_main
+      system_prompt: gen_sql
+      prompt_version: "1.0"
+      prompt_language: zh
+      max_turns: 15
+      tools: db_tools.*, context_search_tools.*
+      agent_description: "专注 Clickzetta 工作区的 SQL 助手"
+      rules:
+        - 当涉及 SQL 查询时务必说明思路并返回可执行语句
+        - 优先使用 Clickzetta 工作区 quick_start 内的对象
+
+  schema_linking_rate: medium
+
+  namespace:
+    clickzetta:
+      type: clickzetta
+      service: ${CLICKZETTA_SERVICE}
+      username: ${CLICKZETTA_USERNAME}
+      password: ${CLICKZETTA_PASSWORD}
+      instance: ${CLICKZETTA_INSTANCE}
+      workspace: ${CLICKZETTA_WORKSPACE}
+      schema: ${CLICKZETTA_SCHEMA}
+      vcluster: ${CLICKZETTA_VCLUSTER}
+      secure: false
+
+  storage:
+    embedding_device_type: cpu
+
+  workflow:
+    plan: reflection

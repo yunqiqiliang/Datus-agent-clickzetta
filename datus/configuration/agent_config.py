@@ -32,6 +32,13 @@ class DbConfig:
     warehouse: str = field(default="", init=True)
     catalog: str = field(default="", init=True)
     logic_name: str = field(default="", init=True)  # Logical name defined in namespace, used to switch databases
+    service: str = field(default="", init=True)
+    instance: str = field(default="", init=True)
+    workspace: str = field(default="", init=True)
+    vcluster: str = field(default="", init=True)
+    secure: bool = field(default=False, init=True)
+    hints: Dict[str, Any] = field(default_factory=dict, init=True)
+    extra: Dict[str, Any] = field(default_factory=dict, init=True)
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -43,7 +50,15 @@ class DbConfig:
         for k, v in kwargs.items():
             if k not in valid_fields:
                 continue
-            if not v:
+            if isinstance(v, dict):
+                params[k] = {
+                    sub_key: resolve_env(sub_val) if isinstance(sub_val, str) else sub_val for sub_key, sub_val in v.items()
+                }
+            elif isinstance(v, list):
+                params[k] = [resolve_env(item) if isinstance(item, str) else item for item in v]
+            elif isinstance(v, bool):
+                params[k] = v
+            elif v is None or v == "":
                 params[k] = v
             else:
                 params[k] = resolve_env(str(v))
@@ -51,6 +66,11 @@ class DbConfig:
         if db_config.type in (DBType.SQLITE, DBType.DUCKDB):
             db_config.database = file_stem_from_uri(db_config.uri)
         db_config.logic_name = kwargs.get("name")
+        if db_config.type == DBType.CLICKZETTA:
+            if not db_config.workspace and db_config.database:
+                db_config.workspace = db_config.database
+            if not db_config.database and db_config.workspace:
+                db_config.database = db_config.workspace
         return db_config
 
 

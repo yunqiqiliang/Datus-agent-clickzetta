@@ -28,6 +28,11 @@ agent:
       base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
       api_key: ${DASHSCOPE_API_KEY}
       model: qwen3-coder-plus
+    dashscope:
+      type: dashscope
+      base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api_key: ${DASHSCOPE_API_KEY}
+      model: qwen-plus
     anthropic:
       type: claude
       vendor: anthropic

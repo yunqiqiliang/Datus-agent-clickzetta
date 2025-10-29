@@ -10,6 +10,10 @@ Main entry point for the CLI application.
 
 import argparse
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from datus import __version__
 from datus.cli.repl import DatusCLI
 from datus.utils.async_utils import setup_windows_policy

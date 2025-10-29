@@ -9,12 +9,16 @@ import os
 import sys
 from datetime import datetime
 
+from dotenv import load_dotenv
+
 from datus.utils.async_utils import setup_windows_policy
 
 # Add path fixing to ensure proper imports
 if __package__ is None:
     # Add parent directory to Python path
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+load_dotenv()
 
 from datus import __version__
 from datus.agent.agent import Agent

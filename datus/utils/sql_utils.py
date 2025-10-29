@@ -195,6 +195,10 @@ def metadata_identifier(
             if catalog_name
             else f"{database_name}.{schema_name}.{table_name}"
         )
+    elif dialect == DBType.CLICKZETTA:
+        if catalog_name:
+            return f"{catalog_name}.{database_name}.{schema_name}.{table_name}"
+        return f"{database_name}.{schema_name}.{table_name}" if database_name else f"{schema_name}.{table_name}"
     elif dialect == "databricks":
         return f"{catalog_name}.{schema_name}.{table_name}" if catalog_name else f"{schema_name}.{table_name}"
     return table_name
@@ -225,6 +229,7 @@ def parse_table_name_parts(full_table_name: str, dialect: str = DBType.SNOWFLAKE
         DBType.SQLITE.value: ["database_name", "table_name"],  # max 2 parts
         DBType.STARROCKS.value: ["catalog_name", "database_name", "table_name"],  # max 3 parts, no schema
         DBType.SNOWFLAKE.value: ["catalog_name", "database_name", "schema_name", "table_name"],  # max 4 parts
+        DBType.CLICKZETTA.value: ["catalog_name", "database_name", "schema_name", "table_name"],
     }
 
     dialect = parse_dialect(dialect)

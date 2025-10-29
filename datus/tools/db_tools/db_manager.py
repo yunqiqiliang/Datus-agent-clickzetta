@@ -8,6 +8,7 @@ from urllib.parse import quote_plus
 
 from datus.configuration.agent_config import DbConfig
 from datus.tools.db_tools.base import BaseSqlConnector
+from datus.tools.db_tools.clickzetta_connector import ClickzettaConnector
 from datus.tools.db_tools.duckdb_connector import DuckdbConnector
 from datus.tools.db_tools.mysql_connector import MySQLConnector
 from datus.tools.db_tools.snowflake_connector import SnowflakeConnector
@@ -36,6 +37,10 @@ def gen_uri(db_config: DbConfig) -> str:
             f"starrocks://{quote_plus(db_config.username)}:{quote_plus(str(db_config.password))}"
             f"@{db_config.host}:{db_config.port}/{catalog}.{db_config.database}"
         )
+    elif db_config.type == DBType.CLICKZETTA:
+        service = getattr(db_config, "service", "") or getattr(db_config, "host", "")
+        workspace = db_config.workspace or db_config.database
+        return f"clickzetta://{service}/{workspace}" if service else "clickzetta://"
     else:
         db_name = "" if not db_config.database else f"/{db_config.database}"
         return (
@@ -150,6 +155,19 @@ class DBManager:
                 password=db_config.password,
                 catalog=db_config.catalog or "default_catalog",
                 database=db_config.database,
+            )
+        elif db_config.type == DBType.CLICKZETTA:
+            conn = ClickzettaConnector(
+                service=db_config.service or db_config.host,
+                username=db_config.username,
+                password=db_config.password,
+                instance=db_config.instance,
+                workspace=db_config.workspace or db_config.database,
+                schema=db_config.schema,
+                vcluster=db_config.vcluster,
+                secure=db_config.secure if isinstance(db_config.secure, bool) else None,
+                hints=db_config.hints or None,
+                extra=db_config.extra or None,
             )
         else:
             conn = SQLAlchemyConnector(db_config.uri)

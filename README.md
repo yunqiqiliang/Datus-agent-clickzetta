@@ -52,6 +52,48 @@ Each subagent encapsulates the right context, tools, and rules — making data a
 Every query and feedback improves the model.  
 Datus learns from success stories and user corrections to evolve reasoning accuracy over time.
 
+## 🛠️ Developer Quickstart
+
+Set up a local environment that uses Dashscope for LLM calls and Clickzetta as the data source:
+
+1. **Clone and install dependencies**
+   ```bash
+   git clone https://github.com/<your-org>/Datus-agent-clickzetta.git
+   cd Datus-agent-clickzetta
+   python3.11 -m venv .venv
+   source .venv/bin/activate  # Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+2. **Create a `.env` file** at the project root to store secrets:
+   ```bash
+   DASHSCOPE_API_KEY=your_dashscope_key
+   DEEPSEEK_API_KEY=your_deepseek_key
+   CLICKZETTA_SERVICE=your_clickzetta_service
+   CLICKZETTA_USERNAME=your_clickzetta_username
+   CLICKZETTA_PASSWORD=your_clickzetta_password
+   CLICKZETTA_INSTANCE=your_clickzetta_instance
+   CLICKZETTA_WORKSPACE=your_clickzetta_workspace
+   CLICKZETTA_SCHEMA=your_clickzetta_schema
+   CLICKZETTA_VCLUSTER=your_clickzetta_vcluster
+   ```
+   The entry points (`datus-cli`, `python -m datus.main`, `datus/api/server.py`) automatically load this file via `python-dotenv`, so no manual export is required. For shell-based workflows you can still run `export $(grep -v '^#' .env | xargs)` before launching the CLI.
+
+3. **Copy the Clickzetta configuration**
+   ```bash
+   cp conf/agent.clickzetta.yml.example conf/agent.clickzetta.yml
+   ```
+   The example file ships with Dashscope/DeepSeek models and a `clickzetta` namespace. Edit the copy if your workspace or model choices differ.
+
+4. **Start the CLI (or API)**
+   ```bash
+   mkdir -p .datus_home
+   DATUS_HOME=$(pwd)/.datus_home python -m datus.cli.main --config conf/agent.clickzetta.yml --namespace clickzetta
+   # optionally launch the API server
+   DATUS_HOME=$(pwd)/.datus_home python -m datus.api.server --config conf/agent.clickzetta.yml --namespace clickzetta
+   ```
+   The CLI will automatically connect to Clickzetta, retrieve schema metadata, and use Dashscope for SQL generation.
+
 
 ---
 

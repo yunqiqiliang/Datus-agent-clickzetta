@@ -15,6 +15,7 @@ class DBType(str, Enum):
     POSTGRES = "postgres"  # Alternative name for PostgreSQL
     SNOWFLAKE = "snowflake"
     CLICKHOUSE = "clickhouse"
+    CLICKZETTA = "clickzetta"
     BIGQUERY = "bigquery"
     STARROCKS = "starrocks"
     SQLSERVER = "sqlserver"  # same as mssql
@@ -39,6 +40,7 @@ SUPPORT_CATALOG_DIALECTS = {DBType.STARROCKS, DBType.SNOWFLAKE, DBType.BIGQUERY}
 SUPPORT_DATABASE_DIALECTS = {
     DBType.STARROCKS,
     DBType.SNOWFLAKE,
+    DBType.CLICKZETTA,
     DBType.BIGQUERY,
     DBType.MYSQL,
     DBType.MSSQL,
@@ -57,6 +59,7 @@ SUPPORT_SCHEMA_DIALECTS = {
     DBType.DUCKDB,
     DBType.POSTGRES,
     DBType.POSTGRESQL,
+    DBType.CLICKZETTA,
 }
 
 
@@ -67,6 +70,7 @@ class LLMProvider(str, Enum):
     CLAUDE = "claude"
     DEEPSEEK = "deepseek"
     QWEN = "qwen"
+    DASHSCOPE = "dashscope"
     ANTHROPIC = "anthropic"  # Alternative name for Claude
     GEMINI = "gemini"
     LLAMA = "llama"

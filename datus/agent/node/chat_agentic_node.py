@@ -227,7 +227,8 @@ class ChatAgenticNode(AgenticNode):
                 )
 
             if enhanced_parts:
-                enhanced_message = f"{'\n\n'.join(enhanced_parts)}\n\nUser question: {user_input.user_message}"
+                joined_parts = "\n\n".join(enhanced_parts)
+                enhanced_message = f"{joined_parts}\n\nUser question: {user_input.user_message}"
 
             # Execute with streaming
             response_content = ""

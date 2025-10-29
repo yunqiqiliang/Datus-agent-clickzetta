@@ -2,7 +2,12 @@
 # Licensed under the Apache License, Version 2.0.
 # See http://www.apache.org/licenses/LICENSE-2.0 for details.
 
-from typing import Any, Dict, List, Optional, override
+from typing import Any, Dict, List, Optional
+
+try:
+    from typing import override
+except ImportError:
+    from typing_extensions import override
 
 from datus.tools.db_tools.sqlalchemy_connector import SQLAlchemyConnector
 from datus.utils.constants import DBType

@@ -29,6 +29,14 @@ agent:
       api_key: ${DEEPSEEK_API_KEY}
       model: deepseek-chat
 
+    dashscope_qwen:
+      type: dashscope
+      vendor: aliyun
+      base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api_key: ${DASHSCOPE_API_KEY}
+      model: qwen-plus
+      enable_thinking: false
+
   nodes:
     schema_linking:
       model: openai
