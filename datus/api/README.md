@@ -55,8 +55,8 @@ python datus/api/server.py \
 ## Default Paths
 
 - **API Endpoint**: `http://localhost:8000`
-- **PID File**: `~/.datus/run/datus-agent-api.pid`
-- **Log File**: `logs/datus-agent-api.log`
+- **PID File**: `~/.datus/run/datus-agent-clickzetta-api.pid`
+- **Log File**: `logs/datus-agent-clickzetta-api.log`
 
 ## API Endpoints
 
@@ -138,7 +138,7 @@ python datus/api/server.py --action status
 
 ### View logs
 ```bash
-tail -f logs/datus-agent-api.log
+tail -f logs/datus-agent-clickzetta-api.log
 ```
 
 ### Force stop

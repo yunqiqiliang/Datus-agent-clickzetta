@@ -99,12 +99,12 @@ Set up a local environment that uses Dashscope for LLM calls and Clickzetta as t
 
 ## 🧰 Installation
 
-**Requirements:** Python >= 3.12
+**Requirements:** Python >= 3.9 and Python <= 3.11, 3.11 is verified.
 
 ```bash
-pip install datus-agent==0.2.1
+pip install datus-agent-clickzetta==0.2.1
 
-datus-agent init
+datus-agent-clickzetta init  # 或使用 datus-agent init 兼容命令
 ```
 
 For detailed installation instructions, see the [Quickstart Guide](https://docs.datus.ai/getting_started/Quickstart/).

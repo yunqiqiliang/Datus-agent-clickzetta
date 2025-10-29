@@ -1,1 +1,1 @@
-docker build -t datus-agent:latest .
+docker build -t datus-agent-clickzetta:latest .

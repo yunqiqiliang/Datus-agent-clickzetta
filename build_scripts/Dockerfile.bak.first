@@ -97,12 +97,12 @@ RUN mkdir -p ~/.datus/conf && echo 'agent:\n\
       dim_size: 384' > ~/.datus/conf/agent.yml
 
 # Run uv sync
-# RUN pip install datus-agent
-RUN pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ datus-agent==0.1.5a4 --no-deps
+# RUN pip install datus-agent-clickzetta
+RUN pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ datus-agent-clickzetta==0.1.5a4 --no-deps
 
-RUN datus-agent bootstrap-kb --namespace bird_sqlite --benchmark bird_dev --kb_update_strategy overwrite --pool_size 6
+RUN datus-agent-clickzetta bootstrap-kb --namespace bird_sqlite --benchmark bird_dev --kb_update_strategy overwrite --pool_size 6
 
-RUN datus-agent bootstrap-kb --namespace snowflake --benchmark spider2 --kb_update_strategy overwrite --pool_size 8
+RUN datus-agent-clickzetta bootstrap-kb --namespace snowflake --benchmark spider2 --kb_update_strategy overwrite --pool_size 8
 
 # Set the working directory
 WORKDIR /app
@@ -114,5 +114,4 @@ ENV SNOWFLAKE_USERNAME=""
 ENV SNOWFLAKE_PASSWORD=""
 # Keep the container running
 CMD ["tail", "-f", "/dev/null"]
-
 

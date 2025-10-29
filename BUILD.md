@@ -22,7 +22,7 @@ make install-dist
 
 ### Install from PyPI
 ```bash
-pip install datus-agent
+pip install datus-agent-clickzetta
 ```
 
 ## Publishing to PyPI
@@ -77,7 +77,7 @@ source test_env/bin/activate  # Linux/Mac
 # or test_env\Scripts\activate  # Windows
 
 # Install the package
-pip install datus-agent
+pip install datus-agent-clickzetta
 
 # Test import
 python -c "import datus; print(datus.__version__)"
@@ -159,5 +159,5 @@ make setup-dev
 python -m twine check dist/*
 
 # Show package info
-pip show datus-agent
+pip show datus-agent-clickzetta
 ``` 

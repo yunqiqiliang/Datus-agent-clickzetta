@@ -166,7 +166,7 @@ class DatusPathManager:
         """Command history file: ~/.datus/history"""
         return self._datus_home / "history"
 
-    def pid_file_path(self, service_name: str = "datus-agent-api") -> Path:
+    def pid_file_path(self, service_name: str = "datus-agent-clickzetta-api") -> Path:
         """
         PID file path for a service.
 

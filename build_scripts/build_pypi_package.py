@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build and publish script for datus-agent package
+Build and publish script for datus-agent-clickzetta package
 """
 
 import shutil
@@ -147,7 +147,7 @@ def main():
         except ValueError:
             pass
         script_display = script_display.as_posix()
-        print("🚀 Datus Agent Package Builder")
+        print("🚀 Datus Agent Clickzetta Package Builder")
         print("=" * 40)
         print(f"Usage: python {script_display} <command>")
         print("\n📋 Available Commands:")
