@@ -24,6 +24,7 @@ __all__ = [
     "GenSQLAgenticNode",
     "ChatAgenticNode",
     "CompareAgenticNode",
+    "SemanticModelNode",
     "Node",
 ]
 
@@ -46,6 +47,7 @@ from .output_node import OutputNode
 from .parallel_node import ParallelNode
 from .reason_sql_node import ReasonSQLNode
 from .reflect_node import ReflectNode
+from .semantic_model_node import SemanticModelNode
 from .schema_linking_node import SchemaLinkingNode
 from .search_metrics_node import SearchMetricsNode
 from .selection_node import SelectionNode

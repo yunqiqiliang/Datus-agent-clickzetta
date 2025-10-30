@@ -17,6 +17,20 @@ logger = get_logger(__name__)
 
 class SchemaLinkingNode(Node):
     def execute(self):
+        if (
+            self.workflow
+            and self.workflow.context.semantic_model
+            and self.workflow.task.context_strategy in ("semantic_model", "auto")
+        ):
+            logger.info("Semantic model present; skipping schema linking execution.")
+            self.result = SchemaLinkingResult(
+                success=True,
+                schema_count=len(self.workflow.context.table_schemas),
+                value_count=len(self.workflow.context.table_values),
+                table_schemas=self.workflow.context.table_schemas,
+                table_values=self.workflow.context.table_values,
+            )
+            return
         self.result = self._execute_schema_linking()
 
     async def execute_stream(
@@ -42,6 +56,18 @@ class SchemaLinkingNode(Node):
             return {"success": False, "message": f"Schema linking context update failed: {str(e)}"}
 
     def setup_input(self, workflow: Workflow) -> Dict:
+        if workflow.context.semantic_model and workflow.task.context_strategy in ("semantic_model", "auto"):
+            logger.info("Semantic model present; schema linking input setup skipped.")
+            self.input = SchemaLinkingInput(
+                input_text=workflow.task.task,
+                matching_rate=self.agent_config.schema_linking_rate,
+                database_type=workflow.task.database_type,
+                database_name=workflow.task.database_name,
+                sql_context=None,
+                table_type=workflow.task.schema_linking_type,
+            )
+            return {"success": True, "message": "Semantic model context present, skipping schema linking"}
+
         logger.info("Setup schema linking input")
 
         # Search and enhance external knowledge before schema linking

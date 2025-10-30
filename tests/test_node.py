@@ -21,6 +21,7 @@ from datus.schemas.node_models import (
     ExecuteSQLResult,
     GenerateSQLInput,
     GenerateSQLResult,
+    Context,
     ReflectionInput,
     SQLContext,
     SqlTask,
@@ -35,6 +36,30 @@ from datus.utils.loggings import get_logger
 from tests.conftest import load_acceptance_config
 
 logger = get_logger(__name__)
+
+
+def _make_basic_agent_config() -> AgentConfig:
+    return AgentConfig(
+        nodes={},
+        target="default",
+        models={
+            "default": {
+                "type": "openai",
+                "base_url": "https://example.com",
+                "api_key": "dummy",
+                "model": "dummy",
+            }
+        },
+        namespace={},
+        semantic_models={
+            "default_strategy": "auto",
+            "default_volume": "",
+            "default_directory": "",
+            "allow_local_path": True,
+            "prompt_max_length": 12000,
+        },
+        storage={},
+    )
 
 
 @pytest.fixture
@@ -233,6 +258,47 @@ class TestNode:
         node.fail(error_msg)
         assert node.status == "failed"
         assert node.result == BaseResult(success=False, error=error_msg)
+
+    def test_semantic_model_node_loads_local_model(self, tmp_path):
+        agent_config = _make_basic_agent_config()
+        semantic_yaml = tmp_path / "model.yaml"
+        semantic_yaml.write_text(
+            """
+            semantic_models:
+              - name: customers
+                description: customer semantic model
+                model: ref('dim_customers')
+                dimensions:
+                  - name: customer_id
+                measures:
+                  - name: total_orders
+            """,
+            encoding="utf-8",
+        )
+
+        sql_task = SqlTask(
+            id="sm-node",
+            database_type="duckdb",
+            task="List customer totals",
+            database_name="duck",
+            context_strategy="semantic_model",
+            semantic_model_local_path=str(semantic_yaml),
+        )
+
+        workflow = type("WF", (), {"task": sql_task, "context": Context(), "tools": [], "metadata": {}, "name": "wf"})()
+        node = Node.new_instance(
+            node_id="LOAD_SEMANTIC",
+            description="Load semantic model",
+            node_type=NodeType.TYPE_LOAD_SEMANTIC_MODEL,
+            agent_config=agent_config,
+        )
+        node.workflow = workflow
+        node.setup_input(workflow)
+        node.execute()
+        node.update_context(workflow)
+
+        assert workflow.context.semantic_model is not None
+        assert node.result.loaded is True
 
     def test_schema_linking_node(self, schema_linking_input, agent_config: AgentConfig):
         """Test schema linking node"""

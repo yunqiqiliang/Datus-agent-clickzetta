@@ -1,4 +1,8 @@
 Database Type: {{ database_type }}{{ database_notes }}{{ database_docs }}
+{% if semantic_model_docs %}
+Semantic Model Specification:
+{{ semantic_model_docs }}
+{% endif %}
 Table Schemas:
 {{ processed_schemas }}
 Data Details:

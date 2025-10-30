@@ -105,6 +105,7 @@ class DatusCLI:
             current_db_name=getattr(args, "database", ""),
             current_catalog=getattr(args, "catalog", ""),
             current_schema=getattr(args, "schema", ""),
+            semantic_defaults=self.agent_config.semantic_model_defaults(),
         )
         self.db_manager = db_manager_instance(self.agent_config.namespaces)
 
@@ -138,7 +139,8 @@ class DatusCLI:
             "!reason": self.agent_commands.cmd_reason_stream,
             "!compare": self.agent_commands.cmd_compare_stream,
             "!gen_metrics": self.agent_commands.cmd_gen_metrics_stream,
-            "!gen_semantic_model": self.agent_commands.cmd_gen_semantic_model_stream,
+            "!list_semantic_models": self.agent_commands.cmd_list_semantic_models,
+            "!lsm": self.agent_commands.cmd_list_semantic_models,
             # catalog commands
             "@catalog": self.context_commands.cmd_catalog,
             "@subject": self.context_commands.cmd_subject,
@@ -147,6 +149,7 @@ class DatusCLI:
             ".chat_info": self.chat_commands.cmd_chat_info,
             ".compact": self.chat_commands.cmd_compact,
             ".sessions": self.chat_commands.cmd_list_sessions,
+            ".semantic_mode": self._cmd_semantic_mode,
             ".databases": self.metadata_commands.cmd_list_databases,
             ".database": self.metadata_commands.cmd_switch_database,
             ".tables": self.metadata_commands.cmd_tables,
@@ -859,7 +862,7 @@ class DatusCLI:
             ("!gen", "Generate SQL, optionally with table constraints"),
             ("!fix <description>", "Fix the last SQL query"),
             ("!gen_metrics", "Generate metrics with streaming output"),
-            ("!gen_semantic_model", "Generate semantic model with streaming output"),
+            ("!list_semantic_models/!lsm", "Browse semantic model YAMLs, select one for chat/SQL"),
             ("!save", "Save the last result to a file"),
             ("!bash <command>", "Execute a bash command (limited to safe commands)"),
             # remove this when sub agent is ready
@@ -868,6 +871,16 @@ class DatusCLI:
         ]
         for cmd, desc in tool_cmds:
             lines.append(f"    {cmd:<{CMD_WIDTH}}{desc}")
+        lines.append("")
+
+        lines.append("[bold]Semantic Model Workflow:[/]")
+        semantic_tips = [
+            "Use !lsm to pick a YAML; chat and SQL prompts will use that semantic context.",
+            "After generating SQL, results are executed automatically with a Result Preview.",
+            "To revert to schema linking, run .clear (or start a new !dastart) and choose context source = schema_linking or auto.",
+        ]
+        for tip in semantic_tips:
+            lines.append(f"    • {tip}")
         lines.append("")
 
         lines.append("[bold]Context Commands (@ prefix):[/]")
@@ -895,6 +908,8 @@ class DatusCLI:
             (".chat_info", "Show current chat session information"),
             (".compact", "Compact chat session by summarizing conversation history"),
             (".sessions", "List all stored SQLite sessions with detailed information"),
+            (".semantic_mode on|off", "Enable or disable semantic-model guided responses"),
+            (".semantic_mode status", "Show whether semantic mode is active and which model is selected"),
             (".databases", "List all databases"),
             (".database database_name", "Switch current database"),
             (".tables", "List all tables"),
@@ -925,6 +940,57 @@ class DatusCLI:
             lines.append(f"    {cmd:<{CMD_WIDTH}}{desc}")
         help_text = "\n".join(lines)
         self.console.print(help_text)
+
+    def _cmd_semantic_mode(self, args: str):
+        """Toggle or inspect semantic model usage."""
+        args = args.strip().lower()
+        if not args or args == "status":
+            self._print_semantic_mode_status()
+            return
+
+        if args not in {"on", "off"}:
+            self.console.print("[bold yellow]Usage:[/] .semantic_mode on | off | status")
+            return
+
+        enable = args == "on"
+        if enable and not self.cli_context.semantic_model_payload:
+            self.console.print(
+                "[bold yellow]No semantic model selected. Use !list_semantic_models (or !lsm) first.[/]"
+            )
+            return
+
+        self.cli_context.context_strategy = "semantic_model" if enable else "schema_linking"
+        if self.cli_context.current_sql_task:
+            self.cli_context.current_sql_task.context_strategy = self.cli_context.context_strategy
+
+        if enable:
+            message = "Semantic model mode enabled. Chat and SQL generation will use the loaded YAML."
+        else:
+            message = "Semantic model mode disabled. Reverting to schema linking workflows."
+
+        if self.chat_commands:
+            self.chat_commands.reset_session()
+
+        self.console.print(f"[green]{message}[/]")
+        self._print_semantic_mode_status()
+
+    def _print_semantic_mode_status(self):
+        strategy = self.cli_context.context_strategy or "auto"
+        payload = self.cli_context.semantic_model_payload
+        if strategy == "semantic_model" and payload:
+            name = payload.name or self.cli_context.semantic_model_filename or "(unnamed semantic model)"
+            self.console.print(f"[cyan]Semantic mode:[/] enabled (model: {name})")
+            return
+
+        if strategy == "semantic_model":
+            self.console.print(
+                "[cyan]Semantic mode:[/] enabled (no semantic model loaded yet). Run !list_semantic_models to pick one."
+            )
+            return
+
+        mode_label = "schema linking" if strategy in {"auto", "schema_linking", ""} else strategy
+        self.console.print(f"[cyan]Semantic mode:[/] not active (using {mode_label}).")
+        self.console.print("[dim]Hint: Run !list_semantic_models (or !lsm) and then `.semantic_mode on` to switch.[/]")
 
     def _cmd_exit(self, args: str):
         """Exit the CLI."""

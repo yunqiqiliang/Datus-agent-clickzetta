@@ -61,5 +61,6 @@ class ContextCommands:
             title="Subject",
             data={
                 "agent_config": self.cli.agent_config,
+                "semantic_model_payload": getattr(self.cli.cli_context, "semantic_model_payload", None),
             },
         )

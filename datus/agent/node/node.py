@@ -71,6 +71,7 @@ class Node(ABC):
             ParallelNode,
             ReasonSQLNode,
             ReflectNode,
+            SemanticModelNode,
             SchemaLinkingNode,
             SearchMetricsNode,
             SelectionNode,
@@ -103,6 +104,8 @@ class Node(ABC):
             return GenerateSemanticModelNode(node_id, description, node_type, input_data, agent_config)
         elif node_type == NodeType.TYPE_SEARCH_METRICS:
             return SearchMetricsNode(node_id, description, node_type, input_data, agent_config)
+        elif node_type == NodeType.TYPE_LOAD_SEMANTIC_MODEL:
+            return SemanticModelNode(node_id, description, node_type, input_data, agent_config)
         elif node_type == NodeType.TYPE_PARALLEL:
             return ParallelNode(node_id, description, node_type, input_data, agent_config, tools)
         elif node_type == NodeType.TYPE_SELECTION:

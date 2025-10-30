@@ -47,6 +47,16 @@ class ChatCommands:
         self.chat_history = []
         self.last_actions = []
 
+    def reset_session(self):
+        """Reset current chat session and clear node references."""
+        if self.current_node:
+            try:
+                self.current_node.delete_session()
+            except Exception as exc:  # pragma: no cover - defensive cleanup
+                logger.debug(f"Failed to delete chat session: {exc}")
+        self.current_node = None
+        self.chat_node = None
+
     def update_chat_node_tools(self):
         """Update current node tools when namespace changes."""
         if self.current_node and hasattr(self.current_node, "setup_tools"):
@@ -141,6 +151,10 @@ class ChatCommands:
         from datus.agent.node.semantic_agentic_node import SemanticAgenticNode
         from datus.agent.node.sql_summary_agentic_node import SqlSummaryAgenticNode
 
+        defaults_cfg = self.cli.cli_context.semantic_defaults
+        max_length = defaults_cfg.prompt_max_length if defaults_cfg else None
+        semantic_prompt = self.cli.cli_context.get_semantic_model_prompt(max_length)
+
         if isinstance(current_node, SemanticAgenticNode):
             from datus.schemas.semantic_agentic_node_models import SemanticNodeInput
 
@@ -199,6 +213,7 @@ class ChatCommands:
                     metrics=at_metrics,
                     reference_sql=at_sqls,
                     plan_mode=plan_mode,
+                    semantic_model_docs=semantic_prompt or None,
                 ),
                 "chat",
             )

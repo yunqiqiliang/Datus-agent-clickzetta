@@ -37,6 +37,7 @@ class ChatNodeInput(BaseInput):
         validation_alias=AliasChoices("reference_sql", "historical_sql"),
     )
     plan_mode: bool = Field(default=False, description="Whether this is a plan mode interaction")
+    semantic_model_docs: Optional[str] = Field(default=None, description="Semantic model specification context")
 
     class Config:
         populate_by_name = True

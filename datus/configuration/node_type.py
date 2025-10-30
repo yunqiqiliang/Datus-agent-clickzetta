@@ -20,6 +20,7 @@ from datus.schemas.reason_sql_node_models import ReasoningInput
 from datus.schemas.schema_linking_node_models import SchemaLinkingInput
 from datus.schemas.search_metrics_node_models import SearchMetricsInput
 from datus.schemas.subworkflow_node_models import SubworkflowInput
+from datus.schemas.semantic_model_node_models import SemanticModelInput
 
 
 class NodeType:
@@ -48,6 +49,7 @@ class NodeType:
     TYPE_SEARCH_METRICS = "search_metrics"  # For search metrics
     TYPE_COMPARE = "compare"  # For comparing SQL with expectations
     TYPE_DATE_PARSER = "date_parser"  # For parsing temporal expressions
+    TYPE_LOAD_SEMANTIC_MODEL = "load_semantic_model"  # For loading semantic models from volumes/local storage
 
     # Agentic node types
     TYPE_CHAT = "chat"  # For conversational AI interactions
@@ -66,6 +68,7 @@ class NodeType:
         TYPE_SEARCH_METRICS,
         TYPE_COMPARE,
         TYPE_DATE_PARSER,
+        TYPE_LOAD_SEMANTIC_MODEL,
     ]
 
     # Agentic node types list
@@ -92,6 +95,7 @@ class NodeType:
         TYPE_DATE_PARSER: "Parse temporal expressions in queries",
         TYPE_CHAT: "Conversational AI interactions with tool calling",
         TYPE_CHATBOT: "SQL generation with conversational AI and tool calling",
+        TYPE_LOAD_SEMANTIC_MODEL: "Load semantic model definition before SQL generation",
     }
 
     @classmethod
@@ -123,6 +127,8 @@ class NodeType:
             input_data_cls = GenerateSemanticModelInput
         elif node_type == NodeType.TYPE_SEARCH_METRICS:
             input_data_cls = SearchMetricsInput
+        elif node_type == NodeType.TYPE_LOAD_SEMANTIC_MODEL:
+            input_data_cls = SemanticModelInput
         elif node_type == NodeType.TYPE_PARALLEL:
             input_data_cls = ParallelInput
         elif node_type == NodeType.TYPE_SELECTION:

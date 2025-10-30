@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import tempfile
 import time
+from pathlib import Path
 from typing import Any, Dict, Iterator, List, Literal, Optional
 
 import pandas as pd
@@ -193,6 +195,89 @@ class ClickzettaConnector(BaseSqlConnector):
             return pd.DataFrame()
         except Exception as exc:
             self._wrap_exception(exc, sql)
+
+    @staticmethod
+    def _normalize_volume_uri(volume: str, relative_path: str) -> str:
+        base = (volume or "").strip()
+        if not base:
+            raise ValueError("Volume name must not be empty when reading semantic model files.")
+        if base.lower().startswith("volume:"):
+            base = base.rstrip("/")
+            relative = (relative_path or "").lstrip("/")
+            return f"{base}/{relative}" if relative else base
+        if base.startswith("@"):
+            relative = (relative_path or "").lstrip("/")
+            return f"{base.rstrip('/')}/{relative}" if relative else base
+        raise ValueError(f"Unsupported volume/stage format: {volume}")
+
+    def read_volume_file(self, volume: str, relative_path: str) -> str:
+        """Download and return the contents of a file stored inside a ClickZetta volume or stage."""
+        source_uri = self._normalize_volume_uri(volume, relative_path)
+        session = self._ensure_connection()
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            session.file.get(source_uri, tmp_dir)
+
+            candidate = Path(tmp_dir) / Path(relative_path).name
+            if not candidate.exists():
+                nested_candidate = Path(tmp_dir) / Path(relative_path)
+                if nested_candidate.exists():
+                    candidate = nested_candidate
+                else:
+                    matches = list(Path(tmp_dir).rglob(Path(relative_path).name))
+                    if not matches:
+                        raise FileNotFoundError(f"File '{relative_path}' not found in {volume}")
+                    candidate = matches[0]
+
+            return candidate.read_text(encoding="utf-8")
+
+    def list_volume_files(
+        self,
+        volume: str,
+        directory: str = "",
+        suffixes: tuple[str, ...] = (".yaml", ".yml"),
+    ) -> List[str]:
+        """List files stored inside a ClickZetta volume or legacy stage."""
+        directory = directory.strip().lstrip("/").rstrip("/")
+        volume_uri = self._normalize_volume_uri(volume, directory or "")
+        session = self._ensure_connection()
+
+        if volume.lower().startswith("volume:user://"):
+            list_sql = "LIST USER VOLUME"
+            if directory:
+                list_sql += f" SUBDIRECTORY '{directory}/'"
+        else:
+            list_sql = f"LIST {volume_uri}"
+
+        result = session.sql(list_sql)
+        try:
+            df = result.to_pandas()
+        except Exception:
+            df = pd.DataFrame()
+
+        if df.empty:
+            return []
+
+        column_name = None
+        for candidate in ("relative_path", "name", "path"):
+            if candidate in df.columns:
+                column_name = candidate
+                break
+        if column_name is None:
+            column_name = df.columns[0]
+
+        discovered: List[str] = []
+        for value in df[column_name].tolist():
+            if not value:
+                continue
+            path_str = str(value).strip()
+            candidate_name = path_str.split("/")[-1]
+            lower = candidate_name.lower()
+            if suffixes and not any(lower.endswith(suffix) for suffix in suffixes):
+                continue
+            if candidate_name not in discovered:
+                discovered.append(candidate_name)
+        return sorted(discovered)
 
     @staticmethod
     def _extract_row_count(df: pd.DataFrame) -> int:

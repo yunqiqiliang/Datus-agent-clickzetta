@@ -490,6 +490,7 @@ class SubjectScreen(ContextScreen):
         """
         super().__init__(title=title, context_data=context_data, inject_callback=inject_callback)
         self.agent_config: AgentConfig = context_data.get("agent_config")
+        self.semantic_model_payload = context_data.get("semantic_model_payload")
         self.metrics_rag: SemanticMetricsRAG = SemanticMetricsRAG(self.agent_config)
         self.sql_rag: SqlHistoryRAG = SqlHistoryRAG(self.agent_config)
         self.inject_callback = inject_callback
@@ -639,6 +640,8 @@ class SubjectScreen(ContextScreen):
             )
             bucket["sql_count"] += 1
 
+        self._inject_semantic_model(tree_data)
+
         self.tree_data = tree_data
         self.app.call_from_thread(self._populate_tree, tree_data)
 
@@ -647,19 +650,30 @@ class SubjectScreen(ContextScreen):
         tree.clear()
         tree.root.expand()
 
+        if not tree_data and self.semantic_model_payload:
+            tree_data = {}
+            self._inject_semantic_model(tree_data)
+
         if not tree_data:
             tree.root.add_leaf("📂 No metrics or reference SQL found", data={"type": "empty"})
             return
 
-        for domain in sorted(tree_data.keys()):
+        for domain_index, domain in enumerate(sorted(tree_data.keys())):
             domain_node = tree.root.add(f"📁 {domain}", data={"type": "domain", "name": domain})
+            domain_node.expand()
             for layer1 in sorted(tree_data[domain].keys()):
-                layer1_node = domain_node.add(f"📂 {layer1}", data={"type": "layer1", "name": layer1, "domain": domain})
+                layer1_node = domain_node.add(
+                    f"📂 {layer1}", data={"type": "layer1", "name": layer1, "domain": domain}
+                )
+                if domain_index == 0:
+                    layer1_node.expand()
                 for layer2 in sorted(tree_data[domain][layer1].keys()):
                     layer2_node = layer1_node.add(
                         f"📂 {layer2}",
                         data={"type": "layer2", "name": layer2, "layer1": layer1, "domain": domain},
                     )
+                    if domain_index == 0:
+                        layer2_node.expand()
                     for name in sorted(tree_data[domain][layer1][layer2].keys()):
                         payload = tree_data[domain][layer1][layer2][name]
                         type_tokens: List[str] = []
@@ -1261,6 +1275,11 @@ class SubjectScreen(ContextScreen):
         sql_container = self.query_one("#sql-panel-container", ScrollableContainer)
         divider = self.query_one("#panel-divider", Static)
 
+        semantic_type = subject_info.get("semantic_type")
+        if semantic_type:
+            self._render_semantic_details(semantic_type, subject_info)
+            return
+
         metrics: List[Dict[str, Any]] = []
         sql_entries: List[Dict[str, Any]] = []
 
@@ -1313,6 +1332,238 @@ class SubjectScreen(ContextScreen):
             widget.remove_class("hidden")
         else:
             widget.add_class("hidden")
+
+    def _inject_semantic_model(self, tree_data: Dict[str, Any]) -> None:
+        semantic_payload = self.semantic_model_payload
+        if not semantic_payload:
+            return
+
+        domain = "Semantic Models"
+        model_name = semantic_payload.name or "Active Semantic Model"
+        domain_bucket = tree_data.setdefault(domain, {})
+        model_bucket = domain_bucket.setdefault(model_name, {})
+
+        tables_layer = model_bucket.setdefault("Tables", {})
+        for logical_table in semantic_payload.logical_tables:
+            label = logical_table.name or "Unnamed Table"
+            tables_layer[label] = {
+                "metrics_count": 0,
+                "sql_count": 0,
+                "semantic_type": "table",
+                "table_name": logical_table.name,
+            }
+
+        if semantic_payload.relationships:
+            relation_layer = model_bucket.setdefault("Relationships", {})
+            for relationship in semantic_payload.relationships:
+                label = relationship.name or "Unnamed Relationship"
+                relation_layer[label] = {
+                    "metrics_count": 0,
+                    "sql_count": 0,
+                    "semantic_type": "relationship",
+                    "relationship_name": relationship.name,
+                }
+
+        if semantic_payload.model_metrics:
+            metrics_layer = model_bucket.setdefault("Model Metrics", {})
+            for metric in semantic_payload.model_metrics:
+                label = metric.name or "Unnamed Metric"
+                metrics_layer[label] = {
+                    "metrics_count": 0,
+                    "sql_count": 0,
+                    "semantic_type": "model_metric",
+                    "metric_name": metric.name,
+                }
+
+        if semantic_payload.verified_queries:
+            queries_layer = model_bucket.setdefault("Verified Queries", {})
+            for query in semantic_payload.verified_queries:
+                label = query.name or query.question or "Verified Query"
+                queries_layer[label] = {
+                    "metrics_count": 0,
+                    "sql_count": 0,
+                    "semantic_type": "verified_query",
+                    "verified_query_name": query.name,
+                }
+
+    def _render_semantic_details(self, semantic_type: str, subject_info: Dict[str, Any]) -> None:
+        metrics_container = self.query_one("#metrics-panel-container", ScrollableContainer)
+        sql_container = self.query_one("#sql-panel-container", ScrollableContainer)
+        divider = self.query_one("#panel-divider", Static)
+
+        divider.add_class("hidden")
+        sql_container.update(Label("Semantic metadata does not include reference SQL."))
+        sql_container.styles.height = "0%"
+
+        model = self.semantic_model_payload
+        if not model:
+            metrics_container.update(Label("No semantic model loaded."))
+            metrics_container.styles.height = "100%"
+            return
+
+        renderables: List[Any] = []
+
+        if semantic_type == "table":
+            table_name = subject_info.get("table_name")
+            logical_table = next((t for t in model.logical_tables if t.name == table_name), None)
+            if logical_table:
+                renderables.append(self._build_semantic_table_panel(model, logical_table))
+            else:
+                renderables.append(Label(f"Table '{table_name}' not found in semantic model."))
+        elif semantic_type == "relationship":
+            rel_name = subject_info.get("relationship_name")
+            relationship = next((r for r in model.relationships if r.name == rel_name), None)
+            if relationship:
+                renderables.append(self._build_relationship_panel(relationship))
+            else:
+                renderables.append(Label(f"Relationship '{rel_name}' not found in semantic model."))
+        elif semantic_type == "model_metric":
+            metric_name = subject_info.get("metric_name")
+            metric = next((m for m in model.model_metrics if m.name == metric_name), None)
+            if metric:
+                renderables.append(self._build_model_metric_panel(metric))
+            else:
+                renderables.append(Label(f"Model metric '{metric_name}' not found."))
+        elif semantic_type == "verified_query":
+            query_name = subject_info.get("verified_query_name")
+            query = next((q for q in model.verified_queries if q.name == query_name), None)
+            if query:
+                renderables.append(self._build_verified_query_panel(query))
+            else:
+                renderables.append(Label(f"Verified query '{query_name}' not found."))
+        else:
+            renderables.append(Label("Unsupported semantic item."))
+
+        metrics_container.update(Group(*renderables))
+        metrics_container.styles.height = "100%"
+
+    def _build_semantic_table_panel(self, model, logical_table) -> Table:
+        table = Table(
+            title=f"[bold cyan]📦 Table: {logical_table.name or 'Unnamed'}[/bold cyan]",
+            show_header=False,
+            box=box.SIMPLE,
+            border_style="blue",
+            expand=True,
+            padding=(0, 1),
+        )
+        table.add_column("Key", style="bright_cyan", width=20)
+        table.add_column("Value", style="yellow", ratio=1)
+
+        if logical_table.description:
+            table.add_row("Description", logical_table.description)
+        if logical_table.base_table:
+            table.add_row("Base Table", logical_table.base_table.to_fqn() or logical_table.base_table.table)
+
+        def _list_items(title: str, entries: List[Any], formatter) -> None:
+            if not entries:
+                return
+            summary_table = Table(show_header=False, box=box.MINIMAL_DOUBLE_HEAD, expand=True)
+            for item in entries:
+                summary_table.add_row(formatter(item))
+            table.add_row(title, summary_table)
+
+        _list_items(
+            "Dimensions",
+            logical_table.dimensions,
+            lambda d: f"{d.name} ({d.data_type}) - {d.description}" if d.description else f"{d.name} ({d.data_type})",
+        )
+        _list_items(
+            "Time Dimensions",
+            logical_table.time_dimensions,
+            lambda d: f"{d.name} ({d.data_type}) - {d.description}" if d.description else f"{d.name} ({d.data_type})",
+        )
+        _list_items(
+            "Facts",
+            logical_table.facts,
+            lambda f: f"{f.name} ({f.data_type}) expr={f.expr}" if f.expr else f"{f.name} ({f.data_type})",
+        )
+        _list_items(
+            "Table Metrics",
+            logical_table.metrics,
+            lambda m: f"{m.name} expr={m.expr}" if m.expr else m.name,
+        )
+        _list_items(
+            "Filters",
+            logical_table.filters,
+            lambda flt: f"{flt.name}: {flt.expr}" if flt.expr else flt.name,
+        )
+
+        return table
+
+    def _build_relationship_panel(self, relationship) -> Table:
+        table = Table(
+            title=f"[bold cyan]🔗 Relationship: {relationship.name or 'Unnamed'}[/bold cyan]",
+            show_header=False,
+            box=box.SIMPLE,
+            border_style="blue",
+            expand=True,
+            padding=(0, 1),
+        )
+        table.add_column("Key", style="bright_cyan", width=20)
+        table.add_column("Value", style="yellow", ratio=1)
+
+        table.add_row("Left Table", relationship.left_table)
+        table.add_row("Right Table", relationship.right_table)
+        if relationship.join_type:
+            table.add_row("Join Type", relationship.join_type)
+        if relationship.relationship_type:
+            table.add_row("Relationship Type", relationship.relationship_type)
+
+        if relationship.relationship_columns:
+            cols_table = Table(show_header=True, box=box.MINIMAL_DOUBLE_HEAD, expand=True)
+            cols_table.add_column("Left Column", style="bright_cyan")
+            cols_table.add_column("Right Column", style="yellow")
+            for col in relationship.relationship_columns:
+                cols_table.add_row(col.left_column, col.right_column)
+            table.add_row("Columns", cols_table)
+
+        return table
+
+    def _build_model_metric_panel(self, metric) -> Table:
+        table = Table(
+            title=f"[bold cyan]📊 Model Metric: {metric.name or 'Unnamed'}[/bold cyan]",
+            show_header=False,
+            box=box.SIMPLE,
+            border_style="blue",
+            expand=True,
+            padding=(0, 1),
+        )
+        table.add_column("Key", style="bright_cyan", width=20)
+        table.add_column("Value", style="yellow", ratio=1)
+
+        if metric.description:
+            table.add_row("Description", metric.description)
+        if metric.metric_type:
+            table.add_row("Type", metric.metric_type)
+        if metric.expr:
+            table.add_row("Expression", Syntax(metric.expr, "sql", theme="monokai", word_wrap=True))
+
+        return table
+
+    def _build_verified_query_panel(self, query) -> Table:
+        table = Table(
+            title=f"[bold cyan]📝 Verified Query: {query.name or 'Unnamed'}[/bold cyan]",
+            show_header=False,
+            box=box.SIMPLE,
+            border_style="blue",
+            expand=True,
+            padding=(0, 1),
+        )
+        table.add_column("Key", style="bright_cyan", width=20)
+        table.add_column("Value", style="yellow", ratio=1)
+
+        if query.question:
+            table.add_row("Question", query.question)
+        if query.verified_by:
+            table.add_row("Verified By", query.verified_by)
+        if query.verified_at:
+            table.add_row("Verified At", str(query.verified_at))
+        if query.use_as_onboarding_question is not None:
+            table.add_row("Onboarding", "Yes" if query.use_as_onboarding_question else "No")
+        if query.sql:
+            table.add_row("SQL", Syntax(query.sql, "sql", theme="monokai", word_wrap=True, line_numbers=True))
+
+        return table
 
     def _create_metrics_panel_content(self, metrics: List[Dict[str, Any]], metrics_name: str) -> Group:
         sections: List[Table] = []

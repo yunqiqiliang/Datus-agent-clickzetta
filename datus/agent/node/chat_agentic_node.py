@@ -220,6 +220,10 @@ class ChatAgenticNode(AgenticNode):
                 enhanced_parts.append(f"Table Schemas: \n{table_schemas_str}")
             if user_input.metrics:
                 enhanced_parts.append(f"Metrics: \n{to_str([item.model_dump() for item in user_input.metrics])}")
+            if getattr(user_input, "semantic_model_docs", None):
+                enhanced_parts.append(
+                    "Semantic Model Specification:\n" + str(user_input.semantic_model_docs).strip()
+                )
 
             if user_input.reference_sql:
                 enhanced_parts.append(
@@ -338,6 +342,30 @@ class ChatAgenticNode(AgenticNode):
                                 break
                             else:
                                 logger.warning(f"no usage token found in this action {action.messages}")
+
+            execution_preview = ""
+            if sql_content and getattr(user_input, "semantic_model_docs", None):
+                try:
+                    query_result = self.db_func_tool.read_query(sql_content)
+                    if query_result.success and query_result.result:
+                        preview_data = query_result.result
+                        if isinstance(preview_data, dict) and preview_data.get("compressed_data"):
+                            execution_preview = str(preview_data.get("compressed_data")).strip()
+                            original_rows = preview_data.get("original_rows")
+                            if execution_preview and original_rows is not None:
+                                execution_preview = (
+                                    f"Rows: {original_rows}\n" + execution_preview
+                                )
+                        elif isinstance(preview_data, list):
+                            execution_preview = str(preview_data)
+                    elif query_result.error:
+                        execution_preview = f"SQL execution failed: {query_result.error}"
+                except Exception as exec_error:  # pragma: no cover - defensive catch
+                    execution_preview = f"SQL execution failed: {exec_error}"
+
+                if execution_preview:
+                    response_content = (response_content or "").rstrip()
+                    response_content += ("\n\nResult Preview:\n" + execution_preview)
 
             # Create final result
             result = ChatNodeResult(
@@ -513,7 +541,11 @@ class ChatAgenticNode(AgenticNode):
             Configuration dict with tools, instruction, and hooks
         """
         if execution_mode == "normal":
-            return {"tools": self.tools, "instruction": self._get_system_instruction(original_input), "hooks": None}
+            return {
+                "tools": self._select_tools(original_input),
+                "instruction": self._get_system_instruction(original_input),
+                "hooks": None,
+            }
         elif execution_mode == "plan":
             # Plan mode: standard tools + plan tools
             plan_tools = self.plan_hooks.get_plan_tools() if self.plan_hooks else []
@@ -533,7 +565,7 @@ class ChatAgenticNode(AgenticNode):
                 plan_instruction = base_instruction
 
             return {
-                "tools": self.tools + plan_tools,
+                "tools": self._select_tools(original_input) + plan_tools,
                 "instruction": plan_instruction,
                 "hooks": self.plan_hooks,
             }
@@ -544,6 +576,53 @@ class ChatAgenticNode(AgenticNode):
         """Get system instruction for normal mode."""
         _, conversation_summary = self._get_or_create_session()
         return self._get_system_prompt(conversation_summary, original_input.prompt_version)
+
+    def _select_tools(self, original_input: "ChatNodeInput") -> list:
+        """Select appropriate tools for this interaction based on semantic model context."""
+        if getattr(original_input, "semantic_model_docs", None):
+            import json
+
+            def _wrap_read_query(tool):
+                original = tool.on_invoke_tool
+
+                async def wrapper(tool_ctx, args_str):
+                    result = await original(tool_ctx, args_str)
+                    if not result or isinstance(result, dict) and result.get("success") != 1:
+                        return result
+
+                    try:
+                        payload = json.loads(args_str) if isinstance(args_str, str) else dict(args_str or {})
+                    except Exception:
+                        payload = {}
+                    sql = str(payload.get("sql", "")).strip().upper() if payload else ""
+                    if sql.startswith("DESCRIBE ") or sql.startswith("DESC "):
+                        return {"success": 1, "result": {"rows": [], "message": "DESCRIBE skipped in semantic model mode."}}
+                    if sql.startswith("SHOW ") or "INFORMATION_SCHEMA" in sql:
+                        return {"success": 1, "result": {"rows": [], "message": "SHOW/INFORMATION_SCHEMA queries skipped in semantic model mode."}}
+                    return result
+
+                tool.on_invoke_tool = wrapper
+
+            def _make_stub(message: str):
+                async def stub(tool_ctx, args_str):  # pragma: no cover - simple stub
+                    return {"success": 1, "result": {"rows": [], "message": message}}
+
+                return stub
+
+            filtered = []
+            for tool in self.tools:
+                if tool.name == "read_query":
+                    _wrap_read_query(tool)
+                    filtered.append(tool)
+                elif tool.name == "parse_temporal_expressions":
+                    filtered.append(tool)
+                elif tool.name in {"search_table", "list_tables", "describe_table", "get_table_ddl"}:
+                    tool.on_invoke_tool = _make_stub("Semantic model context active; this tool is disabled.")
+                    filtered.append(tool)
+
+            if filtered:
+                return filtered
+        return self.tools
 
     def _extract_sql_and_output_from_response(self, output: dict) -> tuple[Optional[str], Optional[str]]:
         """

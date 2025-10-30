@@ -101,6 +101,12 @@ agent:
         - If context is provided, use the tables/metrics/sqls in user prompt
         - Try to use database specific dialect
   schema_linking_rate: medium
+  semantic_models:
+    default_strategy: auto
+    default_volume: volume:user://~/
+    default_directory: semantic_models
+    allow_local_path: true
+    prompt_max_length: 12000
 
   # Benchmark data is stored at {agent.home}/benchmark/{name}
   # Supported benchmarks: bird_dev, spider2, semantic_layer

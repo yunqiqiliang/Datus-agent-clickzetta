@@ -119,6 +119,13 @@ agent:
       layer2: layer2
       ext_knowledge: ""
 
+  semantic_models:
+    default_strategy: auto
+    default_volume: volume:user://~/
+    default_directory: semantic_models
+    allow_local_path: true
+    prompt_max_length: 14000
+
   storage:
     # Data path is now fixed at {agent.home}/data
     # Final storage paths: {home}/data/datus_db_{namespace}, {home}/data/sub_agents/{agent_name}, etc.
@@ -147,11 +154,13 @@ agent:
     plan: planA
 
     planA:
+      - load_semantic_model
       - schema_linking
       - generate_sql
       - output
 
     planB:
+      - load_semantic_model
       - schema_linking
       - generate_sql
       - execute_sql
@@ -182,6 +191,7 @@ agent:
     plan: bird_para
 
     bird_para:
+      - load_semantic_model
       - schema_linking
       - parallel:
         - generate_sql

@@ -34,6 +34,7 @@ Data engineering needs a shift from "building tables and pipelines" to "deliveri
 * Datus-CLI: An AI-powered command-line interface for data engineers—think "Claude Code for data engineers." Write SQL, build subagents, and construct context interactively.
 * Datus-Chat: A web chatbot providing multi-turn conversations with built-in feedback mechanisms (upvotes, issue reports, success stories) for data analysts.
 * Datus-API: APIs for other agents or applications that need stable, accurate data services.
+* Semantic model–aware orchestration: preload MetricFlow-compatible YAML from ClickZetta volumes or local files and switch between semantic context and live schema linking per task.
 
 ## 🚀 Key Features
 
@@ -83,7 +84,7 @@ Set up a local environment that uses Dashscope for LLM calls and Clickzetta as t
    ```bash
    cp conf/agent.clickzetta.yml.example conf/agent.clickzetta.yml
    ```
-   The example file ships with Dashscope/DeepSeek models and a `clickzetta` namespace. Edit the copy if your workspace or model choices differ.
+   The example file ships with Dashscope/DeepSeek models, a `clickzetta` namespace, and a `semantic_models` block. Update that block to point at your preferred ClickZetta volume/directory (or disable `allow_local_path` if needed) so the agent knows where to pull YAML specs.
 
 4. **Start the CLI (or API)**
    ```bash
@@ -92,8 +93,37 @@ Set up a local environment that uses Dashscope for LLM calls and Clickzetta as t
    # optionally launch the API server
    DATUS_HOME=$(pwd)/.datus_home python -m datus.api.server --config conf/agent.clickzetta.yml --namespace clickzetta
    ```
-   The CLI will automatically connect to Clickzetta, retrieve schema metadata, and use Dashscope for SQL generation.
+   During `!dastart` you can now choose whether the workflow should load a semantic model (from the volume or a local file) or fall back to schema linking. Pick `semantic_model` for strict semantic prompting, `auto` for best-effort loading, or `schema_linking` if you only want live metadata.
 
+5. **(Optional) Preload a semantic model for the run**
+   ```bash
+   !lsm --dir semantic_models
+   !dastart
+   # Context source [auto|schema_linking|semantic_model]: semantic_model
+   # Semantic model volume/stage: volume:user://~/
+   # Semantic model directory (optional): semantic_models
+   # Semantic model filename (.yaml/.yml): retail_finance.yaml
+   ```
+   After choosing an index the semantic model is loaded for chat/SQL generation. The `load_semantic_model` node fetches the YAML before schema linking starts, injects measures/dimensions into the SQL prompt, and only falls back to raw metadata if you select `auto`.
+
+
+---
+
+## 📚 Semantic Model Workflow
+
+1. **Configure defaults** – in any agent config file include:
+   ```yaml
+   semantic_models:
+     default_strategy: auto          # auto | schema_linking | semantic_model
+     default_volume: volume:user://~/  # base ClickZetta user volume
+     default_directory: semantic_models  # folder within the user volume
+     allow_local_path: true          # set false to forbid direct filesystem reads
+     prompt_max_length: 14000        # truncate long YAML snippets before prompting
+   ```
+2. **Store YAML assets** – upload either MetricFlow-style (`semantic_models:`) or Analyst-spec (`tables:`, `relationships:`, `verified_queries:`) semantic model files to your ClickZetta user volume (the default volume is `volume:user://~/` with `semantic_models/` as the directory, so subfolders like `finance/` work naturally) or keep them on disk when `allow_local_path` is enabled. Use `!list_semantic_models` (alias `!lsm`) to browse and select the YAML you want to load for the current session.
+3. **Pick the context source per task** – the CLI (and API) honour `semantic_model`, `schema_linking`, or `auto` selection, giving you deterministic prompts when a curated semantic spec is available.
+4. **Enjoy richer prompts** – the SQL generator now includes a “Semantic Model Specification” section with logical tables, base table FQNs, dimensions, facts, table-level metrics, relationships, model metrics, and verified queries pulled directly from the YAML spec, reducing guesswork and improving query accuracy.
+5. **Automatic fallback** – when the chosen semantic model cannot be read and the strategy is `auto`, the workflow transparently falls back to schema linking; if you picked `semantic_model`, the run stops early with a clear error so you can fix the path or permissions.
 
 ---
 
@@ -123,12 +153,8 @@ Learn more: [CLI Introduction](https://docs.datus.ai/cli/introduction/)
 
 ### 2️⃣ Building Context
 
-The DE imports SQL history and generates summaries or semantic models:
-
-`/gen_semantic_model xxx`
-`@subject`
-They edit or refine models in @subject, combining AI-generated drafts with human corrections.
-Now, /chat can reason using both SQL history and semantic context.
+The DE imports SQL history and semantic model YAMLs generated from the external toolchain (see `semantic-model-generator`).
+Using `@subject` they inspect or refine metrics, and `/chat` immediately benefits from the combined SQL history + semantic context.
 
 Learn more: [Knowledge Base Introduction](https://docs.datus.ai/knowledge_base/introduction/)
 

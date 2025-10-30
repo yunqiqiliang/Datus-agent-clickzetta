@@ -109,6 +109,37 @@ class NodeConfig:
     input: BaseInput | None
 
 
+@dataclass
+class SemanticModelConfig:
+    default_strategy: str = field(default="auto", init=True)
+    default_volume: str = field(default="volume:user://~/", init=True)
+    default_directory: str = field(default="semantic_models", init=True)
+    allow_local_path: bool = field(default=True, init=True)
+    prompt_max_length: int = field(default=12000, init=True)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+    @staticmethod
+    def filter_kwargs(cls, cfg: Dict[str, Any]) -> "SemanticModelConfig":
+        if not cfg:
+            return cls()
+        params: Dict[str, Any] = {}
+        for field_info in fields(cls):
+            value = cfg.get(field_info.name, field_info.default)
+            if isinstance(value, str):
+                params[field_info.name] = resolve_env(value)
+            else:
+                params[field_info.name] = value
+        strategy = params.get("default_strategy", "auto")
+        if strategy not in {"auto", "schema_linking", "semantic_model"}:
+            logger.warning(
+                "Invalid default semantic model strategy '%s'. Falling back to 'auto'.", strategy
+            )
+            params["default_strategy"] = "auto"
+        return cls(**params)
+
+
 logger = get_logger(__name__)
 
 DEFAULT_REFLECTION_NODES = {
@@ -175,6 +206,9 @@ class AgentConfig:
         self._current_database = ""
         self.nodes = nodes
         self.agentic_nodes = kwargs.get("agentic_nodes", {})
+        self.semantic_model_config = SemanticModelConfig.filter_kwargs(
+            SemanticModelConfig, kwargs.get("semantic_models", {})
+        )
         # use default embedding model if not provided
 
         # Save directory is now fixed at {agent.home}/save
@@ -343,6 +377,9 @@ class AgentConfig:
     @property
     def trajectory_dir(self) -> str:
         return self._trajectory_dir
+
+    def semantic_model_defaults(self) -> SemanticModelConfig:
+        return self.semantic_model_config
 
     def reflection_nodes(self, strategy: str) -> List[str]:
         if strategy not in self._reflection_nodes:

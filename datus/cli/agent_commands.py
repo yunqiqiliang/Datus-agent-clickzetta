@@ -8,7 +8,9 @@ This module provides a class to handle all agent-related commands.
 """
 
 import asyncio
+import shlex
 import uuid
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Tuple
 
 from rich.prompt import Confirm
@@ -29,9 +31,11 @@ from datus.schemas.generate_semantic_model_node_models import GenerateSemanticMo
 from datus.schemas.node_models import ExecuteSQLInput, GenerateSQLInput, OutputInput, SqlTask
 from datus.schemas.reason_sql_node_models import ReasoningInput
 from datus.schemas.schema_linking_node_models import SchemaLinkingInput
+from datus.tools.db_tools.clickzetta_connector import ClickzettaConnector
 from datus.tools.func_tool import db_function_tool_instance
 from datus.tools.func_tool.context_search import ContextSearchTools
 from datus.tools.output_tools import OutputTool
+from datus.tools.semantic_models import SemanticModelRepository, SemanticModelRepositoryError
 from datus.utils.constants import DBType
 from datus.utils.loggings import get_logger
 from datus.utils.rich_util import dict_to_tree
@@ -143,10 +147,10 @@ class AgentCommands:
             )
 
         elif node_type == NodeType.TYPE_GENERATE_SEMANTIC_MODEL:
+            table_name = (task_text or "").strip()
             return GenerateSemanticModelInput(
                 sql_task=sql_task,
-                database_type=sql_task.database_type,
-                table_schemas=self.cli_context.get_recent_tables(),
+                table_name=table_name,
             )
 
         elif node_type == NodeType.TYPE_COMPARE:
@@ -277,6 +281,7 @@ class AgentCommands:
 
             # Get database type from connector
             database_type = self.cli.db_connector.get_type() if self.cli.db_connector else DBType.SQLITE
+            defaults = self.cli_context.semantic_defaults
 
             # Task description - required input from user
             if args.strip():
@@ -286,6 +291,17 @@ class AgentCommands:
                 output_dir = self.cli.agent_config.output_dir
                 external_knowledge = ""
                 current_date = ""
+                context_strategy = (
+                    self.cli_context.context_strategy or (defaults.default_strategy if defaults else "auto")
+                )
+                semantic_local_path = self.cli_context.semantic_model_local_path or ""
+                semantic_volume = self.cli_context.semantic_model_volume or (
+                    defaults.default_volume if defaults else ""
+                )
+                semantic_directory = self.cli_context.semantic_model_directory or (
+                    defaults.default_directory if defaults else ""
+                )
+                semantic_filename = self.cli_context.semantic_model_filename or ""
             else:  # If no input, use a prompt to get the task info
                 task_id = self.cli.prompt_input("Enter task ID", default=task_id)
 
@@ -316,6 +332,53 @@ class AgentCommands:
                 # Current date - optional input for relative time expressions
                 current_date = self.cli.prompt_input("Enter current date (optional, e.g., '2025-07-01')", default="")
 
+                default_strategy = (
+                    self.cli_context.context_strategy or (defaults.default_strategy if defaults else "auto")
+                )
+                context_strategy = (
+                    self.cli.prompt_input(
+                        "Context source [auto|schema_linking|semantic_model]", default=default_strategy
+                    )
+                    or default_strategy
+                ).strip()
+                if context_strategy not in {"auto", "schema_linking", "semantic_model"}:
+                    self.console.print(
+                        f"[yellow]Unknown context source '{context_strategy}', falling back to {default_strategy}[/]"
+                    )
+                    context_strategy = default_strategy
+
+                semantic_local_path = self.cli_context.semantic_model_local_path or ""
+                semantic_volume = self.cli_context.semantic_model_volume or (
+                    defaults.default_volume if defaults else ""
+                )
+                semantic_directory = self.cli_context.semantic_model_directory or (
+                    defaults.default_directory if defaults else ""
+                )
+                semantic_filename = self.cli_context.semantic_model_filename or ""
+
+                if context_strategy in {"semantic_model", "auto"}:
+                    semantic_local_path = self.cli.prompt_input(
+                        "Semantic model local path (leave blank to use volume)", default=semantic_local_path or ""
+                    ).strip()
+                    if not semantic_local_path:
+                        semantic_volume = self.cli.prompt_input(
+                            "Semantic model volume/stage",
+                            default=semantic_volume or (defaults.default_volume if defaults else ""),
+                        ).strip()
+                        semantic_directory = self.cli.prompt_input(
+                            "Semantic model directory (optional)", default=semantic_directory or ""
+                        ).strip()
+                        semantic_filename = self.cli.prompt_input(
+                            "Semantic model filename (.yaml/.yml)", default=semantic_filename or ""
+                        ).strip()
+                    else:
+                        semantic_volume = ""
+                        semantic_directory = ""
+                        semantic_filename = ""
+                else:
+                    semantic_local_path = ""
+                    semantic_filename = ""
+
             # Create the SQL task
             sql_task = SqlTask(
                 id=task_id,
@@ -325,6 +388,11 @@ class AgentCommands:
                 output_dir=output_dir,
                 external_knowledge=external_knowledge,
                 current_date=current_date if current_date.strip() else None,
+                 context_strategy=context_strategy,
+                 semantic_model_local_path=semantic_local_path,
+                 semantic_model_volume=semantic_volume,
+                 semantic_model_directory=semantic_directory,
+                 semantic_model_filename=semantic_filename,
             )
 
             # Store in CLI context
@@ -337,6 +405,154 @@ class AgentCommands:
             logger.error(f"Failed to create SQL task: {str(e)}")
             self.console.print(f"[bold red]Error:[/] {str(e)}")
             return None
+
+    def cmd_list_semantic_models(self, args: str = ""):
+        """List available semantic model files from the configured volume or local directory."""
+        try:
+            defaults = self.cli.agent_config.semantic_model_defaults()
+        except AttributeError:
+            self.console.print("[bold red]Semantic model configuration not available.[/]")
+            return
+
+        volume = self.cli_context.semantic_model_volume or defaults.default_volume
+        directory = self.cli_context.semantic_model_directory or defaults.default_directory
+        local_dir = ""
+
+        # Parse optional flags: --volume, --dir, --local
+        tokens = shlex.split(args) if args else []
+        token_iter = iter(tokens)
+        for token in token_iter:
+            if token in ("--volume", "-v"):
+                try:
+                    volume = next(token_iter)
+                except StopIteration:
+                    self.console.print("[bold yellow]Missing value for --volume[/]")
+            elif token.startswith("--volume="):
+                volume = token.split("=", 1)[1]
+            elif token in ("--dir", "--directory"):
+                try:
+                    directory = next(token_iter)
+                except StopIteration:
+                    self.console.print("[bold yellow]Missing value for --dir[/]")
+            elif token.startswith("--dir=") or token.startswith("--directory="):
+                directory = token.split("=", 1)[1]
+            elif token in ("--local", "-l"):
+                try:
+                    local_dir = next(token_iter)
+                except StopIteration:
+                    self.console.print("[bold yellow]Missing value for --local[/]")
+            elif token.startswith("--local="):
+                local_dir = token.split("=", 1)[1]
+            else:
+                self.console.print(f"[bold yellow]Unrecognized argument '{token}'[/]")
+
+        repository = SemanticModelRepository(self.cli.agent_config)
+
+        connector = None
+        try:
+            # Prefer existing connector; fall back to manager retrieval.
+            if isinstance(self.cli.db_connector, ClickzettaConnector):
+                connector = self.cli.db_connector
+            else:
+                conn_candidate = self.cli.db_manager.get_conn(
+                    self.cli.agent_config.current_namespace,
+                    self.cli_context.current_db_name or "",
+                )
+                if isinstance(conn_candidate, ClickzettaConnector):
+                    connector = conn_candidate
+        except Exception as exc:  # pragma: no cover - defensive path
+            logger.debug("Unable to initialize ClickZetta connector for semantic model listing: %s", exc)
+
+        models = repository.list_models(
+            volume=volume,
+            directory=directory,
+            local_dir=local_dir if local_dir else None,
+            connector=connector,
+        )
+
+        if not models:
+            self.console.print(
+                "[yellow]No semantic model files found. Adjust volume/directory or upload YAML files first.[/]"
+            )
+            return
+
+        table = Table(title="Available Semantic Models", show_header=True, header_style="bold magenta")
+        table.add_column("#", justify="right")
+        table.add_column("Filename", justify="left")
+        table.add_column("Source", justify="left")
+
+        directory_display = directory.strip("/") if directory else ""
+        for idx, name in enumerate(models, start=1):
+            if local_dir and not volume:
+                source = f"local:{local_dir}"
+            elif local_dir:
+                source = f"{volume.rstrip('/')}/{directory_display}" if directory_display else volume
+                source = f"{source} | local:{local_dir}"
+            elif directory_display:
+                source = f"{volume.rstrip('/')}/{directory_display}" if volume else directory_display
+            else:
+                source = volume or "default"
+            table.add_row(str(idx), name, source)
+
+        self.console.print(table)
+
+        selection = self.cli.prompt_input(
+            "Select a semantic model by number (press Enter to cancel)", default=""
+        ).strip()
+        if not selection:
+            return
+
+        try:
+            selected_index = int(selection) - 1
+            if selected_index < 0 or selected_index >= len(models):
+                raise ValueError
+        except ValueError:
+            self.console.print("[bold red]Invalid selection. Please enter a valid number.[/]")
+            return
+
+        selected_name = models[selected_index]
+        self.cli_context.semantic_model_filename = selected_name
+        self.cli_context.semantic_model_volume = volume
+        self.cli_context.semantic_model_directory = directory
+        if local_dir:
+            self.cli_context.semantic_model_local_path = str((Path(local_dir).expanduser() / selected_name).resolve())
+        else:
+            self.cli_context.semantic_model_local_path = ""
+        self.cli_context.context_strategy = "semantic_model"
+
+        # Load semantic model payload for downstream prompts
+        load_task = SqlTask(
+            id=f"semantic-selection-{uuid.uuid4()}",
+            database_type=(
+                self.cli.db_connector.get_type() if self.cli.db_connector else self.cli.agent_config.db_type or "clickzetta"
+            ),
+            task="Semantic model selection",
+            database_name=self.cli_context.current_db_name or "",
+            catalog_name=self.cli_context.current_catalog or "",
+            schema_name=self.cli_context.current_schema or "",
+            context_strategy="semantic_model",
+            semantic_model_volume=self.cli_context.semantic_model_volume or "",
+            semantic_model_directory=self.cli_context.semantic_model_directory or "",
+            semantic_model_filename=self.cli_context.semantic_model_filename or "",
+            semantic_model_local_path=self.cli_context.semantic_model_local_path or "",
+        )
+        payload = None
+        try:
+            payload = repository.load(load_task, connector)
+        except SemanticModelRepositoryError as exc:
+            self.console.print(f"[yellow]Warning:[/] Failed to load semantic model: {exc}")
+        except Exception as exc:  # pragma: no cover - defensive logging
+            logger.warning("Unexpected error loading semantic model '%s': %s", selected_name, exc)
+        self.cli_context.set_semantic_model_payload(payload)
+
+        self.console.print(f"[green]Selected semantic model:[/] {selected_name}")
+        if payload and payload.name:
+            self.console.print(f"[dim]Semantic model name:[/] {payload.name}")
+
+        # Reset chat session to ensure new semantic context is applied cleanly
+        chat_commands = getattr(self.cli, "chat_commands", None)
+        if chat_commands:
+            chat_commands.reset_session()
 
     def cmd_dastart(self, args: str = ""):
         """Start a new agent session with interactive SQL task creation."""
@@ -804,10 +1020,16 @@ class AgentCommands:
 
     def cmd_gen_semantic_model(self, args: str):
         """Generate semantic model for data modeling."""
+        args = (args or "").strip()
         # Create input for generate semantic model node
         input_data = self.create_node_input(NodeType.TYPE_GENERATE_SEMANTIC_MODEL, args)
         if not input_data:
             return
+
+        if args:
+            input_data.table_name = args
+
+        self._modify_input(input_data)
 
         # Run standalone node
         result = self.run_standalone_node(NodeType.TYPE_GENERATE_SEMANTIC_MODEL, input_data)

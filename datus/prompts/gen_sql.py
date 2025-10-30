@@ -31,6 +31,7 @@ def get_sql_prompt(
     database_docs: str = "",
     current_date: str = None,
     date_ranges: str = "",
+    semantic_model_docs: str = "",
 ) -> List[Dict[str, str]]:
     if context is None:
         context = []
@@ -78,6 +79,8 @@ def get_sql_prompt(
     if metrics:
         processed_metrics = to_pretty_str([m.__dict__ for m in metrics])
 
+    semantic_model_section = semantic_model_docs.strip() if semantic_model_docs else ""
+
     system_content = prompt_manager.get_raw_template("gen_sql_system", version=prompt_version)
     user_content = prompt_manager.render_template(
         "gen_sql_user",
@@ -93,6 +96,7 @@ def get_sql_prompt(
         database_docs=database_docs,
         current_date=current_date,
         date_ranges=date_ranges,
+        semantic_model_docs=semantic_model_section,
     )
 
     return [

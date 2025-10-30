@@ -11,7 +11,8 @@ from collections import deque
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-from datus.schemas.node_models import Metric, SQLContext, SqlTask, TableSchema
+from datus.configuration.agent_config import SemanticModelConfig
+from datus.schemas.node_models import Metric, SQLContext, SemanticModelPayload, SqlTask, TableSchema
 from datus.utils.loggings import get_logger
 
 logger = get_logger(__name__)
@@ -29,11 +30,26 @@ class CliContext:
 
     # Current SQL task
     current_sql_task: Optional[SqlTask] = None
+    context_strategy: Optional[str] = None
+    semantic_model_volume: Optional[str] = None
+    semantic_model_directory: Optional[str] = None
+    semantic_model_filename: Optional[str] = None
+    semantic_model_local_path: Optional[str] = None
+    semantic_defaults: Optional[SemanticModelConfig] = None
+    semantic_model_payload: Optional[SemanticModelPayload] = None
 
     # Recent history (limited to last 20 items)
     recent_tables: deque = field(default_factory=lambda: deque(maxlen=20))
     recent_metrics: deque = field(default_factory=lambda: deque(maxlen=20))
     recent_sql_contexts: deque = field(default_factory=lambda: deque(maxlen=20))
+
+    def __post_init__(self):
+        if self.semantic_defaults and not self.context_strategy:
+            self.context_strategy = self.semantic_defaults.default_strategy
+        if self.semantic_defaults and not self.semantic_model_volume:
+            self.semantic_model_volume = self.semantic_defaults.default_volume
+        if self.semantic_defaults and not self.semantic_model_directory:
+            self.semantic_model_directory = self.semantic_defaults.default_directory
 
     def add_table(self, table_schema: TableSchema):
         """Add a table to recent tables, avoiding duplicates."""
@@ -114,6 +130,13 @@ class CliContext:
     def set_current_sql_task(self, sql_task: SqlTask):
         """Set the current SQL task."""
         self.current_sql_task = sql_task
+        self.context_strategy = sql_task.context_strategy
+        self.semantic_model_volume = sql_task.semantic_model_volume
+        self.semantic_model_directory = sql_task.semantic_model_directory
+        self.semantic_model_filename = sql_task.semantic_model_filename
+        self.semantic_model_local_path = sql_task.semantic_model_local_path
+        if sql_task.context_strategy != "semantic_model":
+            self.semantic_model_payload = None
         logger.debug(f"Updated current SQL task: {sql_task.task[:100]}...")
 
     def get_or_create_sql_task(self, task_text: str = None, database_type: str = None, prompt_callback=None) -> SqlTask:
@@ -136,6 +159,7 @@ class CliContext:
             raise ValueError("Task description is required but not provided")
 
         # Create new SQL task
+        defaults = self.semantic_defaults
         sql_task = SqlTask(
             id=str(uuid.uuid4()),
             database_type=database_type or "sqlite",
@@ -143,6 +167,13 @@ class CliContext:
             database_name=self.current_db_name or "",
             output_dir="output",
             external_knowledge="",
+            context_strategy=(self.context_strategy or (defaults.default_strategy if defaults else "auto")),
+            semantic_model_volume=self.semantic_model_volume
+            or ((defaults.default_volume if defaults else "") or ""),
+            semantic_model_directory=self.semantic_model_directory
+            or (defaults.default_directory if defaults else ""),
+            semantic_model_filename=self.semantic_model_filename or "",
+            semantic_model_local_path=self.semantic_model_local_path or "",
         )
 
         self.current_sql_task = sql_task
@@ -224,4 +255,20 @@ class CliContext:
         if counts:
             lines.append(f"Recent: {', '.join(counts)}")
 
+        if self.semantic_model_payload:
+            lines.append(f"Semantic model: {self.semantic_model_filename or self.semantic_model_payload.name}")
+
         return "; ".join(lines) if lines else "No context available"
+
+    def set_semantic_model_payload(self, payload: Optional[SemanticModelPayload]):
+        self.semantic_model_payload = payload
+
+    def get_semantic_model_prompt(self, max_length: Optional[int] = None) -> str:
+        if not self.semantic_model_payload:
+            return ""
+        try:
+            if max_length:
+                return self.semantic_model_payload.prompt_chunk(max_length)
+            return self.semantic_model_payload.prompt_text or self.semantic_model_payload.raw_yaml
+        except Exception:
+            return self.semantic_model_payload.prompt_text or self.semantic_model_payload.raw_yaml

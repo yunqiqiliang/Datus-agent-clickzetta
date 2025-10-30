@@ -12,7 +12,7 @@ from io import StringIO
 from typing import Any, Dict, List, Literal, Optional, Union
 
 import pyarrow as pa
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 from datus.schemas.base import TABLE_TYPE, BaseInput, BaseResult
 from datus.schemas.doc_search_node_models import DocSearchResult
@@ -43,6 +43,26 @@ class SqlTask(BaseModel):
         default=None, description="Current date reference for relative time expressions"
     )
     date_ranges: str = Field(default="", description="Parsed date ranges context from date parser for SQL generation")
+    context_strategy: Literal["auto", "schema_linking", "semantic_model"] = Field(
+        default="auto",
+        description="Source preference for structured context used during SQL generation",
+    )
+    semantic_model_volume: str = Field(
+        default="",
+        description="Logical volume or stage that stores semantic model files (e.g. volume:user://~/)",
+    )
+    semantic_model_directory: str = Field(
+        default="",
+        description="Directory prefix inside the volume that stores semantic model files",
+    )
+    semantic_model_filename: str = Field(
+        default="",
+        description="Semantic model filename (with extension) to load from the volume or directory",
+    )
+    semantic_model_local_path: str = Field(
+        default="",
+        description="Optional absolute/relative filesystem path to semantic model file when not using volumes",
+    )
 
     # Metrics relative part
     layer1: str = Field(default="", description="Layer1 name")
@@ -80,6 +100,13 @@ class SqlTask(BaseModel):
         if not v.strip():
             raise ValueError("'task' must not be empty")
         return v
+
+    @field_validator("semantic_model_filename")
+    def _validate_semantic_model_filename(cls, value: str) -> str:
+        cleaned = value.strip()
+        if cleaned and any(char in cleaned for char in ("\\", os.sep)):
+            raise ValueError("semantic_model_filename must not contain directory separators")
+        return cleaned
 
 
 class BaseTableSchema(BaseModel):
@@ -364,6 +391,7 @@ class GenerateSQLInput(BaseInput):
     max_value_length: int = Field(default=500, description="Max value length")
     max_text_mark_length: int = Field(default=16, description="Max text mark length")
     database_docs: Optional[str] = Field(default="", description="Database documentation")
+    semantic_model_docs: str = Field(default="", description="Semantic model specification used during SQL generation")
 
 
 class GenerateSQLResult(BaseResult):
@@ -487,6 +515,287 @@ class SQLContext(BaseModel):
         pass
 
 
+class SemanticModelBaseTable(BaseModel):
+    """Definition of the physical table backing a logical semantic table."""
+
+    model_config = ConfigDict(extra="ignore", populate_by_name=True)
+
+    catalog: str = Field(default="", description="Catalog name")
+    database: str = Field(default="", description="Database name")
+    schema_name: str = Field(default="", description="Schema name", alias="schema")
+    table: str = Field(default="", description="Table name")
+
+    def to_fqn(self) -> str:
+        parts = [self.catalog, self.database, self.schema_name, self.table]
+        return ".".join([part for part in parts if part])
+
+
+class SemanticModelDimension(BaseModel):
+    """Dimension specification within a semantic model table."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = Field(default="", description="Dimension name")
+    description: str = Field(default="", description="Dimension description")
+    synonyms: List[str] = Field(default_factory=list, description="Alternative names")
+    expr: str = Field(default="", description="SQL expression for the dimension")
+    data_type: str = Field(default="", description="Underlying data type")
+    unique: Optional[bool] = Field(default=None, description="Whether the dimension is unique")
+    is_enum: Optional[bool] = Field(default=None, description="Whether the dimension is enum-like")
+
+
+class SemanticModelTimeDimension(SemanticModelDimension):
+    """Time dimension specification."""
+
+    pass
+
+
+class SemanticModelFact(BaseModel):
+    """Fact (measure column) specification."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = Field(default="", description="Fact name")
+    description: str = Field(default="", description="Fact description")
+    synonyms: List[str] = Field(default_factory=list, description="Alternative names")
+    expr: str = Field(default="", description="SQL expression for the fact")
+    data_type: str = Field(default="", description="Underlying data type")
+    access_modifier: str = Field(default="public_access", description="Access level")
+
+
+class SemanticModelMetricSpec(BaseModel):
+    """Metric specification (table-level or model-level)."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = Field(default="", description="Metric name")
+    description: str = Field(default="", description="Metric description")
+    synonyms: List[str] = Field(default_factory=list, description="Alternative names")
+    expr: str = Field(default="", description="Metric expression")
+    access_modifier: str = Field(default="public_access", description="Access level")
+    metric_type: str = Field(default="", description="Metric type (for derived metrics)")
+
+
+class SemanticModelFilter(BaseModel):
+    """Common filter definition for a semantic table."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = Field(default="", description="Filter name")
+    description: str = Field(default="", description="Filter description")
+    synonyms: List[str] = Field(default_factory=list, description="Alternative names")
+    expr: str = Field(default="", description="SQL expression for the filter")
+
+
+class SemanticModelLogicalTable(BaseModel):
+    """Logical table definition inside the semantic model."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = Field(default="", description="Logical table name")
+    description: str = Field(default="", description="Table description")
+    base_table: Optional[SemanticModelBaseTable] = Field(default=None, description="Underlying physical table")
+    dimensions: List[SemanticModelDimension] = Field(default_factory=list, description="Dimensions")
+    time_dimensions: List[SemanticModelTimeDimension] = Field(default_factory=list, description="Time dimensions")
+    facts: List[SemanticModelFact] = Field(default_factory=list, description="Facts")
+    metrics: List[SemanticModelMetricSpec] = Field(default_factory=list, description="Table-scoped metrics")
+    filters: List[SemanticModelFilter] = Field(default_factory=list, description="Common filters")
+
+
+class SemanticModelRelationshipColumn(BaseModel):
+    """Join column pair for a semantic relationship."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    left_column: str = Field(default="", description="Left column name")
+    right_column: str = Field(default="", description="Right column name")
+
+
+class SemanticModelRelationship(BaseModel):
+    """Relationship definition between semantic logical tables."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = Field(default="", description="Relationship name")
+    left_table: str = Field(default="", description="Left table name")
+    right_table: str = Field(default="", description="Right table name")
+    relationship_columns: List[SemanticModelRelationshipColumn] = Field(
+        default_factory=list, description="Join columns"
+    )
+    join_type: str = Field(default="", description="Join type")
+    relationship_type: str = Field(default="", description="Cardinality of the relationship")
+
+
+class SemanticModelVerifiedQuery(BaseModel):
+    """Verified query specification with natural language question and SQL."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = Field(default="", description="Verified query name")
+    question: str = Field(default="", description="Question answered by the query")
+    sql: str = Field(default="", description="SQL that answers the question")
+    verified_at: Optional[str] = Field(default=None, description="Verification timestamp")
+    verified_by: Optional[str] = Field(default=None, description="Verifier")
+    use_as_onboarding_question: Optional[bool] = Field(
+        default=None, description="Whether to use as onboarding question"
+    )
+
+
+class SemanticModelPayload(BaseModel):
+    """Canonical representation of a semantic model loaded for SQL assistance."""
+
+    name: str = Field(default="", description="Semantic model name")
+    description: str = Field(default="", description="Semantic model description")
+    comments: str = Field(default="", description="Additional comments")
+    source: str = Field(default="", description="Origin of the semantic model file")
+    raw_yaml: str = Field(default="", description="Raw YAML specification for the semantic model")
+    prompt_text: str = Field(
+        default="",
+        description="Curated text representation for prompts, defaults to raw_yaml when empty",
+    )
+    logical_tables: List[SemanticModelLogicalTable] = Field(
+        default_factory=list, description="Logical tables defined in the semantic model"
+    )
+    relationships: List[SemanticModelRelationship] = Field(
+        default_factory=list, description="Relationships between logical tables"
+    )
+    model_metrics: List[SemanticModelMetricSpec] = Field(
+        default_factory=list, description="Model-level metrics"
+    )
+    verified_queries: List[SemanticModelVerifiedQuery] = Field(
+        default_factory=list, description="Verified queries with natural language descriptions"
+    )
+    tables: List[str] = Field(default_factory=list, description="Logical tables or models defined in the semantic model")
+    measures: List[str] = Field(default_factory=list, description="Measures or KPIs defined in the model")
+    dimensions: List[str] = Field(default_factory=list, description="Dimensions defined in the model")
+
+    def build_prompt(self) -> str:
+        """Construct a comprehensive prompt representation from the semantic model specification."""
+        lines: List[str] = []
+
+        if self.name:
+            lines.append(f"Semantic Model: {self.name}")
+        if self.description:
+            lines.append(f"Description: {self.description}")
+        if self.comments:
+            lines.append(f"Comments: {self.comments}")
+
+        for table in sorted(self.logical_tables, key=lambda t: t.name.lower()):
+            lines.append("")
+            header = f"Table: {table.name}"
+            if table.description:
+                header += f" — {table.description}"
+            lines.append(header)
+            if table.base_table:
+                lines.append(f"  Base table: {table.base_table.to_fqn() or table.base_table.table}")
+
+            if table.dimensions:
+                lines.append("  Dimensions:")
+                for dimension in table.dimensions:
+                    info = f"    - {dimension.name}"
+                    if dimension.data_type:
+                        info += f" [{dimension.data_type}]"
+                    if dimension.description:
+                        info += f": {dimension.description}"
+                    if dimension.synonyms:
+                        info += f" (synonyms: {', '.join(dimension.synonyms)})"
+                    if dimension.expr:
+                        info += f" expr={dimension.expr}"
+                    lines.append(info)
+
+            if table.time_dimensions:
+                lines.append("  Time Dimensions:")
+                for dimension in table.time_dimensions:
+                    info = f"    - {dimension.name}"
+                    if dimension.data_type:
+                        info += f" [{dimension.data_type}]"
+                    if dimension.description:
+                        info += f": {dimension.description}"
+                    if dimension.expr:
+                        info += f" expr={dimension.expr}"
+                    lines.append(info)
+
+            if table.facts:
+                lines.append("  Facts:")
+                for fact in table.facts:
+                    info = f"    - {fact.name}"
+                    if fact.data_type:
+                        info += f" [{fact.data_type}]"
+                    if fact.description:
+                        info += f": {fact.description}"
+                    if fact.expr:
+                        info += f" expr={fact.expr}"
+                    lines.append(info)
+
+            if table.metrics:
+                lines.append("  Table Metrics:")
+                for metric in table.metrics:
+                    info = f"    - {metric.name}"
+                    if metric.metric_type:
+                        info += f" ({metric.metric_type})"
+                    if metric.description:
+                        info += f": {metric.description}"
+                    if metric.expr:
+                        info += f" expr={metric.expr}"
+                    lines.append(info)
+
+            if table.filters:
+                lines.append("  Common Filters:")
+                for filter_item in table.filters:
+                    info = f"    - {filter_item.name}"
+                    if filter_item.description:
+                        info += f": {filter_item.description}"
+                    if filter_item.expr:
+                        info += f" expr={filter_item.expr}"
+                    lines.append(info)
+
+        if self.relationships:
+            lines.append("")
+            lines.append("Relationships:")
+            for relationship in self.relationships:
+                header = f"  - {relationship.name}: {relationship.left_table} -> {relationship.right_table}"
+                if relationship.join_type:
+                    header += f" (join: {relationship.join_type})"
+                if relationship.relationship_type:
+                    header += f", type: {relationship.relationship_type}"
+                lines.append(header)
+                for column in relationship.relationship_columns:
+                    lines.append(f"      {column.left_column} = {column.right_column}")
+
+        if self.model_metrics:
+            lines.append("")
+            lines.append("Model Metrics:")
+            for metric in self.model_metrics:
+                info = f"  - {metric.name}"
+                if metric.metric_type:
+                    info += f" ({metric.metric_type})"
+                if metric.description:
+                    info += f": {metric.description}"
+                if metric.expr:
+                    info += f" expr={metric.expr}"
+                lines.append(info)
+
+        if self.verified_queries:
+            lines.append("")
+            lines.append("Verified Queries:")
+            for query in self.verified_queries:
+                info = f"  - {query.name}"
+                if query.question:
+                    info += f": {query.question}"
+                lines.append(info)
+
+        return "\n".join(line for line in lines if line).strip()
+
+    def prompt_chunk(self, max_length: int) -> str:
+        """Return a semantic model string trimmed to fit within the max length."""
+        prompt = self.prompt_text or self.build_prompt()
+        content = prompt or self.raw_yaml
+        if max_length <= 0 or len(content) <= max_length:
+            return content
+        logger.warning("Semantic model prompt too long (%s chars). Truncating to %s.", len(content), max_length)
+        return content[:max_length] + "\n...(truncated)"
+
+
 class Context(BaseModel):
     """
     Model for context information used in SQL generation.
@@ -496,6 +805,9 @@ class Context(BaseModel):
     table_schemas: List[TableSchema] = Field(default_factory=list, description="The table schemas")
     table_values: List[TableValue] = Field(default_factory=list, description="The table values")
     metrics: List[Metric] = Field(default_factory=list, description="The metrics")
+    semantic_model: Optional["SemanticModelPayload"] = Field(
+        default=None, description="Semantic model context loaded for SQL generation"
+    )
     doc_search_keywords: List[str] = Field(default_factory=list, description="The document search keywords")
     document_result: Optional[DocSearchResult] = Field(default=None, description="The document result")
     parallel_results: Optional[Dict[str, Any]] = Field(default=None, description="Results from parallel node execution")

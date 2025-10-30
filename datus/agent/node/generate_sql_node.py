@@ -58,6 +58,11 @@ class GenerateSQLNode(Node):
                 database_docs += "\n".join(docs) + "\n"
         else:
             database_docs = ""
+        semantic_model_docs = ""
+        if workflow.context.semantic_model:
+            defaults = self.agent_config.semantic_model_defaults()
+            semantic_model_docs = workflow.context.semantic_model.prompt_chunk(defaults.prompt_max_length)
+
         # irrelevant to current node
         next_input = GenerateSQLInput(
             database_type=workflow.task.database_type,
@@ -68,6 +73,7 @@ class GenerateSQLNode(Node):
             contexts=workflow.context.sql_contexts,
             external_knowledge=workflow.task.external_knowledge,
             database_docs=database_docs,
+            semantic_model_docs=semantic_model_docs,
         )
         self.input = next_input
         return {"success": True, "message": "Schema appears valid", "suggestions": [next_input]}
@@ -81,6 +87,9 @@ class GenerateSQLNode(Node):
             workflow.context.sql_contexts.append(new_record)
 
             # Get and update schema information
+            if workflow.context.semantic_model and workflow.task.context_strategy in ("semantic_model", "auto"):
+                return {"success": True, "message": "Semantic model context retained"}
+
             table_schemas, table_values = self._get_schema_and_values(workflow.task, result.tables)
             if len(table_schemas) == len(result.tables) and len(table_values) == len(result.tables):
                 workflow.context.table_schemas = table_schemas
@@ -129,6 +138,13 @@ class GenerateSQLNode(Node):
         self, sql_task: SqlTask, table_names: List[str]
     ) -> Tuple[List[TableSchema], List[TableValue]]:
         """Get table schemas and values using the schema lineage tool."""
+        if (
+            getattr(self.workflow, "context", None)
+            and self.workflow.context.semantic_model
+            and sql_task.context_strategy in ("semantic_model",)
+        ):
+            return self.workflow.context.table_schemas, self.workflow.context.table_values
+
         try:
             # Get the schema lineage tool instance
             sql_connector = self._sql_connector(self.input.sql_task.database_name)
@@ -261,6 +277,7 @@ def generate_sql(model: LLMBaseModel, input_data: GenerateSQLInput) -> GenerateS
             database_docs=input_data.database_docs,
             current_date=get_default_current_date(input_data.sql_task.current_date),
             date_ranges=getattr(input_data.sql_task, "date_ranges", ""),
+            semantic_model_docs=input_data.semantic_model_docs,
         )
 
         logger.debug(f"Generated SQL prompt:  {type(model)}, {prompt}")
