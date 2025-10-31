@@ -4,11 +4,10 @@
 
 from typing import Any, Dict, List, Optional
 
-from datus.utils.typing_compat import override
-
 from datus.tools.db_tools.sqlalchemy_connector import SQLAlchemyConnector
 from datus.utils.constants import DBType
 from datus.utils.loggings import get_logger
+from datus.utils.typing_compat import override
 
 logger = get_logger(__name__)
 

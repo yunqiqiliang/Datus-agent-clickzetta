@@ -4,8 +4,6 @@
 
 from typing import Any, Dict, List, Literal, Optional, Sequence, Set
 
-from datus.utils.typing_compat import override
-
 import pyarrow as pa
 import pyarrow.compute as pc
 from pandas import DataFrame
@@ -31,6 +29,7 @@ from datus.utils.constants import DBType
 from datus.utils.exceptions import DatusException, ErrorCode
 from datus.utils.loggings import get_logger
 from datus.utils.sql_utils import parse_context_switch
+from datus.utils.typing_compat import override
 
 logger = get_logger(__name__)
 

@@ -4,8 +4,6 @@
 
 from typing import Any, Dict, List, Optional, Set
 
-from datus.utils.typing_compat import override
-
 from pydantic import BaseModel, Field
 
 from datus.schemas.base import TABLE_TYPE
@@ -14,6 +12,7 @@ from datus.tools.db_tools.sqlalchemy_connector import SQLAlchemyConnector
 from datus.utils.constants import DBType
 from datus.utils.exceptions import DatusException, ErrorCode
 from datus.utils.loggings import get_logger
+from datus.utils.typing_compat import override
 
 logger = get_logger(__name__)
 

@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import Callable, Optional, TypeVar, Generic
+from typing import Callable, Generic, Optional, TypeVar
 
 from datus.configuration.agent_config import AgentConfig
 from datus.schemas.agent_models import SubAgentConfig

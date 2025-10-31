@@ -4,8 +4,6 @@
 
 from typing import Any, Dict, Iterator, List, Literal, Optional, Tuple
 
-from datus.utils.typing_compat import override
-
 from pandas import DataFrame
 from pyarrow import DataType, RecordBatch, Table, array, ipc
 from sqlalchemy import create_engine, inspect, text
@@ -31,6 +29,7 @@ from datus.utils.constants import DBType, SQLType
 from datus.utils.exceptions import DatusException, ErrorCode
 from datus.utils.loggings import get_logger
 from datus.utils.sql_utils import parse_context_switch, parse_sql_type
+from datus.utils.typing_compat import override
 
 logger = get_logger(__name__)
 
