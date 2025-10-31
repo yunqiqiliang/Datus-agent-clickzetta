@@ -30,28 +30,27 @@ class MockSession:
             return self._make_result(pd.DataFrame({"catalog_name": ["test_catalog"]}))
         elif "information_schema.tables" in query:
             return self._make_result(
-                pd.DataFrame({
-                    "table_name": ["test_table", "test_view"],
-                    "table_type": ["MANAGED_TABLE", "VIEW"],
-                    "comment": ["", ""]
-                })
+                pd.DataFrame(
+                    {
+                        "table_name": ["test_table", "test_view"],
+                        "table_type": ["MANAGED_TABLE", "VIEW"],
+                        "comment": ["", ""],
+                    }
+                )
             )
         elif "information_schema.columns" in query:
             return self._make_result(
-                pd.DataFrame({
-                    "table_name": ["test_table"],
-                    "column_name": ["id", "name"],
-                    "data_type": ["INTEGER", "STRING"],
-                    "comment": ["", ""]
-                })
+                pd.DataFrame(
+                    {
+                        "table_name": ["test_table"],
+                        "column_name": ["id", "name"],
+                        "data_type": ["INTEGER", "STRING"],
+                        "comment": ["", ""],
+                    }
+                )
             )
         elif "SELECT * FROM" in query and "LIMIT" in query:
-            return self._make_result(
-                pd.DataFrame({
-                    "id": [1, 2],
-                    "name": ["Alice", "Bob"]
-                })
-            )
+            return self._make_result(pd.DataFrame({"id": [1, 2], "name": ["Alice", "Bob"]}))
         elif "INSERT" in query or "UPDATE" in query or "DELETE" in query:
             return self._make_result(pd.DataFrame({"rows_affected": [1]}))
         elif "CREATE" in query or "DROP" in query:
@@ -78,7 +77,7 @@ class MockSessionBuilder:
 @pytest.fixture
 def mock_session():
     """Fixture providing a mock ClickZetta session."""
-    with patch('datus.tools.db_tools.clickzetta_connector.Session') as mock_session_class:
+    with patch("datus.tools.db_tools.clickzetta_connector.Session") as mock_session_class:
         mock_session_class.builder = MockSessionBuilder()
         yield mock_session_class
 
@@ -93,7 +92,7 @@ def connector(mock_session):
         instance="test_instance",
         workspace="test_workspace",
         schema="test_schema",
-        vcluster="test_vcluster"
+        vcluster="test_vcluster",
     )
 
 
@@ -107,7 +106,7 @@ class TestClickzettaConnector:
             username="test_user",
             password="test_pass",
             instance="test_instance",
-            workspace="test_workspace"
+            workspace="test_workspace",
         )
 
         assert connector.service == "test-service"
@@ -126,21 +125,21 @@ class TestClickzettaConnector:
                 username="test_user",
                 password="test_pass",
                 instance="test_instance",
-                workspace="test_workspace"
+                workspace="test_workspace",
             )
         assert "Missing ClickZetta connection fields" in str(exc_info.value)
 
     def test_init_missing_dependency(self):
         """Test initialization when ClickZetta package is not available."""
-        with patch('datus.tools.db_tools.clickzetta_connector.Session', None):
-            with patch('datus.tools.db_tools.clickzetta_connector._CLICKZETTA_IMPORT_ERROR', ImportError("test")):
+        with patch("datus.tools.db_tools.clickzetta_connector.Session", None):
+            with patch("datus.tools.db_tools.clickzetta_connector._CLICKZETTA_IMPORT_ERROR", ImportError("test")):
                 with pytest.raises(DatusException) as exc_info:
                     ClickzettaConnector(
                         service="test-service",
                         username="test_user",
                         password="test_pass",
                         instance="test_instance",
-                        workspace="test_workspace"
+                        workspace="test_workspace",
                     )
                 assert "clickzetta-connector-python" in str(exc_info.value)
 
@@ -207,7 +206,7 @@ class TestClickzettaConnector:
 
     def test_get_schemas(self, connector):
         """Test schema retrieval."""
-        with patch.object(connector, '_run_query') as mock_run:
+        with patch.object(connector, "_run_query") as mock_run:
             mock_run.return_value = pd.DataFrame({"table_schema": ["PUBLIC", "TEST_SCHEMA"]})
             schemas = connector.get_schemas()
             assert "PUBLIC" in schemas
@@ -215,64 +214,43 @@ class TestClickzettaConnector:
 
     def test_get_tables(self, connector):
         """Test table retrieval."""
-        with patch.object(connector, '_run_query') as mock_run:
-            mock_run.return_value = pd.DataFrame({
-                "table_name": ["test_table"],
-                "table_type": ["MANAGED_TABLE"]
-            })
+        with patch.object(connector, "_run_query") as mock_run:
+            mock_run.return_value = pd.DataFrame({"table_name": ["test_table"], "table_type": ["MANAGED_TABLE"]})
             tables = connector.get_tables(database_name="test_workspace", schema_name="PUBLIC")
             assert "test_table" in tables
 
     def test_get_views(self, connector):
         """Test view retrieval."""
-        with patch.object(connector, '_run_query') as mock_run:
-            mock_run.return_value = pd.DataFrame({
-                "table_name": ["test_view"],
-                "table_type": ["VIEW"]
-            })
+        with patch.object(connector, "_run_query") as mock_run:
+            mock_run.return_value = pd.DataFrame({"table_name": ["test_view"], "table_type": ["VIEW"]})
             views = connector.get_views(database_name="test_workspace", schema_name="PUBLIC")
             assert "test_view" in views
 
     def test_get_materialized_views(self, connector):
         """Test materialized view retrieval."""
-        with patch.object(connector, '_run_query') as mock_run:
-            mock_run.return_value = pd.DataFrame({
-                "table_name": ["test_mv"],
-                "table_type": ["MATERIALIZED_VIEW"]
-            })
+        with patch.object(connector, "_run_query") as mock_run:
+            mock_run.return_value = pd.DataFrame({"table_name": ["test_mv"], "table_type": ["MATERIALIZED_VIEW"]})
             mvs = connector.get_materialized_views(database_name="test_workspace", schema_name="PUBLIC")
             assert "test_mv" in mvs
 
     def test_get_schema(self, connector):
         """Test table schema retrieval."""
-        with patch.object(connector, '_run_query') as mock_run:
-            mock_run.return_value = pd.DataFrame({
-                "column_name": ["id", "name"],
-                "data_type": ["INTEGER", "STRING"],
-                "comment": ["", ""]
-            })
-            schema = connector.get_schema(
-                database_name="test_workspace",
-                schema_name="PUBLIC",
-                table_name="test_table"
+        with patch.object(connector, "_run_query") as mock_run:
+            mock_run.return_value = pd.DataFrame(
+                {"column_name": ["id", "name"], "data_type": ["INTEGER", "STRING"], "comment": ["", ""]}
             )
+            schema = connector.get_schema(database_name="test_workspace", schema_name="PUBLIC", table_name="test_table")
             assert len(schema) == 2
             assert schema[0]["name"] == "id"
             assert schema[1]["name"] == "name"
 
     def test_get_sample_rows(self, connector):
         """Test sample data retrieval."""
-        with patch.object(connector, 'get_tables') as mock_get_tables:
-            with patch.object(connector, '_run_query') as mock_run:
+        with patch.object(connector, "get_tables") as mock_get_tables:
+            with patch.object(connector, "_run_query") as mock_run:
                 mock_get_tables.return_value = ["test_table"]
-                mock_run.return_value = pd.DataFrame({
-                    "id": [1, 2],
-                    "name": ["Alice", "Bob"]
-                })
-                samples = connector.get_sample_rows(
-                    database_name="test_workspace",
-                    schema_name="PUBLIC"
-                )
+                mock_run.return_value = pd.DataFrame({"id": [1, 2], "name": ["Alice", "Bob"]})
+                samples = connector.get_sample_rows(database_name="test_workspace", schema_name="PUBLIC")
                 assert len(samples) == 1
                 assert samples[0]["table_name"] == "test_table"
                 assert "Alice" in samples[0]["sample_rows"]
@@ -283,20 +261,20 @@ class TestClickzettaConnector:
             test_file = Path(tmp_dir) / "test.txt"
             test_file.write_text("test content")
 
-            with patch.object(connector._session.file, 'get'):
-                with patch('tempfile.TemporaryDirectory') as mock_tmpdir:
+            with patch.object(connector._session.file, "get"):
+                with patch("tempfile.TemporaryDirectory") as mock_tmpdir:
                     mock_tmpdir.return_value.__enter__.return_value = tmp_dir
                     content = connector.read_volume_file("volume:test", "test.txt")
                     assert content == "test content"
 
     def test_list_volume_files(self, connector):
         """Test volume file listing."""
-        with patch.object(connector, '_ensure_connection'):
-            with patch.object(connector._session, 'sql') as mock_sql:
+        with patch.object(connector, "_ensure_connection"):
+            with patch.object(connector._session, "sql") as mock_sql:
                 mock_result = Mock()
-                mock_result.to_pandas.return_value = pd.DataFrame({
-                    "relative_path": ["test1.yml", "test2.yaml", "test3.txt"]
-                })
+                mock_result.to_pandas.return_value = pd.DataFrame(
+                    {"relative_path": ["test1.yml", "test2.yaml", "test3.txt"]}
+                )
                 mock_sql.return_value = mock_result
 
                 files = connector.list_volume_files("volume:test")
@@ -306,27 +284,19 @@ class TestClickzettaConnector:
 
     def test_full_name(self, connector):
         """Test full table name generation."""
-        full_name = connector.full_name(
-            database_name="test_db",
-            schema_name="test_schema",
-            table_name="test_table"
-        )
+        full_name = connector.full_name(database_name="test_db", schema_name="test_schema", table_name="test_table")
         assert full_name == "test_db.test_schema.test_table"
 
     def test_identifier(self, connector):
         """Test table identifier generation."""
-        identifier = connector.identifier(
-            database_name="test_db",
-            schema_name="test_schema",
-            table_name="test_table"
-        )
+        identifier = connector.identifier(database_name="test_db", schema_name="test_schema", table_name="test_table")
         assert "test_db" in identifier
         assert "test_schema" in identifier
         assert "test_table" in identifier
 
     def test_error_handling(self, connector):
         """Test error handling in query execution."""
-        with patch.object(connector, '_run_query') as mock_run:
+        with patch.object(connector, "_run_query") as mock_run:
             mock_run.side_effect = Exception("Test error")
             result = connector.execute_csv("SELECT 1")
             assert result.success is False
