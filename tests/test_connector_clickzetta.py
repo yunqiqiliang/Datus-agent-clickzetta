@@ -306,3 +306,23 @@ class TestClickzettaConnector:
         """Test connection testing."""
         # Should not raise an exception
         connector.test_connection()
+
+    def test_do_switch_context_schema_success(self, connector):
+        """Test successful schema switching."""
+        # Should not raise an exception when switching schema
+        connector.do_switch_context(schema_name="new_schema")
+
+    def test_do_switch_context_workspace_rejected(self, connector):
+        """Test that workspace switching is rejected."""
+        with pytest.raises(DatusException) as exc_info:
+            connector.do_switch_context(database_name="different_workspace")
+
+        error_message = str(exc_info.value)
+        assert "Workspace switching" in error_message
+        assert "not supported" in error_message
+        assert "separate namespaces" in error_message
+
+    def test_do_switch_context_same_workspace_allowed(self, connector):
+        """Test that switching to the same workspace is allowed."""
+        # Should not raise an exception when "switching" to the same workspace
+        connector.do_switch_context(database_name=connector.database_name)

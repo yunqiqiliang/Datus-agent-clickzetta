@@ -404,3 +404,69 @@ When adding a new database type, update the configuration schema in `datus/confi
 - **Streaming**: Use `execute_arrow_iterator()` for large result sets
 - **Batch Processing**: Configure `batch_size` parameter for optimal memory usage
 - **Read-Only Mode**: DuckDB connector uses read-only mode to prevent lock conflicts
+
+## ClickZetta Multi-Workspace Support
+
+ClickZetta workspaces require separate authentication sessions and cannot be switched at runtime. To work with multiple ClickZetta workspaces, configure separate namespaces:
+
+### ✅ Recommended Approach: Multiple Namespaces
+
+```yaml
+# conf/agent.yml
+namespace:
+  clickzetta_dev:
+    type: clickzetta
+    service: dev-clickzetta.company.com
+    username: dev_user
+    password: dev_password
+    instance: dev_instance
+    workspace: development
+    schema: PUBLIC
+    vcluster: DEFAULT_AP
+
+  clickzetta_prod:
+    type: clickzetta
+    service: prod-clickzetta.company.com
+    username: prod_user
+    password: prod_password
+    instance: prod_instance
+    workspace: production
+    schema: PUBLIC
+    vcluster: DEFAULT_AP
+```
+
+### Usage Examples
+
+```bash
+# Switch between environments using namespace parameter
+datus-agent --namespace clickzetta_dev
+datus-agent --namespace clickzetta_prod
+```
+
+```python
+# Programmatic namespace switching
+config.current_namespace = "clickzetta_dev"
+dev_connector = config.current_db_config().create_connector()
+
+config.current_namespace = "clickzetta_prod"
+prod_connector = config.current_db_config().create_connector()
+```
+
+### ✅ Supported Context Switching
+
+Within the same workspace, you can switch schemas:
+
+```python
+# Schema switching within same workspace (supported)
+connector.switch_context(schema_name="analytics")
+connector.switch_context(schema_name="reporting")
+```
+
+### ❌ Unsupported Operations
+
+```python
+# Workspace switching is NOT supported (requires re-login)
+connector.switch_context(database_name="different_workspace")  # Raises DatusException
+```
+
+**Note**: ClickZetta workspace switching requires separate authentication sessions. Use different namespace configurations for different workspaces instead of runtime switching.

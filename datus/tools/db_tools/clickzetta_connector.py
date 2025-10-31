@@ -15,6 +15,7 @@ from datus.utils.constants import DBType, SQLType
 from datus.utils.exceptions import DatusException, ErrorCode
 from datus.utils.loggings import get_logger
 from datus.utils.sql_utils import metadata_identifier, parse_context_switch, parse_sql_type
+from datus.utils.typing_compat import override
 
 try:
     from clickzetta.zettapark.session import Session
@@ -174,6 +175,38 @@ class ClickzettaConnector(BaseSqlConnector):
                 self._session = None
                 self.connection = None
         super().close()
+
+    @override
+    def do_switch_context(self, catalog_name: str = "", database_name: str = "", schema_name: str = ""):
+        """Execute context switching in ClickZetta session.
+
+        Note:
+        - Workspace (database_name) switching is NOT supported and requires separate namespace configuration
+        - Only schema switching within the same workspace is supported
+        - VCluster switching is supported via USE VCLUSTER command
+        """
+        session = self._ensure_connection()
+
+        # Reject workspace switching requests
+        if database_name and database_name != self.database_name:
+            raise DatusException(
+                ErrorCode.DB_EXECUTION_ERROR,
+                message_args={
+                    "error_message": (
+                        f"Workspace switching from '{self.database_name}' to '{database_name}' "
+                        "is not supported. Please configure separate namespaces for different workspaces."
+                    ),
+                    "sql": f"USE DATABASE {database_name}",
+                },
+            )
+
+        # Support schema switching within the same workspace
+        if schema_name and schema_name != self.schema_name:
+            try:
+                session.sql(f'USE SCHEMA "{schema_name.upper()}"')
+                logger.info(f"Switched to schema: {schema_name}")
+            except Exception as exc:
+                self._wrap_exception(exc, f'USE SCHEMA "{schema_name.upper()}"', ErrorCode.DB_EXECUTION_ERROR)
 
     def _wrap_exception(self, exc: Exception, sql: str = "", error_code: ErrorCode = ErrorCode.DB_EXECUTION_ERROR):
         if isinstance(exc, DatusException):

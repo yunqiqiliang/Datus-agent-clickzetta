@@ -70,6 +70,7 @@ agent:
   schema_linking_rate: medium
 
   namespace:
+    # Default ClickZetta environment
     clickzetta:
       type: clickzetta
       service: ${CLICKZETTA_SERVICE}
@@ -80,6 +81,31 @@ agent:
       schema: ${CLICKZETTA_SCHEMA}
       vcluster: ${CLICKZETTA_VCLUSTER}
       secure: false
+
+    # Example: Additional ClickZetta environments
+    # Uncomment and configure as needed for multiple workspaces
+    #
+    # clickzetta_dev:
+    #   type: clickzetta
+    #   service: ${CLICKZETTA_DEV_SERVICE}
+    #   username: ${CLICKZETTA_DEV_USERNAME}
+    #   password: ${CLICKZETTA_DEV_PASSWORD}
+    #   instance: ${CLICKZETTA_DEV_INSTANCE}
+    #   workspace: ${CLICKZETTA_DEV_WORKSPACE}
+    #   schema: ${CLICKZETTA_DEV_SCHEMA}
+    #   vcluster: ${CLICKZETTA_DEV_VCLUSTER}
+    #   secure: false
+    #
+    # clickzetta_prod:
+    #   type: clickzetta
+    #   service: ${CLICKZETTA_PROD_SERVICE}
+    #   username: ${CLICKZETTA_PROD_USERNAME}
+    #   password: ${CLICKZETTA_PROD_PASSWORD}
+    #   instance: ${CLICKZETTA_PROD_INSTANCE}
+    #   workspace: ${CLICKZETTA_PROD_WORKSPACE}
+    #   schema: ${CLICKZETTA_PROD_SCHEMA}
+    #   vcluster: ${CLICKZETTA_PROD_VCLUSTER}
+    #   secure: true
 
   storage:
     embedding_device_type: cpu
