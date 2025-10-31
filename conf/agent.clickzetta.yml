@@ -1,16 +1,16 @@
 agent:
-  target: dashscope_main
+  target: qwen_main
   models:
-    dashscope_main:
-      type: dashscope
+    qwen_main:
+      type: qwen
       vendor: aliyun
       base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
       api_key: ${DASHSCOPE_API_KEY}
       model: qwen-plus
       enable_thinking: false
 
-    dashscope_reasoning:
-      type: dashscope
+    qwen_reasoning:
+      type: qwen
       vendor: aliyun
       base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
       api_key: ${DASHSCOPE_API_KEY}
@@ -31,7 +31,7 @@ agent:
       prompt_version: "1.0"
 
     generate_sql:
-      model: dashscope_main
+      model: qwen_main
       prompt_version: "1.0"
       max_table_schemas_length: 6000
       max_data_details_length: 4000
@@ -39,7 +39,7 @@ agent:
       max_value_length: 500
 
     reasoning:
-      model: dashscope_reasoning
+      model: qwen_reasoning
       prompt_version: "1.0"
       max_table_schemas_length: 6000
       max_data_details_length: 4000
@@ -56,7 +56,7 @@ agent:
 
   agentic_nodes:
     chatbot:
-      model: dashscope_main
+      model: qwen_main
       system_prompt: gen_sql
       prompt_version: "1.0"
       prompt_language: zh
