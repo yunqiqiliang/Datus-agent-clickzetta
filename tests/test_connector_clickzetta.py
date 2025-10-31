@@ -68,7 +68,13 @@ class MockSessionBuilder:
     """Mock session builder for testing."""
 
     def __init__(self):
-        self.configs = Mock()
+        self._config: dict = {}
+
+    # Make configs a fluent method as in real SDK: builder.configs({...}).create()
+    def configs(self, cfg: dict | None = None):
+        if cfg:
+            self._config.update(cfg)
+        return self
 
     def create(self):
         return MockSession()
@@ -261,6 +267,8 @@ class TestClickzettaConnector:
             test_file = Path(tmp_dir) / "test.txt"
             test_file.write_text("test content")
 
+            # Ensure session exists before patching file.get
+            connector.connect()
             with patch.object(connector._session.file, "get"):
                 with patch("tempfile.TemporaryDirectory") as mock_tmpdir:
                     mock_tmpdir.return_value.__enter__.return_value = tmp_dir
@@ -269,18 +277,19 @@ class TestClickzettaConnector:
 
     def test_list_volume_files(self, connector):
         """Test volume file listing."""
-        with patch.object(connector, "_ensure_connection"):
-            with patch.object(connector._session, "sql") as mock_sql:
-                mock_result = Mock()
-                mock_result.to_pandas.return_value = pd.DataFrame(
-                    {"relative_path": ["test1.yml", "test2.yaml", "test3.txt"]}
-                )
-                mock_sql.return_value = mock_result
+        # Ensure a valid session exists so we can patch its sql method safely
+        connector.connect()
+        with patch.object(connector._session, "sql") as mock_sql:  # type: ignore[arg-type]
+            mock_result = Mock()
+            mock_result.to_pandas.return_value = pd.DataFrame(
+                {"relative_path": ["test1.yml", "test2.yaml", "test3.txt"]}
+            )
+            mock_sql.return_value = mock_result
 
-                files = connector.list_volume_files("volume:test")
-                assert "test1.yml" in files
-                assert "test2.yaml" in files
-                assert "test3.txt" not in files  # filtered by suffix
+            files = connector.list_volume_files("volume:test")
+            assert "test1.yml" in files
+            assert "test2.yaml" in files
+            assert "test3.txt" not in files  # filtered by suffix
 
     def test_full_name(self, connector):
         """Test full table name generation."""

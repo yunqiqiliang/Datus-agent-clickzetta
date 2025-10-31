@@ -59,13 +59,13 @@ agent:
       model: qwen_main
       system_prompt: gen_sql
       prompt_version: "1.0"
-      prompt_language: zh
+      prompt_language: en
       max_turns: 15
       tools: db_tools.*, context_search_tools.*
-      agent_description: "专注 Clickzetta 工作区的 SQL 助手"
+      agent_description: "A SQL assistant focused on the ClickZetta Lakehouse"
       rules:
-        - 当涉及 SQL 查询时务必说明思路并返回可执行语句
-        - 优先使用 Clickzetta 工作区 quick_start 内的对象
+        - Always explain your reasoning when producing SQL and return executable statements
+        - Prioritize objects inside the ClickZetta Lakehouse quick_start
 
   schema_linking_rate: medium
 
