@@ -348,7 +348,7 @@ class ClickzettaConnector(BaseSqlConnector):
             col_name = column.get("column_name") or column.get("name") or ""
             data_type = column.get("data_type") or column.get("type") or "STRING"
             comment = column.get("comment")
-            col_def = f'`{_safe_escape_identifier(col_name)}` {data_type}'
+            col_def = f"`{_safe_escape_identifier(col_name)}` {data_type}"
             if comment:
                 col_def += f" COMMENT '{_safe_escape(str(comment))}'"
             column_lines.append(col_def)
@@ -358,7 +358,7 @@ class ClickzettaConnector(BaseSqlConnector):
         escaped_workspace = _safe_escape_identifier(workspace)
         escaped_schema = _safe_escape_identifier(schema_name)
         escaped_table = _safe_escape_identifier(table_name)
-        table_full_name = f'`{escaped_workspace}`.`{escaped_schema}`.`{escaped_table}`'
+        table_full_name = f"`{escaped_workspace}`.`{escaped_schema}`.`{escaped_table}`"
 
         definition = (
             f"CREATE {table_type.upper()} {table_full_name} (\n  {columns_section}\n)"
@@ -480,7 +480,7 @@ class ClickzettaConnector(BaseSqlConnector):
         workspace = workspace or self.workspace
         # Quote workspace with backticks to handle special characters or case sensitivity
         escaped_workspace = _safe_escape_identifier(workspace)
-        return f'`{escaped_workspace}`.information_schema'
+        return f"`{escaped_workspace}`.information_schema"
 
     def _normalized_schema(self, schema_name: Optional[str] = None) -> str:
         schema = schema_name or self.schema_name
@@ -743,7 +743,7 @@ class ClickzettaConnector(BaseSqlConnector):
             escaped_workspace = _safe_escape_identifier(workspace)
             escaped_schema = _safe_escape_identifier(schema)
             escaped_table = _safe_escape_identifier(table_name)
-            table_full_name = f'`{escaped_workspace}`.`{escaped_schema}`.`{escaped_table}`'
+            table_full_name = f"`{escaped_workspace}`.`{escaped_schema}`.`{escaped_table}`"
             sql = f"SELECT * FROM {table_full_name} LIMIT {top_n}"
             try:
                 df = self._run_query(sql)
