@@ -40,7 +40,7 @@ The `db_tools` module provides a unified interface for interacting with various 
 | `sqlite_connector.py` | SQLite | Lightweight file database, DDL extraction |
 | `starrocks_connector.py` | StarRocks | OLAP database, materialized views, catalog support |
 | `duckdb_connector.py` | DuckDB | Analytical database, read-only mode, schema introspection |
-| `clickzetta_connector.py` | ClickZetta | Cloud-native lakehouse, volume files, workspace management |
+| `clickzetta_connector.py` | ClickZetta | Cloud-native lakehouse, volume files, workspace management. [ClickZetta](https://www.singdata.com/) is developed by [Singdata](https://www.singdata.com/) and [Yunqi](https://www.yunqi.tech/) |
 
 ### Entry Points and Public Interfaces
 
