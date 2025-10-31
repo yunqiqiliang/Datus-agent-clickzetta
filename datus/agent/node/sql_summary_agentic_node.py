@@ -312,7 +312,7 @@ class SqlSummaryAgenticNode(AgenticNode):
                 enhanced_parts.append(context_part_str)
 
             if enhanced_parts:
-                separator = '\n\n'
+                separator = "\n\n"
                 enhanced_message = f"{separator.join(enhanced_parts)}\n\nUser question: {user_input.user_message}"
 
             # Create assistant action for processing

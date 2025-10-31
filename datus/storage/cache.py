@@ -21,11 +21,13 @@ from datus.utils.loggings import get_logger
 
 logger = get_logger(__name__)
 
-T = TypeVar('T', bound=BaseEmbeddingStore)
+T = TypeVar("T", bound=BaseEmbeddingStore)
 
 
 @lru_cache(maxsize=12)
-def _cached_storage(factory: Callable[[str, EmbeddingModel], BaseEmbeddingStore], path: str, model_name: str) -> BaseEmbeddingStore:
+def _cached_storage(
+    factory: Callable[[str, EmbeddingModel], BaseEmbeddingStore], path: str, model_name: str
+) -> BaseEmbeddingStore:
     return factory(path, get_embedding_model(model_name))
 
 

@@ -483,11 +483,7 @@ class ClickzettaConnector(BaseSqlConnector):
         if df.empty:
             return []
         valid_types = {"MANAGED_TABLE", "EXTERNAL_TABLE", "BASE TABLE", "TABLE"}
-        return [
-            row.table_name
-            for row in df.itertuples()
-            if str(row.table_type).upper() in valid_types
-        ]
+        return [row.table_name for row in df.itertuples() if str(row.table_type).upper() in valid_types]
 
     def get_views(self, catalog_name: str = "", database_name: str = "", schema_name: str = "") -> List[str]:
         workspace = database_name or self.database_name
@@ -504,11 +500,7 @@ class ClickzettaConnector(BaseSqlConnector):
             if df.empty:
                 return []
             view_types = {"VIEW", "DYNAMIC_TABLE"}
-            return [
-                row.table_name
-                for row in df.itertuples()
-                if str(row.table_type).upper() in view_types
-            ]
+            return [row.table_name for row in df.itertuples() if str(row.table_type).upper() in view_types]
         except DatusException:
             return []
 
@@ -528,11 +520,7 @@ class ClickzettaConnector(BaseSqlConnector):
             df = self._run_query(sql)
             if df.empty:
                 return []
-            return [
-                row.table_name
-                for row in df.itertuples()
-                if str(row.table_type).upper() == "MATERIALIZED_VIEW"
-            ]
+            return [row.table_name for row in df.itertuples() if str(row.table_type).upper() == "MATERIALIZED_VIEW"]
         except DatusException:
             return []
 
@@ -698,7 +686,7 @@ class ClickzettaConnector(BaseSqlConnector):
         tables_to_sample = tables or self.get_tables(database_name=workspace, schema_name=schema)
         samples: List[Dict[str, Any]] = []
         for table_name in tables_to_sample:
-            sql = f'SELECT * FROM {workspace}.{schema}.{table_name} LIMIT {top_n}'
+            sql = f"SELECT * FROM {workspace}.{schema}.{table_name} LIMIT {top_n}"
             try:
                 df = self._run_query(sql)
             except DatusException:
@@ -722,9 +710,9 @@ class ClickzettaConnector(BaseSqlConnector):
         workspace = database_name or self.database_name
         schema = schema_name or self.schema_name
         if workspace and schema:
-            return f'{workspace}.{schema}.{table_name}'
+            return f"{workspace}.{schema}.{table_name}"
         if schema:
-            return f'{schema}.{table_name}'
+            return f"{schema}.{table_name}"
         return table_name
 
     def identifier(

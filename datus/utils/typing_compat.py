@@ -14,4 +14,5 @@ except ImportError:
         """Dummy override decorator for Python < 3.12 compatibility."""
         return func
 
-__all__ = ['override']
+
+__all__ = ["override"]
