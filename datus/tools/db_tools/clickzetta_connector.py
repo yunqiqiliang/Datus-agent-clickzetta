@@ -326,9 +326,9 @@ class ClickzettaConnector(BaseSqlConnector):
         table_full_name = f'"{escaped_workspace}"."{escaped_schema}"."{escaped_table}"'
 
         definition = (
-            f'CREATE {table_type.upper()} {table_full_name} (\n  {columns_section}\n)'
+            f"CREATE {table_type.upper()} {table_full_name} (\n  {columns_section}\n)"
             if columns_section
-            else f'CREATE {table_type.upper()} {table_full_name}'
+            else f"CREATE {table_type.upper()} {table_full_name}"
         )
         if table_comment:
             definition += f"\nCOMMENT = '{_safe_escape(str(table_comment))}'"
@@ -705,7 +705,7 @@ class ClickzettaConnector(BaseSqlConnector):
             escaped_schema = _safe_escape_identifier(schema)
             escaped_table = _safe_escape_identifier(table_name)
             table_full_name = f'"{escaped_workspace}"."{escaped_schema}"."{escaped_table}"'
-            sql = f'SELECT * FROM {table_full_name} LIMIT {top_n}'
+            sql = f"SELECT * FROM {table_full_name} LIMIT {top_n}"
             try:
                 df = self._run_query(sql)
             except DatusException:
