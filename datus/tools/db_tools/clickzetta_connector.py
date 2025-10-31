@@ -330,7 +330,9 @@ class ClickzettaConnector(BaseSqlConnector):
             if field in df.columns:
                 try:
                     return int(df[field].iloc[0])
-                except Exception:
+                except Exception as exc:
+                    # Log and continue to try other common row count fields
+                    logger.debug(f"Failed to extract row count from field '{field}': {exc}")
                     continue
         return len(df)
 
@@ -416,6 +418,8 @@ class ClickzettaConnector(BaseSqlConnector):
         except DatusException as exc:
             return ExecuteSQLResult(success=False, error=str(exc), sql_query=sql)
         except Exception as exc:  # Ensure unexpected errors are also surfaced in result
+            # Surface unexpected errors in logs while keeping graceful result contract
+            logger.error(f"Unexpected error in execute_query: {exc}", exc_info=True)
             return ExecuteSQLResult(success=False, error=str(exc), sql_query=sql)
 
     def execute_pandas(self, sql: str) -> ExecuteSQLResult:
