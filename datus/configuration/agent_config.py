@@ -4,7 +4,7 @@
 
 import os
 from dataclasses import asdict, dataclass, field, fields
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from datus.configuration.node_type import NodeType
 from datus.schemas.base import BaseInput
@@ -38,8 +38,8 @@ class DbConfig:
     workspace: str = field(default="", init=True)
     vcluster: str = field(default="", init=True)
     secure: bool = field(default=False, init=True)
-    hints: str = field(default="", init=True)
-    extra: str = field(default="", init=True)
+    hints: Optional[Dict[str, Any]] = field(default=None, init=True)
+    extra: Optional[Dict[str, Any]] = field(default=None, init=True)
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)

@@ -41,9 +41,17 @@ _DEFAULT_HINTS: Dict[str, Any] = {
 
 
 def _safe_escape(value: Optional[str]) -> str:
+    """Escape single quotes in string values for SQL literals."""
     if value is None:
         return ""
     return value.replace("'", "''")
+
+
+def _safe_escape_identifier(identifier: Optional[str]) -> str:
+    """Escape double quotes in identifiers for SQL identifiers."""
+    if identifier is None:
+        return ""
+    return str(identifier).replace('"', '""')
 
 
 class ClickzettaConnector(BaseSqlConnector):
@@ -147,9 +155,9 @@ class ClickzettaConnector(BaseSqlConnector):
             self._auth_timestamp = time.time()
             self.connection = self._session  # Maintain BaseSqlConnector.connection reference
             if self.schema_name:
-                self._session.sql(f"USE SCHEMA {self.schema_name.upper()}")
+                self._session.sql(f'USE SCHEMA "{self.schema_name.upper()}"')
             if self.vcluster:
-                self._session.sql(f"USE VCLUSTER {self.vcluster.upper()}")
+                self._session.sql(f'USE VCLUSTER "{self.vcluster.upper()}"')
         except Exception as exc:
             raise DatusException(
                 ErrorCode.DB_CONNECTION_FAILED,
@@ -305,16 +313,16 @@ class ClickzettaConnector(BaseSqlConnector):
             col_name = column.get("column_name") or column.get("name") or ""
             data_type = column.get("data_type") or column.get("type") or "STRING"
             comment = column.get("comment")
-            col_def = f'"{col_name}" {data_type}'
+            col_def = f'"{_safe_escape_identifier(col_name)}" {data_type}'
             if comment:
                 col_def += f" COMMENT '{_safe_escape(str(comment))}'"
             column_lines.append(col_def)
 
         columns_section = ",\n  ".join(column_lines) if column_lines else ""
         definition = (
-            f"CREATE {table_type.upper()} {workspace}.{schema_name}.{table_name} (\n  {columns_section}\n)"
+            f'CREATE {table_type.upper()} "{_safe_escape_identifier(workspace)}"."{_safe_escape_identifier(schema_name)}"."{_safe_escape_identifier(table_name)}" (\n  {columns_section}\n)'
             if columns_section
-            else f"CREATE {table_type.upper()} {workspace}.{schema_name}.{table_name}"
+            else f'CREATE {table_type.upper()} "{_safe_escape_identifier(workspace)}"."{_safe_escape_identifier(schema_name)}"."{_safe_escape_identifier(table_name)}"'
         )
         if table_comment:
             definition += f"\nCOMMENT = '{_safe_escape(str(table_comment))}'"
@@ -686,7 +694,7 @@ class ClickzettaConnector(BaseSqlConnector):
         tables_to_sample = tables or self.get_tables(database_name=workspace, schema_name=schema)
         samples: List[Dict[str, Any]] = []
         for table_name in tables_to_sample:
-            sql = f"SELECT * FROM {workspace}.{schema}.{table_name} LIMIT {top_n}"
+            sql = f'SELECT * FROM "{_safe_escape_identifier(workspace)}"."{_safe_escape_identifier(schema)}"."{_safe_escape_identifier(table_name)}" LIMIT {top_n}'
             try:
                 df = self._run_query(sql)
             except DatusException:

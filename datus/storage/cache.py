@@ -25,9 +25,7 @@ T = TypeVar("T", bound=BaseEmbeddingStore)
 
 
 @lru_cache(maxsize=12)
-def _cached_storage(
-    factory: Callable[[str, EmbeddingModel], BaseEmbeddingStore], path: str, model_name: str
-) -> BaseEmbeddingStore:
+def _cached_storage(factory: Callable[[str, EmbeddingModel], T], path: str, model_name: str) -> T:
     return factory(path, get_embedding_model(model_name))
 
 
