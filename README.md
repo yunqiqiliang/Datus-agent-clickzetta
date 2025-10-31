@@ -48,10 +48,23 @@ Chat with your data, recall tables or metrics instantly, and run agentic actions
 Turn data domains into **domain-aware chatbots**.  
 Each subagent encapsulates the right context, tools, and rules — making data access accurate, reusable, and safe.
 
-### 🔁 Continuous Learning Loop  
-Every query and feedback improves the model.  
+### 🔁 Continuous Learning Loop
+Every query and feedback improves the model.
 Datus learns from success stories and user corrections to evolve reasoning accuracy over time.
 
+## 🗄️ Supported Databases
+
+Datus Agent supports a wide range of database systems:
+
+- **ClickZetta** - Cloud-native lakehouse platform
+- **Snowflake** - Cloud data warehouse
+- **MySQL** - Open-source relational database
+- **PostgreSQL** - Advanced open-source database
+- **DuckDB** - In-process analytical database
+- **SQLite** - Lightweight file-based database
+- **StarRocks** - High-performance analytical database
+
+> **Note:** ClickZetta connector requires Python 3.11 due to SDK limitations.
 
 ---
 
