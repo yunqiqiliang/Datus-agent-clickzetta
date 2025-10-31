@@ -3,7 +3,9 @@
 # See http://www.apache.org/licenses/LICENSE-2.0 for details.
 
 from abc import abstractmethod
-from typing import Any, Dict, List, Optional, Set, override
+from typing import Any, Dict, List, Optional, Set
+
+from datus.utils.typing_compat import override
 from urllib.parse import quote_plus
 
 from pydantic import BaseModel, Field

@@ -2,7 +2,9 @@
 # Licensed under the Apache License, Version 2.0.
 # See http://www.apache.org/licenses/LICENSE-2.0 for details.
 
-from typing import Any, Dict, List, Optional, Set, override
+from typing import Any, Dict, List, Optional, Set
+
+from datus.utils.typing_compat import override
 
 from pydantic import BaseModel, Field
 

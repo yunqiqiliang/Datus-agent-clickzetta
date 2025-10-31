@@ -2,7 +2,9 @@
 # Licensed under the Apache License, Version 2.0.
 # See http://www.apache.org/licenses/LICENSE-2.0 for details.
 
-from typing import Any, Dict, List, Literal, Optional, Sequence, Set, override
+from typing import Any, Dict, List, Literal, Optional, Sequence, Set
+
+from datus.utils.typing_compat import override
 
 import pyarrow as pa
 import pyarrow.compute as pc
