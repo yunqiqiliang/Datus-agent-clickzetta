@@ -28,6 +28,7 @@ from datus.cli.autocomplete import AtReferenceCompleter, CustomPygmentsStyle, Cu
 from datus.cli.chat_commands import ChatCommands
 from datus.cli.context_commands import ContextCommands
 from datus.cli.metadata_commands import MetadataCommands
+from datus.cli.semantic_file_commands import SemanticFileCommands
 from datus.cli.sub_agent_commands import SubAgentCommands
 from datus.configuration.agent_config_loader import configuration_manager, load_agent_config
 from datus.schemas.action_history import ActionHistory, ActionHistoryManager, ActionRole, ActionStatus
@@ -106,7 +107,7 @@ class DatusCLI:
             current_catalog=getattr(args, "catalog", ""),
             current_schema=getattr(args, "schema", ""),
         )
-        self.db_manager = db_manager_instance(self.agent_config.namespaces)
+        self.db_manager = db_manager_instance(self.agent_config.namespaces, self.agent_config)
 
         # Initialize available subagents from agentic_nodes (excluding 'chat')
         self.available_subagents = set()
@@ -118,6 +119,7 @@ class DatusCLI:
         self.chat_commands = ChatCommands(self)
         self.context_commands = ContextCommands(self)
         self.metadata_commands = MetadataCommands(self)
+        self.semantic_file_commands = SemanticFileCommands(self)
         self.sub_agent_commands = SubAgentCommands(self)
 
         # Dictionary of available commands - created after handlers are initialized
@@ -155,6 +157,12 @@ class DatusCLI:
             ".table_schema": self.metadata_commands.cmd_table_schema,
             ".indexes": self.metadata_commands.cmd_indexes,
             ".namespace": self._cmd_switch_namespace,
+            # Semantic model file integration commands
+            ".semantic_files": self.semantic_file_commands.cmd_list_semantic_files,
+            ".import_semantic_file": self.semantic_file_commands.cmd_import_semantic_file,
+            ".sync_semantic_files": self.semantic_file_commands.cmd_sync_semantic_files,
+            ".semantic_file_info": self.semantic_file_commands.cmd_semantic_file_info,
+            ".semantic_file_config": self.semantic_file_commands.cmd_semantic_file_config,
             ".subagent": self.sub_agent_commands.cmd,
             ".mcp": self._cmd_mcp,
             ".help": self._cmd_help,
@@ -903,6 +911,11 @@ class DatusCLI:
             (".table_schema table_name", "Show table field details"),
             (".indexes table_name", "Show indexes for a table"),
             (".namespace namespace", "Switch current namespace"),
+            (".semantic_files", "List all available semantic model files"),
+            (".import_semantic_file <file>", "Import a specific semantic model file"),
+            (".sync_semantic_files", "Synchronize all semantic model files"),
+            (".semantic_file_info <file>", "Show information about a semantic model file"),
+            (".semantic_file_config", "Show semantic model file integration configuration"),
             (".mcp", "Manage MCP (Model Configuration Protocol) servers"),
             ("     .mcp list", "List all MCP servers"),
             (

@@ -4,12 +4,15 @@
 
 import re
 from collections import defaultdict
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, Optional, Tuple, Union, TYPE_CHECKING
 from urllib.parse import unquote
 
 from sqlalchemy.engine.url import URL, make_url
 
 from datus.configuration.agent_config import DbConfig
+
+if TYPE_CHECKING:
+    from datus.configuration.agent_config import AgentConfig
 from datus.tools.db_tools.base import BaseSqlConnector
 from datus.tools.db_tools.clickzetta_connector import ClickzettaConnector
 from datus.tools.db_tools.duckdb_connector import DuckdbConnector
@@ -230,9 +233,10 @@ def _port_or_none(port_value: Optional[Union[str, int]]) -> Optional[int]:
 
 
 class DBManager:
-    def __init__(self, db_configs: Dict[str, Dict[str, DbConfig]]):
+    def __init__(self, db_configs: Dict[str, Dict[str, DbConfig]], agent_config: 'AgentConfig' = None):
         self._conn_dict: Dict[str, Union[BaseSqlConnector, Dict[str, BaseSqlConnector]]] = defaultdict(dict)
         self._db_configs: Dict[str, Dict[str, DbConfig]] = db_configs
+        self._agent_config = agent_config
 
     def get_conn(self, namespace: str, logic_name: str = "") -> BaseSqlConnector:
         self._init_connections(namespace)
@@ -349,6 +353,8 @@ class DBManager:
                 hints=db_config.hints or None,
                 extra=db_config.extra or None,
             )
+            # Initialize semantic model integration if configured
+            self._init_semantic_integration(conn, namespace)
         else:
             connection_uri = db_config.uri
             if not connection_uri:
@@ -376,6 +382,32 @@ class DBManager:
         else:
             self._conn_dict[namespace] = conn
         return conn
+
+    def _init_semantic_integration(self, conn: 'ClickzettaConnector', namespace: str):
+        """Initialize external semantic file integration for ClickZetta connectors if configured."""
+        if not self._agent_config or not hasattr(self._agent_config, 'external_semantic_files_config'):
+            return
+
+        semantic_config = self._agent_config.external_semantic_files_config
+        if not semantic_config or not semantic_config.get('enabled', False):
+            return
+
+        try:
+            logger.info(f"Initializing external semantic file integration for namespace: {namespace}")
+            # Ensure the integration writes to the same LanceDB path used by @subject and storages
+            # Subject/Storage use agent_config.rag_storage_path(), so inject it here.
+            merged_config = dict(semantic_config)
+            try:
+                merged_config['storage_path'] = self._agent_config.rag_storage_path()
+            except Exception as e:
+                # If we cannot resolve rag path for some reason, fall back to original config
+                logger.warning(f"Failed to resolve rag storage path, use default in integration. reason: {e}")
+                merged_config = semantic_config
+
+            conn.init_semantic_integration(merged_config)
+            logger.info(f"External semantic file integration initialized successfully for namespace: {namespace}")
+        except Exception as exc:
+            logger.warning(f"Failed to initialize external semantic file integration for namespace {namespace}: {exc}")
 
     def close(self):
         """Close all database connections."""
@@ -409,17 +441,19 @@ _INSTANCE = None
 
 def db_manager_instance(
     db_configs: Optional[Dict[str, Dict[str, DbConfig]]] = None,
+    agent_config: 'AgentConfig' = None,
 ) -> DBManager:
     global _INSTANCE
     if _INSTANCE is None:
-        _INSTANCE = _db_manager(db_configs)
+        _INSTANCE = _db_manager(db_configs, agent_config)
     return _INSTANCE
 
 
 def _db_manager(
     db_configs: Optional[Dict[str, Dict[str, DbConfig]]] = None,
+    agent_config: 'AgentConfig' = None,
 ) -> DBManager:
     if db_configs is None:
-        return DBManager({})
-    manager = DBManager(db_configs)
+        return DBManager({}, agent_config)
+    manager = DBManager(db_configs, agent_config)
     return manager

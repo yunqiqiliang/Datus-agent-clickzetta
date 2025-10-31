@@ -75,7 +75,7 @@ class Agent:
         if db_manager:
             self.db_manager = db_manager
         else:
-            self.db_manager = db_manager_instance(self.global_config.namespaces)
+            self.db_manager = db_manager_instance(self.global_config.namespaces, self.global_config)
 
         self.tools = {}
         self.storage_modules = {}

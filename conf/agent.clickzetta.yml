@@ -107,6 +107,33 @@ agent:
     #   vcluster: ${CLICKZETTA_PROD_VCLUSTER}
     #   secure: true
 
+  # External Semantic Model Files Integration Configuration
+  external_semantic_files:
+    # Enable external semantic model file integration
+    enabled: true
+
+    # Storage provider type
+    storage_provider: "volume"  # volume, stage, s3, local
+
+    # General settings
+    auto_import: true           # Auto-import files on startup
+    sync_on_startup: true       # Sync files when agent starts
+    file_patterns:              # File patterns to include
+      - "*.yml"
+      - "*.yaml"
+
+    # ClickZetta Volume configuration
+    provider_config:
+      volume_type: "user"       # "user" or "named"
+      volume_name: "semantic_models"  # Used when volume_type="named"
+      volume_path: "/semantic_models" # Path within volume
+
+    # Example: Named Volume configuration
+    # provider_config:
+    #   volume_type: "named"
+    #   volume_name: "team_semantic_models"
+    #   volume_path: "/models/v1/"
+
   storage:
     embedding_device_type: cpu
 

@@ -118,6 +118,10 @@ class ClickzettaConnector(BaseSqlConnector):
         self.catalog_name = ""
         self.database_name = workspace or ""
 
+        # Initialize semantic model integration if configured
+        self._semantic_integration = None
+        self._init_semantic_integration()
+
         merged_hints: Dict[str, Any] = dict(_DEFAULT_HINTS)
         if hints:
             merged_hints.update(hints)
@@ -782,3 +786,46 @@ class ClickzettaConnector(BaseSqlConnector):
             table_name=table_name,
             dialect=self.dialect,
         )
+
+    # ------------------------------------------------------------------ #
+    # Semantic Model Integration
+    # ------------------------------------------------------------------ #
+
+    def _init_semantic_integration(self):
+        """Initialize semantic model integration if configured."""
+        try:
+            # This will be initialized with agent configuration later
+            # For now, keep it as None to avoid circular imports
+            pass
+        except Exception as exc:
+            logger.debug(f"Semantic model integration not available: {exc}")
+
+    def init_semantic_integration(self, semantic_config: Dict[str, Any]):
+        """Initialize semantic model integration with configuration.
+
+        Args:
+            semantic_config: Semantic model configuration dictionary
+        """
+        try:
+            if semantic_config.get("enabled", False):
+                from datus.tools.semantic_models import UniversalSemanticModelIntegration
+                self._semantic_integration = UniversalSemanticModelIntegration(self, semantic_config)
+                logger.info("Semantic model integration initialized")
+
+                # Auto-import models if configured
+                if semantic_config.get("sync_on_startup", False):
+                    result = self._semantic_integration.auto_import_models()
+                    logger.info(f"Startup sync completed: {result}")
+            else:
+                logger.debug("Semantic model integration disabled")
+        except Exception as exc:
+            logger.warning(f"Failed to initialize semantic model integration: {exc}")
+
+    @property
+    def semantic_integration(self):
+        """Get semantic model integration instance.
+
+        Returns:
+            UniversalSemanticModelIntegration instance or None
+        """
+        return self._semantic_integration

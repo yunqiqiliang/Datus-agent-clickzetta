@@ -193,6 +193,9 @@ class AgentConfig:
             )
             self.workspace_root = storage_config.get("workspace_root")
 
+        # Initialize external semantic files configuration
+        self.external_semantic_files_config = kwargs.get("external_semantic_files", {})
+
         self._init_dirs()
 
     @property
