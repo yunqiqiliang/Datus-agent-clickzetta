@@ -156,9 +156,11 @@ class ClickzettaConnector(BaseSqlConnector):
             self._auth_timestamp = time.time()
             self.connection = self._session  # Maintain BaseSqlConnector.connection reference
             if self.schema_name:
-                self._session.sql(f"USE SCHEMA `{self.schema_name.upper()}`")
+                escaped_schema = _safe_escape_identifier(self.schema_name.upper())
+                self._session.sql(f"USE SCHEMA `{escaped_schema}`")
             if self.vcluster:
-                self._session.sql(f"USE VCLUSTER `{self.vcluster.upper()}`")
+                escaped_vc = _safe_escape_identifier(self.vcluster.upper())
+                self._session.sql(f"USE VCLUSTER `{escaped_vc}`")
         except Exception as exc:
             raise DatusException(
                 ErrorCode.DB_CONNECTION_FAILED,
@@ -203,10 +205,12 @@ class ClickzettaConnector(BaseSqlConnector):
         # Support schema switching within the same workspace
         if schema_name and schema_name != self.schema_name:
             try:
-                session.sql(f"USE SCHEMA `{schema_name.upper()}`")
+                escaped_schema = _safe_escape_identifier(schema_name.upper())
+                session.sql(f"USE SCHEMA `{escaped_schema}`")
                 logger.info(f"Switched to schema: {schema_name}")
             except Exception as exc:
-                self._wrap_exception(exc, f"USE SCHEMA `{schema_name.upper()}`", ErrorCode.DB_EXECUTION_ERROR)
+                escaped_schema = _safe_escape_identifier(schema_name.upper())
+                self._wrap_exception(exc, f"USE SCHEMA `{escaped_schema}`", ErrorCode.DB_EXECUTION_ERROR)
 
     def _wrap_exception(self, exc: Exception, sql: str = "", error_code: ErrorCode = ErrorCode.DB_EXECUTION_ERROR):
         if isinstance(exc, DatusException):
