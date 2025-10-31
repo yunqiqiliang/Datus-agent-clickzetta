@@ -319,10 +319,16 @@ class ClickzettaConnector(BaseSqlConnector):
             column_lines.append(col_def)
 
         columns_section = ",\n  ".join(column_lines) if column_lines else ""
+        # Build table name parts
+        escaped_workspace = _safe_escape_identifier(workspace)
+        escaped_schema = _safe_escape_identifier(schema_name)
+        escaped_table = _safe_escape_identifier(table_name)
+        table_full_name = f'"{escaped_workspace}"."{escaped_schema}"."{escaped_table}"'
+
         definition = (
-            f'CREATE {table_type.upper()} "{_safe_escape_identifier(workspace)}"."{_safe_escape_identifier(schema_name)}"."{_safe_escape_identifier(table_name)}" (\n  {columns_section}\n)'
+            f'CREATE {table_type.upper()} {table_full_name} (\n  {columns_section}\n)'
             if columns_section
-            else f'CREATE {table_type.upper()} "{_safe_escape_identifier(workspace)}"."{_safe_escape_identifier(schema_name)}"."{_safe_escape_identifier(table_name)}"'
+            else f'CREATE {table_type.upper()} {table_full_name}'
         )
         if table_comment:
             definition += f"\nCOMMENT = '{_safe_escape(str(table_comment))}'"
@@ -694,7 +700,12 @@ class ClickzettaConnector(BaseSqlConnector):
         tables_to_sample = tables or self.get_tables(database_name=workspace, schema_name=schema)
         samples: List[Dict[str, Any]] = []
         for table_name in tables_to_sample:
-            sql = f'SELECT * FROM "{_safe_escape_identifier(workspace)}"."{_safe_escape_identifier(schema)}"."{_safe_escape_identifier(table_name)}" LIMIT {top_n}'
+            # Build table name parts for sample query
+            escaped_workspace = _safe_escape_identifier(workspace)
+            escaped_schema = _safe_escape_identifier(schema)
+            escaped_table = _safe_escape_identifier(table_name)
+            table_full_name = f'"{escaped_workspace}"."{escaped_schema}"."{escaped_table}"'
+            sql = f'SELECT * FROM {table_full_name} LIMIT {top_n}'
             try:
                 df = self._run_query(sql)
             except DatusException:
