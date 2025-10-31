@@ -49,10 +49,10 @@ def _safe_escape(value: Optional[str]) -> str:
 
 
 def _safe_escape_identifier(identifier: Optional[str]) -> str:
-    """Escape double quotes in identifiers for SQL identifiers."""
+    """Escape backticks in identifiers for SQL identifiers."""
     if identifier is None:
         return ""
-    return str(identifier).replace('"', '""')
+    return str(identifier).replace("`", "``")
 
 
 class ClickzettaConnector(BaseSqlConnector):
@@ -156,9 +156,11 @@ class ClickzettaConnector(BaseSqlConnector):
             self._auth_timestamp = time.time()
             self.connection = self._session  # Maintain BaseSqlConnector.connection reference
             if self.schema_name:
-                self._session.sql(f'USE SCHEMA "{self.schema_name.upper()}"')
+                escaped_schema = _safe_escape_identifier(self.schema_name)
+                self._session.sql(f"USE SCHEMA `{escaped_schema}`")
             if self.vcluster:
-                self._session.sql(f'USE VCLUSTER "{self.vcluster.upper()}"')
+                escaped_vcluster = _safe_escape_identifier(self.vcluster)
+                self._session.sql(f"USE VCLUSTER `{escaped_vcluster}`")
         except Exception as exc:
             raise DatusException(
                 ErrorCode.DB_CONNECTION_FAILED,
@@ -203,10 +205,11 @@ class ClickzettaConnector(BaseSqlConnector):
         # Support schema switching within the same workspace
         if schema_name and schema_name != self.schema_name:
             try:
-                session.sql(f'USE SCHEMA "{schema_name.upper()}"')
+                escaped_schema = _safe_escape_identifier(schema_name)
+                session.sql(f"USE SCHEMA `{escaped_schema}`")
                 logger.info(f"Switched to schema: {schema_name}")
             except Exception as exc:
-                self._wrap_exception(exc, f'USE SCHEMA "{schema_name.upper()}"', ErrorCode.DB_EXECUTION_ERROR)
+                self._wrap_exception(exc, f"USE SCHEMA `{_safe_escape_identifier(schema_name)}`", ErrorCode.DB_EXECUTION_ERROR)
 
     def _wrap_exception(self, exc: Exception, sql: str = "", error_code: ErrorCode = ErrorCode.DB_EXECUTION_ERROR):
         if isinstance(exc, DatusException):
@@ -286,7 +289,8 @@ class ClickzettaConnector(BaseSqlConnector):
         if volume.lower().startswith("volume:user://"):
             list_sql = "LIST USER VOLUME"
             if directory:
-                list_sql += f" SUBDIRECTORY '{directory}/'"
+                escaped_dir = _safe_escape(directory)
+                list_sql += f" SUBDIRECTORY '{escaped_dir}/'"
         else:
             list_sql = f"LIST {volume_uri}"
 
@@ -346,7 +350,7 @@ class ClickzettaConnector(BaseSqlConnector):
             col_name = column.get("column_name") or column.get("name") or ""
             data_type = column.get("data_type") or column.get("type") or "STRING"
             comment = column.get("comment")
-            col_def = f'"{_safe_escape_identifier(col_name)}" {data_type}'
+            col_def = f"`{_safe_escape_identifier(col_name)}` {data_type}"
             if comment:
                 col_def += f" COMMENT '{_safe_escape(str(comment))}'"
             column_lines.append(col_def)
@@ -356,7 +360,7 @@ class ClickzettaConnector(BaseSqlConnector):
         escaped_workspace = _safe_escape_identifier(workspace)
         escaped_schema = _safe_escape_identifier(schema_name)
         escaped_table = _safe_escape_identifier(table_name)
-        table_full_name = f'"{escaped_workspace}"."{escaped_schema}"."{escaped_table}"'
+        table_full_name = f"`{escaped_workspace}`.`{escaped_schema}`.`{escaped_table}`"
 
         definition = (
             f"CREATE {table_type.upper()} {table_full_name} (\n  {columns_section}\n)"
@@ -474,7 +478,8 @@ class ClickzettaConnector(BaseSqlConnector):
     # ------------------------------------------------------------------ #
     def _info_schema(self, workspace: Optional[str] = None) -> str:
         workspace = workspace or self.workspace
-        return f"{workspace}.information_schema"
+        escaped = _safe_escape_identifier(workspace)
+        return f"`{escaped}`.information_schema"
 
     def _normalized_schema(self, schema_name: Optional[str] = None) -> str:
         schema = schema_name or self.schema_name
@@ -737,7 +742,7 @@ class ClickzettaConnector(BaseSqlConnector):
             escaped_workspace = _safe_escape_identifier(workspace)
             escaped_schema = _safe_escape_identifier(schema)
             escaped_table = _safe_escape_identifier(table_name)
-            table_full_name = f'"{escaped_workspace}"."{escaped_schema}"."{escaped_table}"'
+            table_full_name = f"`{escaped_workspace}`.`{escaped_schema}`.`{escaped_table}`"
             sql = f"SELECT * FROM {table_full_name} LIMIT {top_n}"
             try:
                 df = self._run_query(sql)

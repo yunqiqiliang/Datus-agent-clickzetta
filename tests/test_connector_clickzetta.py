@@ -68,7 +68,11 @@ class MockSessionBuilder:
     """Mock session builder for testing."""
 
     def __init__(self):
-        self.configs = Mock()
+        self._configs = {}
+
+    def configs(self, configs: dict):
+        self._configs = configs
+        return self
 
     def create(self):
         return MockSession()
@@ -269,8 +273,9 @@ class TestClickzettaConnector:
 
     def test_list_volume_files(self, connector):
         """Test volume file listing."""
-        with patch.object(connector, "_ensure_connection"):
-            with patch.object(connector._session, "sql") as mock_sql:
+        session = connector.connect()
+        with patch.object(connector, "_ensure_connection", return_value=session):
+            with patch.object(session, "sql") as mock_sql:
                 mock_result = Mock()
                 mock_result.to_pandas.return_value = pd.DataFrame(
                     {"relative_path": ["test1.yml", "test2.yaml", "test3.txt"]}
