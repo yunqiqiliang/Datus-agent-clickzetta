@@ -1,5 +1,6 @@
 agent:
   target: qwen_main
+  home: ${DATUS_HOME}
   models:
     qwen_main:
       type: qwen
@@ -109,6 +110,11 @@ agent:
 
   storage:
     embedding_device_type: cpu
+    document:
+      registry_name: sentence-transformers
+      model_name: all-MiniLM-L6-v2
+      dim_size: 384
+      batch_size: 64
 
   workflow:
     plan: reflection
