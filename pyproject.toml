@@ -64,8 +64,6 @@ dependencies = [
     "streamlit>=1.38.0",
     "wcmatch>=10.0",
     "fastembed>=0.4.2",
-    "clickzetta-zettapark-python>=0.1.4",
-    "clickzetta-connector-python>=0.1.0",
     # Optional: install torch manually to enable reranker models.
 ]
 
@@ -111,6 +109,14 @@ exclude = ["benchmark*", "docs*"]
 
 [tool.uv.pip]
 index-url = "http://mirrors.aliyun.com/pypi/simple"
+
+# Optional dependencies (extras)
+[project.optional-dependencies]
+# Install with: pip install datus-agent[clickzetta]
+clickzetta = [
+    "clickzetta-zettapark-python>=0.1.4",
+    "clickzetta-connector-python>=0.1.0",
+]
 
 # uv tool run black
 [tool.black]

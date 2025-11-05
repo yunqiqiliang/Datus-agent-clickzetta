@@ -285,11 +285,9 @@ Tips:
 
 ## Installation notes for ClickZetta
 
-ClickZetta packages (≥ 0.1.4) support Python 3.9 and later. To enable ClickZetta features, install the optional extra:
-
-- `pip install .[clickzetta]` when working from the repository, or
-- ensure `clickzetta-zettapark-python` and `clickzetta-connector-python` are present in your environment when using `requirements.txt`.
-
+- ClickZetta packages (≥ 0.1.4) support Python 3.9 and later.
+- Install the optional extra when you need ClickZetta connectivity: `pip install datus-agent[clickzetta]`.
+- Alternatively, install `clickzetta-zettapark-python` and `clickzetta-connector-python` manually in environments that require them.
 Runtime behavior:
 - If ClickZetta dependencies are absent, ClickZetta-specific connectors raise a clear missing-dependency error only when invoked. Other database features remain available.
 

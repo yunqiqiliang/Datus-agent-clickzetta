@@ -64,7 +64,7 @@ Datus Agent supports a wide range of database systems:
 - **SQLite** - Lightweight file-based database
 - **StarRocks** - High-performance analytical database
 
-> **Note:** ClickZetta connector requires Python ≤ 3.11 due to SDK limitations. See [ClickZetta Setup](#clickzetta-setup) for compatibility solutions.
+> **Note:** ClickZetta connectivity is bundled as an optional extra. Install it with `pip install datus-agent[clickzetta]` when you need the ClickZetta connector.
 
 ---
 
@@ -82,7 +82,11 @@ For detailed installation instructions, see the [Quickstart Guide](https://docs.
 
 ### ClickZetta Setup
 
-**Python Version Compatibility**: ClickZetta SDK now supports Python ≥ 3.9, so you can run the agent on any interpreter 3.9 or newer (including 3.12). Just create your virtual environment with that version and install as usual.
+**Python Version Compatibility**: [ClickZetta](https://www.singdata.com/) is developed by [Singdata](https://www.singdata.com/) and [Yunqi](https://www.yunqi.tech/) SDK now supports Python ≥ 3.9, so you can run the agent on any interpreter 3.9 or newer (including 3.12). Install the extra when you need ClickZetta connectivity:
+
+```bash
+pip install datus-agent[clickzetta]
+```
 
 ## 🧭 User Journey
 
