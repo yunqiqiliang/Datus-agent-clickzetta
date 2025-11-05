@@ -166,6 +166,9 @@ def _create_single_node(
         normalized_type = NodeType.TYPE_REFLECT
     elif node_type == "execute":
         normalized_type = NodeType.TYPE_EXECUTE_SQL
+    # Check if node_type is defined in agentic_nodes config - if so, map to gensql
+    elif agent_config and hasattr(agent_config, "agentic_nodes") and node_type in agent_config.agentic_nodes:
+        normalized_type = NodeType.TYPE_GENSQL
 
     description = NodeType.get_description(normalized_type)
 
@@ -182,6 +185,7 @@ def _create_single_node(
         node_type=normalized_type,
         input_data=input_data,
         agent_config=agent_config,
+        node_name=node_type if normalized_type == NodeType.TYPE_GENSQL else None,  # Pass original name for gensql nodes
     )
 
     return node
@@ -246,6 +250,24 @@ def generate_workflow(
 
     for node in nodes:
         workflow.add_node(node)
+    if task.tables and agent_config is not None:
+        from datus.storage.schema_metadata import SchemaWithValueRAG
+
+        try:
+            rag = SchemaWithValueRAG(agent_config=agent_config)
+            schemas, values = rag.search_tables(
+                task.tables, task.catalog_name, task.database_name, task.schema_name, dialect=task.database_type
+            )
+            if len(schemas) != len(task.tables):
+                schema_table_names = [item.table_name for item in schemas]
+                logger.warning(
+                    f"The obtained table schema is: {schema_table_names}; "
+                    f"The table required for the task is: {schemas}"
+                )
+            logger.debug(f"Use task tables: {schemas}")
+            workflow.context.update_schema_and_values(schemas, values)
+        except Exception as e:
+            logger.warning(f"Failed to obtain the schema corresponding to {task.tables}: {e}")
 
     logger.info(f"Generated workflow with {len(nodes)} nodes")
     return workflow
