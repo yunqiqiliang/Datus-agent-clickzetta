@@ -136,9 +136,10 @@ def test_run_command(mock_args, capsys, gen_sql_input: List[Dict[str, Any]]):
     sql_task = input_data["sql_task"]
     with patch("datus.cli.repl.PromptSession.prompt") as mock_prompt:
         mock_prompt.side_effect = ["!run", EOFError]
-        with patch("datus.cli.repl.DatusCLI.prompt_input") as mock_internal_prompt, patch(
-            "datus.cli.screen.show_workflow_screen"
-        ) as mock_workflow_screen:
+        with (
+            patch("datus.cli.repl.DatusCLI.prompt_input") as mock_internal_prompt,
+            patch("datus.cli.screen.show_workflow_screen") as mock_workflow_screen,
+        ):
             mock_internal_prompt.side_effect = [
                 str(uuid.uuid1())[:8],
                 sql_task["task"],
