@@ -3,9 +3,8 @@
 # See http://www.apache.org/licenses/LICENSE-2.0 for details.
 
 from abc import abstractmethod
-from typing import Any, Dict, List, Optional, Set
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set, override
+from typing import Any, Dict, List, Optional, Set
 from urllib.parse import quote_plus
 
 from datus.schemas.base import TABLE_TYPE

@@ -12,8 +12,17 @@ and status monitoring.
 
 import asyncio
 import json
+import sys
 import threading
 from typing import Any, Dict, List, Optional, Tuple
+
+# Python 3.11+ compatibility
+if sys.version_info >= (3, 11):
+    from builtins import ExceptionGroup
+else:
+    # For Python < 3.11, define a simple ExceptionGroup fallback
+    class ExceptionGroup(Exception):
+        pass
 
 from agents import Agent, RunContextWrapper, Usage
 from agents.mcp import MCPServerStdioParams
