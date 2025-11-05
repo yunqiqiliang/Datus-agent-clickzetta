@@ -167,8 +167,7 @@ class SqlData:
 
 
 class SqlProvider(Protocol):
-    def fetch(self, task_id: str) -> SqlData:
-        ...
+    def fetch(self, task_id: str) -> SqlData: ...
 
 
 @dataclass
@@ -484,8 +483,7 @@ class EvaluationReport:
 
 
 class ResultProvider(Protocol):
-    def fetch(self, task_id: str) -> ResultData:
-        ...
+    def fetch(self, task_id: str) -> ResultData: ...
 
 
 class CsvPerTaskResultProvider(ResultProvider):
@@ -2057,7 +2055,7 @@ def _log_accuracy_summary(accuracy_report: Dict[str, Any]) -> None:
     ]
 
     report_text = "\n".join(report_lines)
-    logger.info(f'\n\n{report_text}')
+    logger.info(f"\n\n{report_text}")
 
 
 def load_bird_dev_tasks(benchmark_path: str) -> List[Dict[str, Any]]:
