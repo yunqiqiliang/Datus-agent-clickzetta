@@ -453,7 +453,7 @@ class ClickzettaConnector(BaseSqlConnector):
         return iter([table.slice(0, max_rows)])
 
     def test_connection(self):
-        self.execute_query("SELECT 1")
+        self._run_query("SELECT 1")
 
     def execute_queries(self, queries: List[str]) -> List[Any]:
         results: List[Any] = []
