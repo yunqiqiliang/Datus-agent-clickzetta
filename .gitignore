@@ -30,3 +30,4 @@ before_reflection_*.yaml
 /benchmark/semantic_layer/semantic_models
 /dist
 *.egg-info
+/.datus_home

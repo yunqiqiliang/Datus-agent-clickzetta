@@ -508,7 +508,7 @@ class DBFuncTool:
     def describe_table(
         self,
         table_name: str,
-        catalog: Optional[str] = "",
+        catalog_name: Optional[str] = "",
         database: Optional[str] = "",
         schema_name: Optional[str] = "",
     ) -> FuncToolResult:
@@ -519,7 +519,7 @@ class DBFuncTool:
 
         Args:
             table_name: Table identifier to describe; can be partially qualified.
-            catalog: Optional catalog override. Leave blank to rely on connector defaults.
+            catalog_name: Optional catalog override. Leave blank to rely on connector defaults.
             database: Optional database override. Leave blank to rely on connector defaults.
             schema_name: Optional schema override. Leave blank to rely on connector defaults.
 
@@ -530,7 +530,7 @@ class DBFuncTool:
         try:
             coordinate = self._build_table_coordinate(
                 raw_name=table_name,
-                catalog=catalog,
+                catalog=catalog_name,
                 database=database,
                 schema=schema_name,
             )
@@ -540,11 +540,11 @@ class DBFuncTool:
                     error=f"Table '{table_name}' is outside the scoped context.",
                 )
             column_result = self.connector.get_schema(
-                catalog_name=catalog, database_name=database, schema_name=schema_name, table_name=table_name
+                catalog_name=catalog_name, database_name=database, schema_name=schema_name, table_name=table_name
             )
             table_info = {}
             if self.has_semantic_models:
-                semantic_model = self._get_semantic_model(catalog, database, schema_name, table_name)
+                semantic_model = self._get_semantic_model(catalog_name, database, schema_name, table_name)
                 if semantic_model:
                     table_info["description"] = semantic_model["semantic_model_desc"]
                     table_info["dimensions"] = semantic_model["dimensions"]

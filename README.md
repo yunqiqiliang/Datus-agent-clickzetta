@@ -70,7 +70,7 @@ Datus Agent supports a wide range of database systems:
 
 ## 🧰 Installation
 
-**Requirements:** Python >= 3.12
+**Requirements:** Python >= 3.9
 
 ```bash
 pip install datus-agent==0.2.1
@@ -82,23 +82,7 @@ For detailed installation instructions, see the [Quickstart Guide](https://docs.
 
 ### ClickZetta Setup
 
-**Python Version Compatibility**: ClickZetta SDK requires Python ≤ 3.11, while Datus Agent requires Python ≥ 3.12. Solutions:
-
-1. **Virtual Environment with Python 3.11** (Recommended for ClickZetta users):
-   ```bash
-   # Create Python 3.11 environment
-   conda create -n datus-clickzetta python=3.11
-   conda activate datus-clickzetta
-   pip install datus-agent
-   ```
-
-2. **Docker Environment**:
-   ```dockerfile
-   FROM python:3.11-slim
-   RUN pip install datus-agent
-   ```
-
-3. **Use other connectors**: All other database connectors work with Python 3.12+.
+**Python Version Compatibility**: ClickZetta SDK now supports Python ≥ 3.9, so you can run the agent on any interpreter 3.9 or newer (including 3.12). Just create your virtual environment with that version and install as usual.
 
 ## 🧭 User Journey
 

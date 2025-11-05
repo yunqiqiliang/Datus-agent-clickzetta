@@ -42,6 +42,30 @@ namespace:
 
 ## Supported Database Types
 
+### ClickZetta
+
+```yaml
+clickzetta:
+  type: clickzetta
+  # Core connection
+  service: ${CLICKZETTA_SERVICE}
+  instance: ${CLICKZETTA_INSTANCE}
+  username: ${CLICKZETTA_USERNAME}
+  password: ${CLICKZETTA_PASSWORD}
+  # Workspace and execution context
+  workspace: ${CLICKZETTA_WORKSPACE}
+  schema: PUBLIC        # Default schema (will be upper-cased)
+  vcluster: DEFAULT_AP  # Compute cluster (will be upper-cased)
+  # Optional execution hints (tuning)
+  hints:
+    query_tag: "Query from Datus Agent"
+```
+
+Notes:
+- [ClickZetta](https://www.singdata.com/) is developed by [Singdata](https://www.singdata.com/) and [Yunqi](https://www.yunqi.tech/)
+- Identifiers in ClickZetta use backticks. If your schema or vcluster names include special characters, they will be backtick-quoted automatically.
+- ClickZetta integration is provided as an optional dependency. See “Installation notes” below if you need to enable it.
+
 ### Snowflake
 
 ```yaml
@@ -238,6 +262,36 @@ sqlite:///relative/path/to/database.db       # Relative path
 duckdb:////absolute/path/to/database.db      # Absolute path
 duckdb:///relative/path/to/database.db       # Relative path
 ```
+
+### ClickZetta Volume/Stage References
+
+ClickZetta supports user volumes for managing files (e.g., semantic model YAMLs):
+
+```
+# User volume root
+volume:user://
+
+# Store semantic models under user home in a dedicated folder
+volume:user://~/semantic_models/
+
+# List files under a subdirectory (SQL)
+LIST USER VOLUME SUBDIRECTORY 'semantic_models/'
+```
+
+Tips:
+- When organizing YAMLs, prefer a dedicated directory (e.g., `semantic_models/`) and keep file names unique per model.
+- LIST operations may return columns like `relative_path`/`name` depending on runtime; filter client-side by suffix (e.g., `.yaml`, `.yml`).
+- File paths are case-sensitive. Avoid spaces and shell-sensitive characters in directory/file names.
+
+## Installation notes for ClickZetta
+
+ClickZetta packages (≥ 0.1.4) support Python 3.9 and later. To enable ClickZetta features, install the optional extra:
+
+- `pip install .[clickzetta]` when working from the repository, or
+- ensure `clickzetta-zettapark-python` and `clickzetta-connector-python` are present in your environment when using `requirements.txt`.
+
+Runtime behavior:
+- If ClickZetta dependencies are absent, ClickZetta-specific connectors raise a clear missing-dependency error only when invoked. Other database features remain available.
 
 ## Security Considerations
 

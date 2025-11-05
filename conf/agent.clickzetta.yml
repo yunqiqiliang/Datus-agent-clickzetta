@@ -1,6 +1,6 @@
 agent:
   target: qwen_main
-  home: ${DATUS_HOME}
+  home: .datus_home
   models:
     qwen_main:
       type: qwen
