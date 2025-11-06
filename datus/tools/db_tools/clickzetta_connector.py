@@ -15,7 +15,7 @@ from datus.utils.constants import DBType, SQLType
 from datus.utils.exceptions import DatusException, ErrorCode
 from datus.utils.loggings import get_logger
 from datus.utils.sql_utils import metadata_identifier, parse_context_switch, parse_sql_type
-from datus.utils.typing_compat import override
+from typing import override
 
 try:
     from clickzetta.zettapark.session import Session
@@ -138,13 +138,14 @@ class ClickzettaConnector(BaseSqlConnector):
             connection_config.update(extra)
 
         self._connection_config = connection_config
-        self._session: Optional[Session] = None
+        # Note: avoid referencing Session in type annotations to prevent runtime/type issues when optional dep missing
+        self._session: Optional[Any] = None
         self._auth_timestamp = 0.0
 
     # ------------------------------------------------------------------ #
     # Helpers
     # ------------------------------------------------------------------ #
-    def _ensure_connection(self) -> Session:
+    def _ensure_connection(self) -> Any:
         if self._session is None or (time.time() - self._auth_timestamp) > self.AUTH_EXPIRATION_SECONDS:
             self.connect()
         return self._session  # type: ignore[return-value]

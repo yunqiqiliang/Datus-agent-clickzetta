@@ -10,7 +10,7 @@ from typing import Any, Dict, List
 from datus.tools.db_tools.mysql_connector import MySQLConnectorBase, list_to_in_str
 from datus.utils.constants import DBType
 from datus.utils.loggings import get_logger
-from datus.utils.typing_compat import override
+from typing import override
 
 logger = get_logger(__name__)
 

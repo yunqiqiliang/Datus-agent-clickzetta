@@ -2,7 +2,7 @@
 # Licensed under the Apache License, Version 2.0.
 # See http://www.apache.org/licenses/LICENSE-2.0 for details.
 
-from typing import Any, Dict, List, Literal, Optional, Sequence, Set
+from typing import Any, Dict, List, Literal, Optional, Sequence, Set, override
 
 import pyarrow as pa
 import pyarrow.compute as pc
@@ -29,7 +29,6 @@ from datus.utils.constants import DBType
 from datus.utils.exceptions import DatusException, ErrorCode
 from datus.utils.loggings import get_logger
 from datus.utils.sql_utils import parse_context_switch
-from datus.utils.typing_compat import override
 
 logger = get_logger(__name__)
 
@@ -202,7 +201,7 @@ class SnowflakeConnector(BaseSqlConnector):
 
     def _do_execute_arrow(
         self, sql_query: str, params: Optional[Sequence[Any] | dict[Any, Any]] = None
-    ) -> (pa.Table, int):
+    ) -> tuple[pa.Table, int]:
         """Execute SQL query on Snowflake and return results in Apache Arrow format.
 
         Args:
