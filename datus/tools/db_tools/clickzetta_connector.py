@@ -3,7 +3,7 @@ from __future__ import annotations
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Literal, Optional
+from typing import Any, Dict, Iterator, List, Literal, Optional, override
 
 import pandas as pd
 import pyarrow as pa
@@ -15,7 +15,6 @@ from datus.utils.constants import DBType, SQLType
 from datus.utils.exceptions import DatusException, ErrorCode
 from datus.utils.loggings import get_logger
 from datus.utils.sql_utils import metadata_identifier, parse_context_switch, parse_sql_type
-from typing import override
 
 try:
     from clickzetta.zettapark.session import Session

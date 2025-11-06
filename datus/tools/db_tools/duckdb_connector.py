@@ -2,7 +2,7 @@
 # Licensed under the Apache License, Version 2.0.
 # See http://www.apache.org/licenses/LICENSE-2.0 for details.
 
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, override
 
 from pydantic import BaseModel, Field
 
@@ -12,7 +12,6 @@ from datus.tools.db_tools.sqlalchemy_connector import SQLAlchemyConnector
 from datus.utils.constants import DBType
 from datus.utils.exceptions import DatusException, ErrorCode
 from datus.utils.loggings import get_logger
-from typing import override
 
 logger = get_logger(__name__)
 
