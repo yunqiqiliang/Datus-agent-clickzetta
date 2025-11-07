@@ -60,7 +60,7 @@ class ClickzettaConnector(BaseSqlConnector):
     Wraps the official `clickzetta.zettapark` session with the BaseSqlConnector interface.
     """
 
-    AUTH_EXPIRATION_SECONDS = 1800
+    AUTH_EXPIRATION_SECONDS = 3600
 
     def __init__(
         self,
