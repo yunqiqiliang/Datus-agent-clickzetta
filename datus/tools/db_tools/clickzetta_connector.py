@@ -27,7 +27,7 @@ else:
 logger = get_logger(__name__)
 
 _DEFAULT_HINTS: Dict[str, Any] = {
-    "sdk.job.timeout": 300,
+    "sdk.job.timeout": 360,
     "query_tag": "Query from Datus Agent",
     "cz.storage.parquet.vector.index.read.memory.cache": "true",
     "cz.storage.parquet.vector.index.read.local.cache": "false",
