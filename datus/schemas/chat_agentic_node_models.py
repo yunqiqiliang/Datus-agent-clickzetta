@@ -27,6 +27,7 @@ class ChatNodeInput(BaseInput):
     database: Optional[str] = Field(default=None, description="Database name for context")
     db_schema: Optional[str] = Field(default=None, description="Database schema for context")
     max_turns: int = Field(default=30, description="Maximum conversation turns per interaction")
+    external_knowledge: Optional[str] = Field(default="", description="External knowledge")
     workspace_root: Optional[str] = Field(default=None, description="Root directory path for filesystem MCP server")
     prompt_version: str = Field(default="1.0", description="Version for prompt")
     schemas: Optional[list[TableSchema]] = Field(default=None, description="Schemas to use")
@@ -37,6 +38,9 @@ class ChatNodeInput(BaseInput):
         validation_alias=AliasChoices("reference_sql", "historical_sql"),
     )
     plan_mode: bool = Field(default=False, description="Whether this is a plan mode interaction")
+    auto_execute_plan: bool = Field(
+        default=False, description="Whether to auto-execute plan without user confirmation (for workflow/benchmark)"
+    )
 
     class Config:
         populate_by_name = True

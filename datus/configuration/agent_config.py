@@ -99,10 +99,10 @@ class NodeConfig:
 
 @dataclass
 class BenchmarkConfig:
-    benchmark_path: str  # benchmark files dir
-    question_file: str  # The corresponding task file can be csv/json/json
-    question_key: str = "question"  # The key corresponding to question
-    question_id_key: str = "question_id"  # If empty, use the line number
+    benchmark_path: str = ""  # benchmark files dir
+    question_file: str = ""  # The corresponding task file can be csv/json/json
+    question_key: str = ""  # The key corresponding to question
+    question_id_key: str = ""  # If empty, use the line number
     db_key: str | None = None  # The key corresponding to database name
     ext_knowledge_key: str | None = None  # The key corresponding to external knowledge
     use_tables_key: str | None = None  # The key corresponding to the table to be used
@@ -120,6 +120,20 @@ class BenchmarkConfig:
     def filter_kwargs(cls, kwargs: dict) -> "BenchmarkConfig":
         valid_fields = {f.name for f in fields(cls)}
         return cls(**{k: v for k, v in kwargs.items() if k in valid_fields})
+
+    def validate(self):
+        if not self.question_key:
+            raise DatusException(
+                ErrorCode.COMMON_FIELD_REQUIRED, message="question_key in benchmark configuration cannot be empty"
+            )
+        if not self.question_file:
+            raise DatusException(
+                ErrorCode.COMMON_FIELD_REQUIRED, message="question_file in benchmark configuration cannot be empty"
+            )
+        if not self.question_id_key:
+            raise DatusException(
+                ErrorCode.COMMON_FIELD_REQUIRED, message="question_id_key in benchmark configuration cannot be empty"
+            )
 
 
 logger = get_logger(__name__)
@@ -507,6 +521,9 @@ class AgentConfig:
         # Return fixed path: {agent.home}/benchmark/{name}
         from datus.utils.path_manager import get_path_manager
 
+        if os.path.isabs(config.benchmark_path):
+            return config.benchmark_path
+
         return str(get_path_manager().benchmark_dir / config.benchmark_path)
 
     def _current_db_config(self) -> Dict[str, DbConfig]:
@@ -581,7 +598,10 @@ class AgentConfig:
                 code=ErrorCode.COMMON_UNSUPPORTED,
                 message_args={"field_name": "benchmark", "your_value": benchmark_platform},
             )
-        return self.benchmark_configs[benchmark_platform]
+        benchmark_config = self.benchmark_configs[benchmark_platform]
+        benchmark_config.validate()
+
+        return benchmark_config
 
 
 def rag_storage_path(namespace: str, rag_base_path: str = "data") -> str:

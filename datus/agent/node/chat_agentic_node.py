@@ -17,10 +17,8 @@ from datus.agent.workflow import Workflow
 from datus.configuration.agent_config import AgentConfig
 from datus.schemas.action_history import ActionHistory, ActionHistoryManager, ActionRole, ActionStatus
 from datus.schemas.chat_agentic_node_models import ChatNodeInput, ChatNodeResult
-from datus.schemas.node_models import TableSchema
 from datus.tools.db_tools.db_manager import db_manager_instance
 from datus.tools.func_tool import ContextSearchTools, DateParsingTools, DBFuncTool, FilesystemFuncTool
-from datus.utils.json_utils import to_str
 from datus.utils.loggings import get_logger
 
 logger = get_logger(__name__)
@@ -65,7 +63,11 @@ class ChatAgenticNode(AgenticNode):
         self.max_turns = 30
         if agent_config and hasattr(agent_config, "nodes") and "chat" in agent_config.nodes:
             chat_node_config = agent_config.nodes["chat"]
-            if chat_node_config.input and hasattr(chat_node_config.input, "max_turns"):
+            if (
+                chat_node_config.input
+                and hasattr(chat_node_config.input, "max_turns")
+                and chat_node_config.input.max_turns is not None
+            ):
                 self.max_turns = chat_node_config.input.max_turns
 
         # Initialize MCP servers based on namespace
@@ -88,6 +90,7 @@ class ChatAgenticNode(AgenticNode):
         self.date_parsing_tools: Optional[DateParsingTools] = None
         self.filesystem_func_tool: Optional[FilesystemFuncTool] = None
         self.plan_mode_active = False
+        self.plan_hooks = None
 
         # Setup tools after initialization
         self.setup_tools()
@@ -113,21 +116,28 @@ class ChatAgenticNode(AgenticNode):
             )
             self._update_database_connection(task_database)
 
+        # Read plan_mode from workflow metadata
+        plan_mode = workflow.metadata.get("plan_mode", False)
+        auto_execute_plan = workflow.metadata.get("auto_execute_plan", False)
+
         # Create ChatNodeInput if not already set
         if not self.input:
             self.input = ChatNodeInput(
                 user_message=workflow.task.task,
+                external_knowledge=workflow.task.external_knowledge,
                 catalog=workflow.task.catalog_name,
                 database=workflow.task.database_name,
                 db_schema=workflow.task.schema_name,
                 schemas=workflow.context.table_schemas,
                 metrics=workflow.context.metrics,
                 reference_sql=None,
-                plan_mode=False,
+                plan_mode=plan_mode,
+                auto_execute_plan=auto_execute_plan,
             )
         else:
             # Update existing input with workflow data
             self.input.user_message = workflow.task.task
+            self.input.external_knowledge = workflow.task.external_knowledge
             self.input.catalog = workflow.task.catalog_name
             self.input.database = workflow.task.database_name
             self.input.db_schema = workflow.task.schema_name
@@ -303,7 +313,12 @@ class ChatAgenticNode(AgenticNode):
 
             console = Console()
             session = self._get_or_create_session()[0]
-            self.plan_hooks = PlanModeHooks(console=console, session=session)
+
+            # Workflow sets 'auto_execute_plan' in metadata, CLI REPL does not
+            auto_mode = getattr(user_input, "auto_execute_plan", False)
+            logger.info(f"Plan mode auto_mode: {auto_mode} (from input)")
+
+            self.plan_hooks = PlanModeHooks(console=console, session=session, auto_mode=auto_mode)
 
         # Create initial action
         action_type = "plan_mode_interaction" if is_plan_mode else "chat_interaction"
@@ -328,32 +343,19 @@ class ChatAgenticNode(AgenticNode):
             system_instruction = self._get_system_prompt(conversation_summary, user_input.prompt_version)
 
             # Add database context to user message if provided
-            enhanced_message = user_input.user_message
-            enhanced_parts = []
-            if user_input.catalog or user_input.database or user_input.db_schema:
-                context_parts = [f"dialect: {self.agent_config.db_type}"]
-                if user_input.catalog:
-                    context_parts.append(f"catalog: {user_input.catalog}")
-                if user_input.database:
-                    context_parts.append(f"database: {user_input.database}")
-                if user_input.db_schema:
-                    context_parts.append(f"schema: {user_input.db_schema}")
-                context_part_str = f'Context: {", ".join(context_parts)}'
-                enhanced_parts.append(context_part_str)
-            if user_input.schemas:
-                table_schemas_str = TableSchema.list_to_prompt(user_input.schemas, dialect=self.agent_config.db_type)
-                enhanced_parts.append(f"Table Schemas: \n{table_schemas_str}")
-            if user_input.metrics:
-                enhanced_parts.append(f"Metrics: \n{to_str([item.model_dump() for item in user_input.metrics])}")
+            from datus.agent.node.gen_sql_agentic_node import build_enhanced_message
 
-            if user_input.reference_sql:
-                enhanced_parts.append(
-                    f"Reference SQL: \n{to_str([item.model_dump() for item in user_input.reference_sql])}"
-                )
-
-            if enhanced_parts:
-                separator = "\n\n"
-                enhanced_message = f"{separator.join(enhanced_parts)}\n\nUser question: {user_input.user_message}"
+            enhanced_message = build_enhanced_message(
+                user_message=user_input.user_message,
+                db_type=self.agent_config.db_type,
+                catalog=user_input.catalog,
+                database=user_input.database,
+                db_schema=user_input.db_schema,
+                external_knowledge=user_input.external_knowledge,
+                schemas=user_input.schemas,
+                metrics=user_input.metrics,
+                reference_sql=user_input.reference_sql,
+            )
 
             # Execute with streaming
             response_content = ""
@@ -683,6 +685,29 @@ class ChatAgenticNode(AgenticNode):
         """Get system instruction for normal mode."""
         _, conversation_summary = self._get_or_create_session()
         return self._get_system_prompt(conversation_summary, original_input.prompt_version)
+
+    def _build_plan_prompt(self, original_prompt: str) -> str:
+        """Build enhanced prompt for plan mode based on current phase."""
+        from datus.prompts.prompt_manager import prompt_manager
+
+        # Check current phase and replan feedback
+        current_phase = getattr(self.plan_hooks, "plan_phase", "generating") if self.plan_hooks else "generating"
+        replan_feedback = getattr(self.plan_hooks, "replan_feedback", "") if self.plan_hooks else ""
+
+        # Load plan mode prompt from template
+        try:
+            plan_prompt_addition = prompt_manager.render_template(
+                template_name="plan_mode_system",
+                version=None,  # Use latest version
+                current_phase=current_phase,
+                replan_feedback=replan_feedback,
+            )
+        except FileNotFoundError:
+            # Fallback to inline prompt if template not found
+            logger.warning("plan_mode_system template not found, using inline prompt")
+            plan_prompt_addition = "\n\nPLAN MODE\nCheck todo_read to see current plan status and proceed accordingly."
+
+        return original_prompt + "\n\n" + plan_prompt_addition
 
     def _extract_sql_and_output_from_response(self, output: dict) -> tuple[Optional[str], Optional[str]]:
         """

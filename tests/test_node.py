@@ -26,7 +26,6 @@ from datus.schemas.node_models import (
 from datus.schemas.reason_sql_node_models import ReasoningInput, ReasoningResult
 from datus.schemas.schema_linking_node_models import SchemaLinkingInput, SchemaLinkingResult
 from datus.schemas.search_metrics_node_models import SearchMetricsInput, SearchMetricsResult
-from datus.tools.db_tools.db_manager import DBManager, db_manager_instance
 from datus.tools.func_tool import db_function_tools
 from datus.utils.constants import DBType
 from datus.utils.loggings import get_logger
@@ -117,31 +116,6 @@ def agent_config() -> AgentConfig:
 
 
 @pytest.fixture
-def db_manager(agent_config: AgentConfig) -> DBManager:
-    return db_manager_instance(agent_config.namespaces)
-
-
-@pytest.fixture
-def sql_connector(db_manager: DBManager):
-    """Create real Snowflake database connection"""
-    from dotenv import load_dotenv
-
-    # Load environment variables from .env file
-    load_dotenv()
-
-    # Use connection info from environment variables
-    db = db_manager.get_conn("snowflake")
-
-    res = db.test_connection()
-    logger.debug(f"connection test {res}")
-
-    yield db
-
-    # Close connection after test
-    db.close()
-
-
-@pytest.fixture
 def function_tools(agent_config: AgentConfig) -> List[Tool]:
     return db_function_tools(agent_config)
 
@@ -149,7 +123,7 @@ def function_tools(agent_config: AgentConfig) -> List[Tool]:
 def save_to_yaml(content: BaseModel, filename: str):
     """Save a Pydantic model instance to a YAML file"""
     with open(filename, "w") as f:
-        yaml.dump(content.to_dict(), f)
+        yaml.dump(content.to_dict(), f, allow_unicode=True)
 
 
 def init_metricflow_db() -> None:
@@ -518,10 +492,10 @@ class TestNode:
             raise
 
     @pytest.mark.acceptance
-    def test_execution_node(self, execute_sql_input, sql_connector, agent_config, function_tools: List[Tool]):
+    def test_execution_node(self, execute_sql_input, agent_config, function_tools: List[Tool]):
         """Test SQL execution node with Snowflake database"""
         try:
-            agent_config.current_namespace = "snowflake"
+            agent_config.current_namespace = "bird_sqlite"
             # Create execution input from test data
             test_cases = [0, 1]
             for test_case_num in test_cases:
