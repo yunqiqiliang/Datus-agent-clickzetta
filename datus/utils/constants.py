@@ -18,6 +18,7 @@ class DBType(str, Enum):
     CLICKZETTA = "clickzetta"
     BIGQUERY = "bigquery"
     STARROCKS = "starrocks"
+    CLICKZETTA = "clickzetta"
     SQLSERVER = "sqlserver"  # same as mssql
     MSSQL = "mssql"  # same as sqlserver
     ORACLE = "oracle"

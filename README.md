@@ -48,16 +48,29 @@ Chat with your data, recall tables or metrics instantly, and run agentic actions
 Turn data domains into **domain-aware chatbots**.  
 Each subagent encapsulates the right context, tools, and rules — making data access accurate, reusable, and safe.
 
-### 🔁 Continuous Learning Loop  
-Every query and feedback improves the model.  
+### 🔁 Continuous Learning Loop
+Every query and feedback improves the model.
 Datus learns from success stories and user corrections to evolve reasoning accuracy over time.
 
+## 🗄️ Supported Databases
+
+Datus Agent supports a wide range of database systems:
+
+- **ClickZetta** - Cloud-native lakehouse platform
+- **Snowflake** - Cloud data warehouse
+- **MySQL** - Open-source relational database
+- **PostgreSQL** - Advanced open-source database
+- **DuckDB** - In-process analytical database
+- **SQLite** - Lightweight file-based database
+- **StarRocks** - High-performance analytical database
+
+> **Note:** ClickZetta connectivity is bundled as an optional extra. Install it with `pip install datus-agent[clickzetta]` when you need the ClickZetta connector.
 
 ---
 
 ## 🧰 Installation
 
-**Requirements:** Python >= 3.12
+**Requirements:** Python >= 3.9
 
 ```bash
 pip install datus-agent==0.2.1
@@ -66,6 +79,14 @@ datus-agent init
 ```
 
 For detailed installation instructions, see the [Quickstart Guide](https://docs.datus.ai/getting_started/Quickstart/).
+
+### ClickZetta Setup
+
+**Python Version Compatibility**: [ClickZetta](https://www.singdata.com/) is developed by [Singdata](https://www.singdata.com/) and [Yunqi](https://www.yunqi.tech/) SDK now supports Python ≥ 3.9, so you can run the agent on any interpreter 3.9 or newer (including 3.12). Install the extra when you need ClickZetta connectivity:
+
+```bash
+pip install datus-agent[clickzetta]
+```
 
 ## 🧭 User Journey
 

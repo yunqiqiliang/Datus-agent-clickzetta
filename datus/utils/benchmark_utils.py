@@ -2148,7 +2148,8 @@ def _log_accuracy_summary(accuracy_report: Dict[str, Any]) -> None:
         "",
     ]
 
-    logger.info(f'\n\n{"\n".join(report_lines)}')
+    report_text = "\n".join(report_lines)
+    logger.info(f"\n\n{report_text}")
 
 
 def _ensure_task_identifier(task: Dict[str, Any], task_id_key: str, position: int) -> Dict[str, Any]:

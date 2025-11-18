@@ -134,8 +134,9 @@ def test_list_domain_layers_tree_handles_blank_taxonomy(build_context_tools):
 def test_list_domain_layers_tree_value_error(build_context_tools):
     tools, _, _ = build_context_tools(metric_cfg={"entries": []}, sql_cfg={"entries": []})
 
-    with patch.object(tools, "_collect_metrics_entries", side_effect=ValueError("taxonomy failure")), patch.object(
-        tools, "_collect_sql_entries", return_value=[]
+    with (
+        patch.object(tools, "_collect_metrics_entries", side_effect=ValueError("taxonomy failure")),
+        patch.object(tools, "_collect_sql_entries", return_value=[]),
     ):
         result = tools.list_domain_layers_tree()
 

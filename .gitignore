@@ -30,3 +30,7 @@ before_reflection_*.yaml
 /benchmark/semantic_layer/semantic_models
 /dist
 *.egg-info
+/.datus_home
+
+# Local temporary venv for Black 23.12.1 (should never be committed)
+/.venv-black-2312

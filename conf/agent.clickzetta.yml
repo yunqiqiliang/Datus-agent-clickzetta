@@ -1,7 +1,8 @@
 agent:
-  target: dashscope_main
+  target: qwen_main
+  home: .datus_home
   models:
-    dashscope_main:
+    qwen_main:
       type: qwen
       vendor: aliyun
       base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
@@ -9,7 +10,7 @@ agent:
       model: qwen-plus
       enable_thinking: false
 
-    dashscope_reasoning:
+    qwen_reasoning:
       type: qwen
       vendor: aliyun
       base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
@@ -31,7 +32,7 @@ agent:
       prompt_version: "1.0"
 
     generate_sql:
-      model: dashscope_main
+      model: qwen_main
       prompt_version: "1.0"
       max_table_schemas_length: 6000
       max_data_details_length: 4000
@@ -39,7 +40,7 @@ agent:
       max_value_length: 500
 
     reasoning:
-      model: dashscope_reasoning
+      model: qwen_reasoning
       prompt_version: "1.0"
       max_table_schemas_length: 6000
       max_data_details_length: 4000
@@ -56,20 +57,21 @@ agent:
 
   agentic_nodes:
     chatbot:
-      model: dashscope_main
+      model: qwen_main
       system_prompt: gen_sql
       prompt_version: "1.0"
-      prompt_language: zh
+      prompt_language: en
       max_turns: 15
       tools: db_tools.*, context_search_tools.*
-      agent_description: "专注 Clickzetta 工作区的 SQL 助手"
+      agent_description: "A SQL assistant focused on the ClickZetta Lakehouse"
       rules:
-        - 当涉及 SQL 查询时务必说明思路并返回可执行语句
-        - 优先使用 Clickzetta 工作区 quick_start 内的对象
+        - Always explain your reasoning when producing SQL and return executable statements
+        - Prioritize objects inside the ClickZetta Lakehouse quick_start
 
   schema_linking_rate: medium
 
   namespace:
+    # Default ClickZetta environment
     clickzetta:
       type: clickzetta
       service: ${CLICKZETTA_SERVICE}
@@ -81,8 +83,38 @@ agent:
       vcluster: ${CLICKZETTA_VCLUSTER}
       secure: false
 
+    # Example: Additional ClickZetta environments
+    # Uncomment and configure as needed for multiple workspaces
+    #
+    # clickzetta_dev:
+    #   type: clickzetta
+    #   service: ${CLICKZETTA_DEV_SERVICE}
+    #   username: ${CLICKZETTA_DEV_USERNAME}
+    #   password: ${CLICKZETTA_DEV_PASSWORD}
+    #   instance: ${CLICKZETTA_DEV_INSTANCE}
+    #   workspace: ${CLICKZETTA_DEV_WORKSPACE}
+    #   schema: ${CLICKZETTA_DEV_SCHEMA}
+    #   vcluster: ${CLICKZETTA_DEV_VCLUSTER}
+    #   secure: false
+    #
+    # clickzetta_prod:
+    #   type: clickzetta
+    #   service: ${CLICKZETTA_PROD_SERVICE}
+    #   username: ${CLICKZETTA_PROD_USERNAME}
+    #   password: ${CLICKZETTA_PROD_PASSWORD}
+    #   instance: ${CLICKZETTA_PROD_INSTANCE}
+    #   workspace: ${CLICKZETTA_PROD_WORKSPACE}
+    #   schema: ${CLICKZETTA_PROD_SCHEMA}
+    #   vcluster: ${CLICKZETTA_PROD_VCLUSTER}
+    #   secure: true
+
   storage:
     embedding_device_type: cpu
+    document:
+      registry_name: sentence-transformers
+      model_name: all-MiniLM-L6-v2
+      dim_size: 384
+      batch_size: 64
 
   workflow:
     plan: reflection
