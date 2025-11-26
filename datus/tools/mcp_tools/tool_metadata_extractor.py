@@ -125,35 +125,23 @@ class ToolMetadataExtractor:
 
     async def _fetch_detailed_tool_info(self, tool_name: str, mcp_server: str) -> Dict[str, Any]:
         """
-        Fetch detailed information for a tool when only the name is available.
+        Return default metadata when only tool name is available.
+
+        SECURITY: Avoid calling tools with empty arguments as this may cause side effects.
+        Previously this method attempted to probe tools by calling them with empty arguments
+        to extract parameter info from error messages, which is unsafe and could trigger
+        unintended actions.
 
         Args:
             tool_name: Name of the tool
             mcp_server: MCP server name
 
         Returns:
-            Detailed tool metadata
+            Basic tool metadata without probing
         """
-        # Try to get tool schema or description
-        try:
-            # Attempt to call the tool with no arguments to get parameter info
-            success, result, data = await self.mcp_manager.call_tool(
-                server_name=mcp_server, tool_name=tool_name, arguments={}
-            )
-
-            metadata = self._get_default_metadata(tool_name)
-
-            # If the call failed but provided useful error information, extract it
-            if not success and result:
-                # Try to extract parameter information from error messages
-                if "required" in str(result).lower() or "parameter" in str(result).lower():
-                    metadata["parameter_info"] = str(result)
-
-            return metadata
-
-        except Exception as e:
-            logger.debug(f"Could not get detailed info for {tool_name}: {e}")
-            return self._get_default_metadata(tool_name)
+        # Return safe default metadata without calling the tool
+        logger.debug(f"Returning default metadata for {tool_name} from {mcp_server} (no probing for safety)")
+        return self._get_default_metadata(tool_name)
 
     def _extract_metadata_from_tool_dict(self, tool_dict: Dict[str, Any]) -> Dict[str, Any]:
         """
