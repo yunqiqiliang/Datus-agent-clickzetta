@@ -67,9 +67,6 @@ agent:
   workflow:
     plan: reflection
     chat_default_node: universal_mcp_agent
-  mcp_servers:
-    clickzetta_mcp_sse:
-      url: http://localhost:8003/sse
   namespace:
     clickzetta:
       type: clickzetta
