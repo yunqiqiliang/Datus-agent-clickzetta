@@ -3,20 +3,19 @@ LLM-Native MCP Handler
 
 Based on OpenAI Codex MCP implementation - exposes MCP tools directly as functions to LLM
 without semantic analysis or hardcoded mapping strategies. Follows Codex pattern:
-1. Discover MCP tools from servers
+1. Discover MCP tools from servers via MCPManager
 2. Sanitize schemas for LLM consumption
 3. Expose as native function calls
-4. Route calls directly to MCP protocol
+4. Route calls directly to MCP protocol via MCPManager
 
-This replaces the complex Universal MCP recommendation engine approach.
+This provides a clean LLM-native interface while delegating all protocol handling
+to the robust MCPManager implementation.
 """
 
 import asyncio
 import hashlib
-import json
 import logging
-import requests
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 from enum import Enum
 
@@ -32,6 +31,7 @@ class ToolCallStatus(Enum):
 @dataclass
 class McpToolInfo:
     """MCP Tool Information following Codex pattern"""
+
     server_name: str
     tool_name: str
     qualified_name: str  # mcp__server__tool format
@@ -43,6 +43,7 @@ class McpToolInfo:
 @dataclass
 class ToolCallResult:
     """Tool execution result"""
+
     status: ToolCallStatus
     result: Any = None
     error: str = None
@@ -67,7 +68,7 @@ class LLMNativeMCPHandler:
         self.tool_lookup = {}  # qualified_name -> (server_name, tool_name)
 
         # Load MCP servers from config
-        if hasattr(agent_config, 'mcp_servers'):
+        if hasattr(agent_config, "mcp_servers"):
             self.mcp_servers = agent_config.mcp_servers
 
     async def initialize(self) -> Dict[str, List[Dict[str, Any]]]:
@@ -90,29 +91,29 @@ class LLMNativeMCPHandler:
                 server_functions = []
                 for tool in tools:
                     # Qualify tool name following Codex pattern
-                    qualified_name = self._qualify_tool_name(server_name, tool['name'])
+                    qualified_name = self._qualify_tool_name(server_name, tool["name"])
 
                     # Sanitize schema for LLM consumption
-                    sanitized_schema = self._sanitize_tool_schema(tool.get('inputSchema', {}))
+                    sanitized_schema = self._sanitize_tool_schema(tool.get("inputSchema", {}))
 
                     # Store tool info
                     tool_info = McpToolInfo(
                         server_name=server_name,
-                        tool_name=tool['name'],
+                        tool_name=tool["name"],
                         qualified_name=qualified_name,
-                        description=tool.get('description', ''),
-                        schema=tool.get('inputSchema', {}),
-                        sanitized_schema=sanitized_schema
+                        description=tool.get("description", ""),
+                        schema=tool.get("inputSchema", {}),
+                        sanitized_schema=sanitized_schema,
                     )
 
                     self.qualified_tools[qualified_name] = tool_info
-                    self.tool_lookup[qualified_name] = (server_name, tool['name'])
+                    self.tool_lookup[qualified_name] = (server_name, tool["name"])
 
                     # Create OpenAI function definition
                     function_def = {
                         "name": qualified_name,
-                        "description": tool.get('description', f"Execute {tool['name']} on {server_name}"),
-                        "parameters": sanitized_schema
+                        "description": tool.get("description", f"Execute {tool['name']} on {server_name}"),
+                        "parameters": sanitized_schema,
                     }
 
                     server_functions.append(function_def)
@@ -130,49 +131,60 @@ class LLMNativeMCPHandler:
         return all_functions
 
     async def _discover_server_tools(self, server_name: str, server_config: Dict) -> List[Dict]:
-        """Discover tools from MCP server with timeout and graceful fallback"""
+        """
+        Discover tools from MCP server using MCPManager
+
+        MCPManager handles all protocol types correctly:
+        - stdio: Process-based communication via stdin/stdout
+        - sse: Server-Sent Events communication
+        - http: HTTP-based communication
+
+        No HTTP fallback needed - MCPManager is the authoritative source
+        """
         try:
-            # Extract server URL - handle different config formats
-            server_url = server_config.get('url', '')
-            if not server_url:
-                logger.warning(f"No URL configured for MCP server {server_name}")
+            logger.info(f"Discovering tools from MCP server {server_name} using MCPManager...")
+
+            from datus.tools.mcp_tools.mcp_manager import MCPManager
+
+            # Use MCPManager for all protocol handling
+            mcp_manager = MCPManager()
+            tools_result = mcp_manager.list_tools(server_name)
+
+            if tools_result.success:
+                tools = tools_result.result.get("tools", [])
+                logger.info(f"MCPManager discovered {len(tools)} tools from {server_name}")
+
+                # Validate and normalize tools
+                normalized_tools = []
+                for tool in tools:
+                    if self._is_valid_tool(tool):
+                        normalized_tools.append(self._validate_tool_schema(tool))
+                    else:
+                        logger.warning(f"Invalid tool definition from {server_name}: {tool}")
+
+                return normalized_tools
+            else:
+                logger.warning(f"MCPManager failed to discover tools from {server_name}: {tools_result.message}")
                 return []
 
-            # Convert SSE URL to tools endpoint if needed
-            if server_url.endswith('/sse'):
-                tools_url = server_url.replace('/sse', '/tools')
-            else:
-                tools_url = f"{server_url.rstrip('/')}/tools"
-            logger.info(f"Fetching tools from: {tools_url}")
-
-            # Make HTTP request with short timeout for responsiveness
-            response = requests.get(tools_url, timeout=5)  # Reduced from 30s to 5s
-            response.raise_for_status()
-
-            tools = response.json()
-            # Normalize tool format
-            if isinstance(tools, list):
-                logger.info(f"Successfully discovered {len(tools)} tools from {server_name}")
-                return tools
-            elif isinstance(tools, dict) and 'tools' in tools:
-                logger.info(f"Successfully discovered {len(tools['tools'])} tools from {server_name}")
-                return tools['tools']
-            else:
-                logger.warning(f"Unexpected tools response format from {server_name}: {type(tools)}")
-                return []
-
-        except requests.exceptions.ConnectionError as e:
-            logger.warning(f"MCP server {server_name} is not reachable at {server_url}. Skipping tool discovery.")
-            return []
-        except requests.exceptions.Timeout as e:
-            logger.warning(f"MCP server {server_name} connection timed out. Skipping tool discovery.")
-            return []
-        except requests.exceptions.HTTPError as e:
-            logger.warning(f"HTTP error from MCP server {server_name}: {e}. Skipping tool discovery.")
+        except ImportError:
+            logger.error("MCPManager not available - this is required for MCP protocol handling")
             return []
         except Exception as e:
-            logger.warning(f"Failed to discover tools from {server_name}: {e}. Skipping tool discovery.")
+            logger.warning(f"Tool discovery failed for {server_name}: {e}")
             return []
+
+    def _is_valid_tool(self, tool: Any) -> bool:
+        """Validate that tool has required fields"""
+        return isinstance(tool, dict) and "name" in tool and isinstance(tool["name"], str) and tool["name"].strip()
+
+    def _validate_tool_schema(self, tool: Dict) -> Dict:
+        """Ensure tool has all required fields with defaults"""
+        return {
+            "name": tool["name"],
+            "description": tool.get("description", f"Execute {tool['name']}"),
+            "inputSchema": tool.get("inputSchema", tool.get("input_schema", {})),
+        }
 
     def _qualify_tool_name(self, server_name: str, tool_name: str) -> str:
         """
@@ -208,33 +220,30 @@ class LLMNativeMCPHandler:
             result = obj.copy()
 
             # Fix missing type field - infer from keywords
-            if 'type' not in result:
-                if 'properties' in result:
-                    result['type'] = 'object'
-                elif 'items' in result:
-                    result['type'] = 'array'
-                elif 'enum' in result:
-                    result['type'] = 'string'
+            if "type" not in result:
+                if "properties" in result:
+                    result["type"] = "object"
+                elif "items" in result:
+                    result["type"] = "array"
+                elif "enum" in result:
+                    result["type"] = "string"
                 else:
-                    result['type'] = 'string'  # Default fallback
+                    result["type"] = "string"  # Default fallback
 
             # Handle type unions - pick first valid type
-            if isinstance(result.get('type'), list):
-                result['type'] = result['type'][0]
+            if isinstance(result.get("type"), list):
+                result["type"] = result["type"][0]
 
             # Ensure objects have properties
-            if result.get('type') == 'object' and 'properties' not in result:
-                result['properties'] = {}
+            if result.get("type") == "object" and "properties" not in result:
+                result["properties"] = {}
 
             # Recursively sanitize nested schemas
-            if 'properties' in result:
-                result['properties'] = {
-                    k: sanitize_recursive(v)
-                    for k, v in result['properties'].items()
-                }
+            if "properties" in result:
+                result["properties"] = {k: sanitize_recursive(v) for k, v in result["properties"].items()}
 
-            if 'items' in result:
-                result['items'] = sanitize_recursive(result['items'])
+            if "items" in result:
+                result["items"] = sanitize_recursive(result["items"])
 
             return result
 
@@ -253,7 +262,7 @@ class LLMNativeMCPHandler:
                 return ToolCallResult(
                     status=ToolCallStatus.ERROR,
                     error=f"Tool {qualified_name} not found",
-                    duration=asyncio.get_event_loop().time() - start_time
+                    duration=asyncio.get_event_loop().time() - start_time,
                 )
 
             server_name, tool_name = self.tool_lookup[qualified_name]
@@ -265,59 +274,72 @@ class LLMNativeMCPHandler:
                 return ToolCallResult(
                     status=ToolCallStatus.ERROR,
                     error=f"Server {server_name} not configured",
-                    duration=asyncio.get_event_loop().time() - start_time
+                    duration=asyncio.get_event_loop().time() - start_time,
                 )
 
             # Execute tool via MCP protocol
             result = await self._execute_mcp_tool(server_config, tool_name, arguments)
 
             return ToolCallResult(
-                status=ToolCallStatus.SUCCESS,
-                result=result,
-                duration=asyncio.get_event_loop().time() - start_time
+                status=ToolCallStatus.SUCCESS, result=result, duration=asyncio.get_event_loop().time() - start_time
             )
 
         except asyncio.TimeoutError:
             return ToolCallResult(
                 status=ToolCallStatus.TIMEOUT,
                 error="Tool execution timeout",
-                duration=asyncio.get_event_loop().time() - start_time
+                duration=asyncio.get_event_loop().time() - start_time,
             )
         except Exception as e:
             logger.exception(f"Tool execution failed: {e}")
             return ToolCallResult(
-                status=ToolCallStatus.ERROR,
-                error=str(e),
-                duration=asyncio.get_event_loop().time() - start_time
+                status=ToolCallStatus.ERROR, error=str(e), duration=asyncio.get_event_loop().time() - start_time
             )
 
     async def _execute_mcp_tool(self, server_config: Dict, tool_name: str, arguments: Dict[str, Any]) -> Any:
-        """Execute tool via MCP protocol - simplified HTTP implementation"""
+        """
+        Execute tool via MCP protocol using MCPManager
+
+        MCPManager handles all protocol types correctly and is the authoritative source
+        for MCP tool execution. No HTTP fallback needed.
+        """
+        # Extract server name for MCPManager lookup
+        server_name = None
+        for name, config in self.mcp_servers.items():
+            if config == server_config:
+                server_name = name
+                break
+
+        if not server_name:
+            # Find server name by URL if exact config match fails
+            server_url = server_config.get("url", "")
+            for name, config in self.mcp_servers.items():
+                if config.get("url") == server_url:
+                    server_name = name
+                    break
+
+        if not server_name:
+            raise Exception("Cannot identify server name for MCP tool execution")
+
         try:
-            # Build execution URL
-            server_url = server_config.get('url', '')
-            if server_url.endswith('/sse'):
-                execute_url = server_url.replace('/sse', f'/execute/{tool_name}')
+            from datus.tools.mcp_tools.mcp_manager import MCPManager
+
+            mcp_manager = MCPManager()
+            result = mcp_manager.call_tool(server_name, tool_name, arguments)
+
+            if result.success:
+                logger.info(f"MCPManager executed {tool_name} on {server_name} successfully")
+                return result.result
             else:
-                execute_url = f"{server_url.rstrip('/')}/execute/{tool_name}"
+                raise Exception(f"MCP tool execution failed: {result.message}")
 
-            # Make HTTP POST to execute tool
-            response = requests.post(
-                execute_url,
-                json=arguments,
-                timeout=60,  # Codex uses 60s timeout
-                headers={'Content-Type': 'application/json'}
-            )
-
-            if response.status_code == 200:
-                return response.json()
-            else:
-                raise Exception(f"Tool execution failed: HTTP {response.status_code} - {response.text}")
-
-        except requests.exceptions.Timeout:
-            raise asyncio.TimeoutError("MCP tool call timeout")
+        except ImportError:
+            raise Exception("MCPManager not available - this is required for MCP protocol handling")
         except Exception as e:
-            raise Exception(f"MCP protocol error: {e}")
+            if "MCP tool execution failed:" in str(e):
+                raise  # Re-raise MCPManager errors as-is
+            else:
+                raise Exception(f"MCP tool execution error: {e}")
 
     def get_all_function_definitions(self) -> List[Dict[str, Any]]:
         """Get all function definitions for LLM consumption"""
@@ -326,7 +348,7 @@ class LLMNativeMCPHandler:
             function_def = {
                 "name": tool_info.qualified_name,
                 "description": tool_info.description,
-                "parameters": tool_info.sanitized_schema
+                "parameters": tool_info.sanitized_schema,
             }
             functions.append(function_def)
         return functions

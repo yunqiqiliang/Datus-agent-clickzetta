@@ -36,3 +36,4 @@ before_reflection_*.yaml
 conf/agent.clickzetta.yml
 /queries
 /visualizations
+PR_DESCRIPTION.md
