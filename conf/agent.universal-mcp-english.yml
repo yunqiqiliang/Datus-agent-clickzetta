@@ -32,12 +32,7 @@ agent:
     chat:
       node_type: chat
       model: qwen_main
-      system_prompt: 'You are a friendly data analysis assistant. For complex data
-        analysis tasks,
-
-        recommend users use the /universal_mcp_agent command for smarter tool recommendations.
-
-        '
+      system_prompt: 'You are a friendly data analysis assistant. For complex data analysis tasks, recommend users use the /universal_mcp_agent command for smarter tool recommendations.'
       agent_description: General Chat Agent - Handle general conversations and simple
         queries
     clickzetta_mcp_server_220_sse:
