@@ -50,11 +50,11 @@ class ToolMetadataExtractor:
 
             if hasattr(Agent, "_default_agent_config") and Agent._default_agent_config:
                 if hasattr(Agent._default_agent_config, "mcp_servers") and Agent._default_agent_config.mcp_servers:
-                    return list(Agent._default_agent_config.mcp_servers.keys())[0]
+                    return next(iter(Agent._default_agent_config.mcp_servers.keys()))
         except Exception:
-            pass
-        # Fallback to common naming convention
-        return "clickzetta_mcp_sse"
+            logger.debug("Could not retrieve default MCP server from agent config")
+        # Return empty string instead of vendor-specific hardcoded fallback
+        return ""
 
     def get_tool_metadata(self, tool_name: str, mcp_server: str = None) -> Dict[str, Any]:
         """

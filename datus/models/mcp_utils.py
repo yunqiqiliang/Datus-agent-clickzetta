@@ -19,7 +19,8 @@ async def _safe_connect_server(server_name: str, server, max_retries: int = 3, c
     for attempt in range(max_retries):
         try:
             logger.info(
-                f"[MCP] Attempting to connect to server '{server_name}' (attempt {attempt + 1}/{max_retries}, timeout={connection_timeout}s)"
+                f"[MCP] Attempting to connect to server '{server_name}' "
+                f"(attempt {attempt + 1}/{max_retries}, timeout={connection_timeout}s)"
             )
 
             provider = server  # assume already created via Provider.from_process(...)

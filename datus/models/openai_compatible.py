@@ -614,7 +614,7 @@ class OpenAICompatibleModel(LLMBaseModel):
                 async_model = OpenAIChatCompletionsModel(**model_params, openai_client=async_client)
                 # Check if we should use LLM-native MCP approach
                 agent_name = kwargs.pop("agent_name", "universal_mcp_agent")
-                agent_config = kwargs.pop("agent_config", None)
+                kwargs.pop("agent_config", None)  # Remove unused config parameter
                 # Use traditional MCP approach for all cases
                 async with multiple_mcp_servers(mcp_servers or {}) as connected_servers:
                     agent_kwargs = {
