@@ -356,6 +356,47 @@ datus/tools/mcp_tools/
 └── mcp_tool.py             # BaseTool interface
 ```
 
+## Universal MCP Architecture & Auto-Discovery
+
+### Auto-Discovery Feature
+The MCP tools now support automatic server discovery for agent configurations. When agents are configured with `tools: mcp_tool.*`, the system automatically discovers and loads all available MCP servers from the configuration file without requiring explicit server specification.
+
+#### Three-Tier MCP Configuration Priority
+1. **Node-Level Configuration**: Explicit `mcp_servers` configuration in agent nodes
+2. **Agent-Level Configuration**: Shared MCP server configuration for multiple nodes
+3. **Auto-Discovery**: Automatic discovery of all available servers when using `mcp_tool.*` pattern
+
+```yaml
+# agent.yml - Example Universal MCP Configuration
+agentic_nodes:
+  universal_mcp_agent:
+    node_type: chat
+    model: qwen_main
+    tools: db_tools.*, context_search_tools.*
+    mcp_servers:
+      clickzetta_mcp_sse: {}  # Explicit server configuration
+
+  auto_discovery_agent:
+    node_type: chat
+    model: qwen_main
+    tools: db_tools.*, mcp_tool.*  # Auto-discovery mode
+    # No explicit mcp_servers needed - automatically discovers all
+```
+
+### Universal Template System
+The new universal template system provides platform-agnostic MCP orchestration with dynamic optimization:
+
+- **Platform Context Awareness**: Automatically adapts to ClickZetta, PostgreSQL, Snowflake, or universal platforms
+- **Dynamic Tool Categories**: Tool recommendations adjust based on current platform capabilities
+- **Configuration-Driven Optimization**: Uses Jinja2 templating for platform-specific guidance
+
+### Benefits of Universal Architecture
+- **✅ Multi-Platform Support**: Works with any data platform without vendor-specific code
+- **✅ Configuration Flexibility**: Supports both explicit and auto-discovery modes
+- **✅ Backward Compatibility**: Existing configurations continue to work unchanged
+- **✅ Intelligent Tool Selection**: Platform-aware tool recommendations
+- **✅ Zero Configuration**: Auto-discovery works out-of-the-box
+
 ## Integration with CLI
 
 This backend implementation provides the foundation for CLI commands like:
