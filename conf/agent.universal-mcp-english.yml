@@ -20,8 +20,7 @@ agent:
       tools: db_tools.*, context_search_tools.*
       agent_description: Universal Database Agent - Intelligent query and analysis assistant with MCP integration
       mcp_servers:
-        clickzetta_mcp_sse:
-          url: http://localhost:8003/sse
+        clickzetta_mcp_sse: {}
       rules:
       - Detect user intent and provide appropriate database operations
       - Support data analysis scenarios with context-aware responses
