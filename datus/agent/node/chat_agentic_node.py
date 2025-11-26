@@ -382,15 +382,33 @@ class ChatAgenticNode(AgenticNode):
             return mcp_servers
 
         # Get MCP servers from configuration
-        # Priority: node_config.mcp_servers > agent_config.mcp_servers
+        # Priority: node_config.mcp_servers > agent_config.mcp_servers > auto-discovery
         if has_node_mcp_config:
             mcp_config = node_config['mcp_servers']
             logger.info(f"Setting up MCP servers from node configuration: {list(mcp_config.keys())}")
         elif hasattr(config, 'mcp_servers') and config.mcp_servers:
             mcp_config = config.mcp_servers
             logger.info(f"Setting up MCP servers from agent configuration: {list(mcp_config.keys())}")
+        elif has_tools_mcp_pattern:
+            # Auto-discover available MCP servers when tools pattern includes 'mcp_tool'
+            logger.info("Tools pattern includes 'mcp_tool', auto-discovering available MCP servers...")
+            try:
+                from datus.tools.mcp_tools.mcp_manager import MCPManager
+                mcp_manager = MCPManager()
+                available_servers = mcp_manager.list_servers()
+
+                if available_servers:
+                    # Create a config dict with all available servers
+                    mcp_config = {server.name: {} for server in available_servers}
+                    logger.info(f"Auto-discovered MCP servers: {list(mcp_config.keys())}")
+                else:
+                    logger.warning("No MCP servers found in .mcp.json for auto-discovery")
+                    return mcp_servers
+            except Exception as e:
+                logger.error(f"Failed to auto-discover MCP servers: {e}")
+                return mcp_servers
         else:
-            logger.warning("No mcp_servers found in agent configuration")
+            logger.warning("No mcp_servers configuration found and tools pattern doesn't include 'mcp_tool'")
             return mcp_servers
 
         # Create server instances for each configured MCP server

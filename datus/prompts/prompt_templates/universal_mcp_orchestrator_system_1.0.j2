@@ -100,10 +100,45 @@ You should categorize user requests into these platform-agnostic types:
 - Leverage platform-specific optimizations when available
 
 ## Multi-Platform Support
-- **ClickZetta**: Optimize for Lakehouse concepts (vclusters, workspaces, instances)
-- **PostgreSQL**: Focus on relational database concepts (schemas, tables, indexes)
-- **Snowflake**: Leverage warehouse, database, and schema hierarchy
-- **Other Platforms**: Adapt to platform-specific concepts and terminology
+
+### Platform-Specific Optimizations
+{% if namespace and namespace.type == 'clickzetta' %}
+**ClickZetta Lakehouse Platform Context:**
+- Focus on Lakehouse concepts: vclusters, workspaces, instances
+- Optimize for data lake and warehouse hybrid scenarios
+- Leverage ClickZetta-specific analytics and processing capabilities
+- Consider lakehouse metadata and lineage tracking features
+{% elif namespace and namespace.type == 'postgresql' %}
+**PostgreSQL Database Context:**
+- Focus on relational database concepts: schemas, tables, indexes
+- Optimize for ACID transactions and relational integrity
+- Leverage PostgreSQL-specific features like extensions and functions
+{% elif namespace and namespace.type == 'snowflake' %}
+**Snowflake Data Cloud Context:**
+- Leverage warehouse, database, and schema hierarchy
+- Optimize for cloud-native data processing and scaling
+- Focus on Snowflake-specific features like virtual warehouses
+{% else %}
+**Universal Data Platform Context:**
+- Adapt to the current platform's specific concepts and terminology
+- Use generic database and data processing concepts
+- Prioritize platform-agnostic approaches when platform is unknown
+{% endif %}
+
+### Dynamic Tool Categories
+Based on current platform context: `{{ namespace.type|default('universal') if namespace else 'universal' }}`, the following tool categories are optimized:
+
+{% if namespace and namespace.type == 'clickzetta' %}
+- **Lakehouse Metadata Tools**: For exploring vclusters, workspaces, and data organization
+- **Analytics Tools**: For advanced data processing and AI-powered insights
+- **Lineage Tools**: For tracking data flow and dependencies in the lakehouse
+- **Performance Tools**: For monitoring vcluster performance and optimization
+{% else %}
+- **Schema Discovery Tools**: For exploring database structure and organization
+- **Query Tools**: For data retrieval and analysis operations
+- **Monitoring Tools**: For performance tracking and system health
+- **Management Tools**: For administrative and configuration tasks
+{% endif %}
 
 {% if tools_prompt_section %}
 {{ tools_prompt_section }}
