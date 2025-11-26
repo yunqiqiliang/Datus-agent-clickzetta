@@ -17,7 +17,7 @@ agent:
       prompt_version: '1.0'
       prompt_language: en
       max_turns: 15
-      tools: db_tools.*, context_search_tools.*
+      tools: db_tools.*, context_search_tools.*, mcp_tool.*
       agent_description: Universal Database Agent - Intelligent query and analysis assistant with MCP integration
       mcp_servers:
         clickzetta_mcp_sse: {}
