@@ -115,9 +115,13 @@ class Node(ABC):
         elif node_type == NodeType.TYPE_GENSQL:
             return GenSQLAgenticNode(node_id, description, node_type, input_data, agent_config, tools, node_name)
         elif node_type == NodeType.TYPE_MCP:
-            from datus.agent.node.mcp_agentic_node import MCPAgenticNode
-
-            return MCPAgenticNode(node_id, description, node_type, input_data, agent_config, tools, node_name)
+            # Use new universal MCP architecture (backward compatibility removed for simplicity)
+            from datus.agent.node.universal_mcp_node import UniversalMCPAgenticNode
+            return UniversalMCPAgenticNode(node_id, description, input_data, agent_config)
+        elif node_type == NodeType.TYPE_UNIVERSAL_MCP:
+            # Universal MCP with semantic analysis and zero hardcoding
+            from datus.agent.node.universal_mcp_node import UniversalMCPAgenticNode
+            return UniversalMCPAgenticNode(node_id, description, input_data, agent_config)
         else:
             raise ValueError(f"Invalid node type: {node_type}")
 

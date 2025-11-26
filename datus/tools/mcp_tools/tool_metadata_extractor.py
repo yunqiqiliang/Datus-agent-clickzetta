@@ -43,7 +43,19 @@ class ToolMetadataExtractor:
 
         logger.info("Initialized Tool Metadata Extractor")
 
-    def get_tool_metadata(self, tool_name: str, mcp_server: str = "clickzetta_mcp_sse") -> Dict[str, Any]:
+    def _get_default_mcp_server(self) -> str:
+        """Get the first available MCP server name from agent config."""
+        try:
+            from datus.agent.agent import Agent
+            if hasattr(Agent, '_default_agent_config') and Agent._default_agent_config:
+                if hasattr(Agent._default_agent_config, 'mcp_servers') and Agent._default_agent_config.mcp_servers:
+                    return list(Agent._default_agent_config.mcp_servers.keys())[0]
+        except Exception:
+            pass
+        # Fallback to common naming convention
+        return "clickzetta_mcp_sse"
+
+    def get_tool_metadata(self, tool_name: str, mcp_server: str = None) -> Dict[str, Any]:
         """
         Get detailed metadata for a specific MCP tool.
 
@@ -54,6 +66,9 @@ class ToolMetadataExtractor:
         Returns:
             Dictionary containing tool metadata (description, parameters, etc.)
         """
+        if mcp_server is None:
+            mcp_server = self._get_default_mcp_server()
+
         cache_key = f"{mcp_server}:{tool_name}"
 
         # Check cache first
@@ -319,7 +334,7 @@ class ToolMetadataExtractor:
         else:
             return "complex"
 
-    def get_all_tools_metadata(self, mcp_server: str = "clickzetta_mcp_sse") -> Dict[str, Dict[str, Any]]:
+    def get_all_tools_metadata(self, mcp_server: str = None) -> Dict[str, Dict[str, Any]]:
         """
         Get metadata for all available tools from an MCP server.
 
@@ -329,6 +344,9 @@ class ToolMetadataExtractor:
         Returns:
             Dictionary mapping tool names to their metadata
         """
+        if mcp_server is None:
+            mcp_server = self._get_default_mcp_server()
+
         cache_key = f"all_tools:{mcp_server}"
 
         # Check cache first
@@ -387,7 +405,7 @@ class ToolMetadataExtractor:
             logger.error(f"Error fetching all tools metadata: {e}")
             return {}
 
-    def get_tools_by_category(self, category: str, mcp_server: str = "clickzetta_mcp_sse") -> List[str]:
+    def get_tools_by_category(self, category: str, mcp_server: str = None) -> List[str]:
         """
         Get list of tools by category.
 

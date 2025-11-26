@@ -8,7 +8,7 @@ ChatAgenticNode implementation for flexible CLI chat interactions.
 This module provides a concrete implementation of AgenticNode specifically
 designed for chat interactions with database and filesystem tool support.
 """
-from typing import AsyncGenerator, Dict, Optional
+from typing import Any, AsyncGenerator, Dict, Optional
 
 from agents.mcp import MCPServerStdio
 
@@ -43,6 +43,7 @@ class ChatAgenticNode(AgenticNode):
         input_data: Optional[ChatNodeInput] = None,
         agent_config: Optional[AgentConfig] = None,
         tools: Optional[list] = None,
+        node_name: Optional[str] = None,
     ):
         """
         Initialize the ChatAgenticNode as a workflow-compatible node.
@@ -54,7 +55,10 @@ class ChatAgenticNode(AgenticNode):
             input_data: Chat input data
             agent_config: Agent configuration
             tools: List of tools (will be populated in setup_tools)
+            node_name: Optional name to use for loading node configuration from agent.yml
         """
+        # Store configured node name for config lookup
+        self.configured_node_name = node_name
         # Extract namespace from agent_config
         namespace = agent_config.current_namespace if agent_config else None
         self.namespace = namespace
@@ -70,9 +74,22 @@ class ChatAgenticNode(AgenticNode):
             ):
                 self.max_turns = chat_node_config.input.max_turns
 
-        # Initialize MCP servers based on namespace
-        mcp_servers = self._setup_mcp_servers(agent_config)
-
+        # Get node configuration dict for MCP server setup
+        # Priority: configured_node_name > node_type from agentic_nodes
+        node_config_dict = {}
+        if agent_config and hasattr(agent_config, 'agentic_nodes'):
+            # First try configured node name (e.g., "clickzetta_mcp_server_220_sse")
+            if node_name and node_name in agent_config.agentic_nodes:
+                node_config_dict = agent_config.agentic_nodes[node_name]
+            # Fallback to node_type (e.g., "chat")
+            elif node_type in agent_config.agentic_nodes:
+                node_config_dict = agent_config.agentic_nodes[node_type]
+        # Initialize MCP servers based on configuration
+        mcp_servers = self._setup_mcp_servers(
+            agent_config=agent_config,
+            input_data=input_data,
+            node_config=node_config_dict
+        )
         # Call parent constructor with all required Node parameters
         super().__init__(
             node_id=node_id,
@@ -83,17 +100,26 @@ class ChatAgenticNode(AgenticNode):
             tools=tools or [],
             mcp_servers=mcp_servers,
         )
-
         # ChatAgenticNode-specific attributes
         self.db_func_tool: DBFuncTool
         self.context_search_tools: ContextSearchTools
         self.date_parsing_tools: Optional[DateParsingTools] = None
         self.filesystem_func_tool: Optional[FilesystemFuncTool] = None
+        self.mcp_tools: list = []
         self.plan_mode_active = False
         self.plan_hooks = None
-
         # Setup tools after initialization
         self.setup_tools()
+    def get_node_name(self) -> str:
+        """
+        Get the configured node name for this chat agentic node.
+
+        Returns:
+            The configured node name from agent.yml if provided, otherwise defaults to parent behavior
+        """
+        if self.configured_node_name:
+            return self.configured_node_name
+        return super().get_node_name()
 
     def setup_input(self, workflow: Workflow) -> dict:
         """
@@ -205,6 +231,7 @@ class ChatAgenticNode(AgenticNode):
             + self.context_search_tools.available_tools()
             + (self.date_parsing_tools.available_tools() if self.date_parsing_tools else [])
             + (self.filesystem_func_tool.available_tools() if self.filesystem_func_tool else [])
+            + (self.mcp_tools if self.mcp_tools else [])
         )
 
     def setup_tools(self):
@@ -216,6 +243,7 @@ class ChatAgenticNode(AgenticNode):
         self.context_search_tools = ContextSearchTools(self.agent_config)
         self._setup_date_parsing_tools()
         self._setup_filesystem_tools()
+        self._setup_mcp_tools()
         self._rebuild_tools()
 
     def _setup_date_parsing_tools(self):
@@ -234,6 +262,16 @@ class ChatAgenticNode(AgenticNode):
             logger.info(f"Setup filesystem tools with root path: {root_path}")
         except Exception as e:
             logger.error(f"Failed to setup filesystem tools: {e}")
+
+    def _setup_mcp_tools(self):
+        """
+        Setup MCP tools - NO-OP for ChatAgenticNode.
+
+        MCP tools are handled via mcp_servers, not as pre-loaded tools.
+        The Agent framework will discover tools from MCP servers dynamically.
+        """
+        self.mcp_tools = []
+        logger.info("MCP tools will be handled dynamically via mcp_servers")
 
     def _resolve_workspace_root(self) -> str:
         """
@@ -265,19 +303,115 @@ class ChatAgenticNode(AgenticNode):
         else:
             return os.path.join(os.getcwd(), workspace_root)
 
-    def _setup_mcp_servers(self, agent_config: Optional[AgentConfig] = None) -> Dict[str, MCPServerStdio]:
+    def _setup_mcp_server_from_config(self, server_name: str) -> Optional[Any]:
+        """Setup MCP server from {agent.home}/conf/.mcp.json using mcp_manager."""
+        try:
+            from datus.tools.mcp_tools.mcp_manager import MCPManager
+
+            # Use MCPManager to get server config
+            mcp_manager = MCPManager()
+            server_config = mcp_manager.get_server_config(server_name)
+
+            if not server_config:
+                logger.warning(f"MCP server '{server_name}' not found in configuration")
+                return None
+
+            # Create server instance using the manager
+            server_instance, details = mcp_manager._create_server_instance(server_config)
+
+            if server_instance:
+                logger.info(f"Added MCP server '{server_name}' from configuration: {details}")
+                return server_instance
+            else:
+                error_msg = details.get("error", "Unknown error")
+                logger.warning(f"Failed to create MCP server '{server_name}': {error_msg}")
+                return None
+
+        except Exception as e:
+            logger.error(f"Failed to setup MCP server '{server_name}' from config: {e}")
+            return None
+
+    def _setup_mcp_servers(
+        self,
+        agent_config: Optional[AgentConfig] = None,
+        input_data: Optional[ChatNodeInput] = None,
+        node_config: Optional[Dict] = None
+    ) -> Dict[str, MCPServerStdio]:
         """
-        Set up MCP servers based on namespace and configuration.
+        Set up MCP servers based on global mcp_servers configuration.
+
+        When tools pattern contains 'mcp_tool', this method discovers MCP servers
+        from agent_config.mcp_servers and creates MCPServerStdio instances.
 
         Args:
             agent_config: Agent configuration
+            input_data: Optional input data to check for tools pattern
+            node_config: Optional node configuration dict
 
         Returns:
-            Dictionary of MCP servers
+            Dictionary of MCPServerStdio instances keyed by server name
         """
-        # No MCP servers for chat node currently
-        # (Previously had filesystem MCP server, now using native filesystem tools)
-        return {}
+        mcp_servers = {}
+
+        # Use passed agent_config or fall back to self.agent_config
+        config = agent_config or getattr(self, 'agent_config', None)
+        if not config:
+            logger.warning("No agent config available for MCP server setup")
+            return mcp_servers
+
+        # Check if tools pattern requests MCP tools
+        # Priority: input_data.tools > node_config['tools'] > self.node_config['tools']
+        tools_pattern = ''
+        if input_data and hasattr(input_data, 'tools'):
+            tools_pattern = input_data.tools or ''
+        elif node_config and 'tools' in node_config:
+            tools_pattern = node_config.get('tools', '')
+        elif hasattr(self, 'node_config'):
+            tools_pattern = self.node_config.get('tools', '')
+
+        # Check for MCP servers in multiple places:
+        # 1. From node_config.mcp_servers (direct config)
+        # 2. From agent_config.mcp_servers if tools pattern includes 'mcp_tool'
+
+        # Check if node_config has direct mcp_servers configuration
+        has_node_mcp_config = node_config and 'mcp_servers' in node_config and node_config['mcp_servers']
+        has_tools_mcp_pattern = tools_pattern and 'mcp_tool' in tools_pattern
+
+        if not has_node_mcp_config and not has_tools_mcp_pattern:
+            logger.info("Neither node mcp_servers config nor tools pattern requests MCP tools, skipping MCP server setup")
+            return mcp_servers
+
+        # Get MCP servers from configuration
+        # Priority: node_config.mcp_servers > agent_config.mcp_servers
+        if has_node_mcp_config:
+            mcp_config = node_config['mcp_servers']
+            logger.info(f"Setting up MCP servers from node configuration: {list(mcp_config.keys())}")
+        elif hasattr(config, 'mcp_servers') and config.mcp_servers:
+            mcp_config = config.mcp_servers
+            logger.info(f"Setting up MCP servers from agent configuration: {list(mcp_config.keys())}")
+        else:
+            logger.warning("No mcp_servers found in agent configuration")
+            return mcp_servers
+
+        # Create server instances for each configured MCP server
+        for server_name, server_config in mcp_config.items():
+            try:
+                # Always try to use MCPManager first (supports both stdio and SSE)
+                server = self._setup_mcp_server_from_config(server_name)
+
+                if server:
+                    mcp_servers[server_name] = server
+            except Exception as e:
+                logger.error(f"Failed to setup MCP server '{server_name}': {e}")
+
+        logger.info(f"Setup {len(mcp_servers)} MCP servers: {list(mcp_servers.keys())}")
+
+        # Debug: Log detailed info about each server
+        for name, server in mcp_servers.items():
+            logger.debug(f"MCP server '{name}': type={type(server)}, instance={server}")
+
+        return mcp_servers
+
 
     async def execute_stream(
         self, action_history_manager: Optional[ActionHistoryManager] = None
@@ -378,6 +512,7 @@ class ChatAgenticNode(AgenticNode):
             execution_mode = "plan" if is_plan_mode and self.plan_hooks else "normal"
 
             # Start unified recursive execution
+            iteration_count = 0
             async for stream_action in self._execute_with_recursive_replan(
                 prompt=enhanced_message,
                 execution_mode=execution_mode,
@@ -385,9 +520,10 @@ class ChatAgenticNode(AgenticNode):
                 action_history_manager=action_history_manager,
                 session=session,
             ):
+                iteration_count += 1
                 yield stream_action
-
-                # Collect response content from successful actions
+            # Collect response content from successful actions
+            for stream_action in action_history_manager.get_actions():
                 if stream_action.status == ActionStatus.SUCCESS and stream_action.output:
                     if isinstance(stream_action.output, dict):
                         last_successful_output = stream_action.output
@@ -614,6 +750,7 @@ class ChatAgenticNode(AgenticNode):
                 final_prompt = self._build_plan_prompt(prompt)
 
             # Unified execution using configuration
+            stream_count = 0
             async for stream_action in self.model.generate_with_tools_stream(
                 prompt=final_prompt,
                 tools=config["tools"],
@@ -623,9 +760,11 @@ class ChatAgenticNode(AgenticNode):
                 session=session,
                 action_history_manager=action_history_manager,
                 hooks=config.get("hooks"),
+                agent_name=self.id,
+                agent_config=self.agent_config,
             ):
+                stream_count += 1
                 yield stream_action
-
         except Exception as e:
             if "REPLAN_REQUIRED" in str(e):
                 logger.info("Replan requested, recursing...")

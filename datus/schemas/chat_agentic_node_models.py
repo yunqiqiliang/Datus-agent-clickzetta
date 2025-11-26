@@ -41,6 +41,7 @@ class ChatNodeInput(BaseInput):
     auto_execute_plan: bool = Field(
         default=False, description="Whether to auto-execute plan without user confirmation (for workflow/benchmark)"
     )
+    tools: Optional[str] = Field(default="", description="Tools pattern specification (e.g., 'db_tools.*, mcp_tool.*')")
 
     class Config:
         populate_by_name = True

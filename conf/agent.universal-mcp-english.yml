@@ -1,0 +1,82 @@
+agent:
+  target: qwen_main
+  home: .datus_home
+  models:
+    qwen_main:
+      type: qwen
+      vendor: aliyun
+      base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api_key: ${DASHSCOPE_API_KEY}
+      model: qwen-plus-latest
+      enable_thinking: false
+  agentic_nodes:
+    universal_mcp_agent:
+      node_type: chat
+      model: qwen_main
+      system_prompt: gen_sql
+      prompt_version: '1.0'
+      prompt_language: en
+      max_turns: 15
+      tools: db_tools.*, context_search_tools.*
+      agent_description: Universal Database Agent - Intelligent query and analysis assistant with MCP integration
+      mcp_servers:
+        clickzetta_mcp_sse:
+          url: http://localhost:8003/sse
+      rules:
+      - Detect user intent and provide appropriate database operations
+      - Support data analysis scenarios with context-aware responses
+      - Use database tools for querying schemas, tables, vclusters, and data analysis
+      - For advanced operations (vclusters, volumes, ETL, AI functions), use MCP tools efficiently - prioritize high-level tools that can provide complete answers
+      - "EFFICIENCY RULE: Use the minimum number of tools necessary. If one specialized tool can answer the question, use only that tool"
+      - Prefer specialized database tools for specific query types
+      - Provide clear explanations of query results and data insights
+    chat:
+      node_type: chat
+      model: qwen_main
+      system_prompt: 'You are a friendly data analysis assistant. For complex data
+        analysis tasks,
+
+        recommend users use the /universal_mcp_agent command for smarter tool recommendations.
+
+        '
+      agent_description: General Chat Agent - Handle general conversations and simple
+        queries
+    clickzetta_mcp_server_220_sse:
+      node_type: chat
+      model: qwen_main
+      system_prompt: gen_sql
+      prompt_version: '1.0'
+      prompt_language: en
+      max_turns: 15
+      tools: db_tools.*, context_search_tools.*, mcp_tool.*
+      agent_description: Specialized clickzetta_mcp_server_220_sse subagent for SQL generation - Natural Language to SQL with MCP integration
+      rules:
+      - Analyze user intent and intelligently select the most appropriate tools
+      - For basic database queries, use standard db_tools
+      - For advanced operations (vclusters, volumes, ETL, AI functions), prioritize MCP tools
+      - MCP tools provide rich functionality including object management, data processing, and advanced analytics
+      - Review available tool descriptions and select the best match for the user's request
+      - Provide clear explanations of operations and results
+  storage:
+    embedding_device_type: cpu
+    document:
+      registry_name: sentence-transformers
+      model_name: all-MiniLM-L6-v2
+      dim_size: 384
+      batch_size: 64
+  workflow:
+    plan: reflection
+    chat_default_node: universal_mcp_agent
+  mcp_servers:
+    clickzetta_mcp_sse:
+      url: http://localhost:8003/sse
+  namespace:
+    clickzetta:
+      type: clickzetta
+      service: ${CLICKZETTA_SERVICE}
+      instance: ${CLICKZETTA_INSTANCE}
+      username: ${CLICKZETTA_USERNAME}
+      password: ${CLICKZETTA_PASSWORD}
+      workspace: ${CLICKZETTA_WORKSPACE}
+      schema: ${CLICKZETTA_SCHEMA}
+      vcluster: ${CLICKZETTA_VCLUSTER}

@@ -30,6 +30,12 @@ class ChatExecutor:
 
     def execute_chat_stream(self, user_message: str, cli, current_subagent: Optional[str] = None):
         """Execute chat command with streaming support - reuses chat_commands logic."""
+        # Clear previous actions to prevent accumulation across queries
+        self.last_actions = []
+
+        # CRITICAL: Also clear the global CLI ActionHistoryManager to prevent response mixing
+        if cli and hasattr(cli, 'actions') and hasattr(cli.actions, 'clear'):
+            cli.actions.clear()
         if not cli or not cli.chat_commands:
             yield "Error: Please load configuration first!"
             return
@@ -40,7 +46,6 @@ class ChatExecutor:
 
             # Reuse chat_commands node management
             need_new_node = cli.chat_commands._should_create_new_node(current_subagent)
-
             # Disable compact in web mode to avoid blocking
             if need_new_node:
                 current_node = cli.chat_commands._create_new_node(current_subagent)
@@ -55,7 +60,6 @@ class ChatExecutor:
             node_input, _ = cli.chat_commands.create_node_input(
                 user_message, current_node, at_tables, at_metrics, at_sqls, plan_mode=False
             )
-
             # Stream execution with deduplication
             incremental_actions = []
             seen_thinking_content = set()  # Track unique thinking content (without prefix)
@@ -64,12 +68,10 @@ class ChatExecutor:
             async def collect_actions():
                 """Collect all actions from the stream"""
                 nonlocal last_message
-
                 current_node.input = node_input
                 async for action in current_node.execute_stream(cli.actions):
                     incremental_actions.append(action)
                     formatted = self.format_action_for_stream(action)
-
                     # Skip empty messages
                     if not formatted:
                         continue
@@ -94,9 +96,7 @@ class ChatExecutor:
 
             # Execute async generator with proper event loop handling
             loop = asyncio.new_event_loop()
-
             try:
-
                 async def run_stream():
                     """Wrapper to iterate the async generator to completion"""
                     try:
@@ -104,7 +104,6 @@ class ChatExecutor:
                             yield message
                     except StopAsyncIteration:
                         pass
-
                 async_gen = run_stream()
                 while True:
                     try:

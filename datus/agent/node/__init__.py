@@ -22,7 +22,7 @@ __all__ = [
     "GenSQLAgenticNode",
     "ChatAgenticNode",
     "CompareAgenticNode",
-    "MCPAgenticNode",
+    # "UniversalMCPAgenticNode",  # Temporarily disabled
     "Node",
 ]
 
@@ -39,7 +39,6 @@ from .fix_node import FixNode
 from .gen_sql_agentic_node import GenSQLAgenticNode
 from .generate_sql_node import GenerateSQLNode
 from .hitl_node import HitlNode
-from .mcp_agentic_node import MCPAgenticNode
 from .output_node import OutputNode
 from .parallel_node import ParallelNode
 from .reason_sql_node import ReasonSQLNode
@@ -48,3 +47,5 @@ from .schema_linking_node import SchemaLinkingNode
 from .search_metrics_node import SearchMetricsNode
 from .selection_node import SelectionNode
 from .subworkflow_node import SubworkflowNode
+# Temporarily disable universal MCP import to fix module loading issue
+# from .universal_mcp_node import UniversalMCPAgenticNode

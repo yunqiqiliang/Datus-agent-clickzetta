@@ -596,37 +596,36 @@ class OpenAICompatibleModel(LLMBaseModel):
         the complete action history from result.to_input_list() after streaming completes.
         This avoids issues with duplicate call_ids and out-of-order events.
         """
-
         # Custom JSON encoder
         self._setup_custom_json_encoder()
-
         async def _stream_operation():
             async_client = create_openai_client(
                 AsyncOpenAI, self.api_key, self.base_url, default_headers=self.default_headers
             )
-
             try:
                 # Configure stream_options to include usage information for token tracking
                 model_settings = ModelSettings(extra_body={"stream_options": {"include_usage": True}})
 
                 model_params = {"model": self.model_name}
                 async_model = OpenAIChatCompletionsModel(**model_params, openai_client=async_client)
-
-                # Use multiple_mcp_servers context manager with empty dict if no MCP servers
+                # Check if we should use LLM-native MCP approach
+                agent_name = kwargs.pop("agent_name", "universal_mcp_agent")
+                agent_config = kwargs.pop("agent_config", None)
+                # Use traditional MCP approach for all cases
                 async with multiple_mcp_servers(mcp_servers or {}) as connected_servers:
                     agent_kwargs = {
-                        "name": kwargs.pop("agent_name", "Tools_Agent"),
+                        "name": agent_name,
                         "instructions": instruction,
                         "output_type": output_type,
                         "model": async_model,
                         "model_settings": model_settings,
                     }
 
-                    # Only add mcp_servers if we have connected servers
+                    # Add MCP servers to agent if connected
                     if connected_servers:
                         agent_kwargs["mcp_servers"] = list(connected_servers.values())
 
-                    # Only add tools if we have them
+                    # Add tools if provided
                     if tools:
                         agent_kwargs["tools"] = tools
 
@@ -634,6 +633,7 @@ class OpenAICompatibleModel(LLMBaseModel):
                     if hooks:
                         agent_kwargs["hooks"] = hooks
 
+                    # Create agent with traditional MCP setup
                     agent = Agent(**agent_kwargs)
 
                     try:

@@ -53,6 +53,7 @@ class NodeType:
     TYPE_SEMANTIC = "semantic"  # For semantic model generation
     TYPE_SQL_SUMMARY = "sql_summary"  # For SQL summary generation
     TYPE_MCP = "mcp"  # For MCP tool orchestration with intelligent selection
+    TYPE_UNIVERSAL_MCP = "universal_mcp"  # For Universal MCP with semantic analysis and zero hardcoding
 
     ACTION_TYPES = [
         TYPE_SCHEMA_LINKING,
@@ -70,6 +71,7 @@ class NodeType:
         TYPE_SEMANTIC,
         TYPE_SQL_SUMMARY,
         TYPE_MCP,
+        TYPE_UNIVERSAL_MCP,
     ]
 
     NODE_TYPE_DESCRIPTIONS = {
@@ -94,6 +96,7 @@ class NodeType:
         TYPE_SEMANTIC: "Semantic model generation with conversational AI",
         TYPE_SQL_SUMMARY: "SQL summary generation with conversational AI",
         TYPE_MCP: "MCP tool orchestration with intelligent tool selection",
+        TYPE_UNIVERSAL_MCP: "Universal MCP with semantic analysis and zero hardcoding",
     }
 
     @classmethod
@@ -141,6 +144,9 @@ class NodeType:
             input_data_cls = SqlSummaryNodeInput
         elif node_type == NodeType.TYPE_MCP:
             # MCP nodes can reuse ChatNodeInput as they have similar requirements
+            input_data_cls = ChatNodeInput
+        elif node_type == NodeType.TYPE_UNIVERSAL_MCP:
+            # Universal MCP nodes also use ChatNodeInput for consistency
             input_data_cls = ChatNodeInput
         else:
             raise NotImplementedError(f"node_type {node_type} not implemented")

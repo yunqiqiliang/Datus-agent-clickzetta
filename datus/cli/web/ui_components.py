@@ -264,8 +264,9 @@ class UIComponents:
 
         # Save button (only show if not in readonly mode)
         if not readonly_mode:
-            # Create unique ID for this SQL block
-            sql_id = hashlib.md5(sql.encode()).hexdigest()[:8]
+            # Create unique ID for this SQL block with timestamp to avoid duplicates
+            import time
+            sql_id = hashlib.md5(f"{sql}{time.time()}".encode()).hexdigest()[:8]
 
             if st.button("👍 Success", key=f"save_{sql_id}", help="Save this query as a success story"):
                 save_callback(sql, user_message)

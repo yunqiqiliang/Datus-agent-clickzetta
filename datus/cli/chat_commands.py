@@ -102,7 +102,7 @@ class ChatCommands:
             if subagent_name in ["gen_semantic_model", "gen_metrics"]:
                 from datus.agent.node.semantic_agentic_node import SemanticAgenticNode
 
-                self.console.print(f"[dim]Creating new {subagent_name} session...[/]")
+                print(f"Creating new {subagent_name} session...")
                 return SemanticAgenticNode(
                     node_name=subagent_name,
                     agent_config=self.cli.agent_config,
@@ -112,29 +112,51 @@ class ChatCommands:
             elif subagent_name == "gen_sql_summary":
                 from datus.agent.node.sql_summary_agentic_node import SqlSummaryAgenticNode
 
-                self.console.print(f"[dim]Creating new {subagent_name} session...[/]")
+                print(f"Creating new {subagent_name} session...")
                 return SqlSummaryAgenticNode(
                     node_name=subagent_name,
                     agent_config=self.cli.agent_config,
                     execution_mode="interactive",
                 )
             else:
-                # Create GenSQLAgenticNode for other subagents
-                from datus.agent.node.gen_sql_agentic_node import GenSQLAgenticNode
+                # Check node_type from configuration to create appropriate node
+                node_type_from_config = None
+                if hasattr(self.cli.agent_config, 'agentic_nodes') and subagent_name in self.cli.agent_config.agentic_nodes:
+                    node_config = self.cli.agent_config.agentic_nodes[subagent_name]
+                    if isinstance(node_config, dict):
+                        node_type_from_config = node_config.get('node_type')
+                    elif hasattr(node_config, 'node_type'):
+                        node_type_from_config = node_config.node_type
 
-                self.console.print(f"[dim]Creating new {subagent_name} session...[/]")
-                return GenSQLAgenticNode(
-                    node_id=f"{subagent_name}_cli",
-                    description=f"SQL generation node for {subagent_name}",
-                    node_type="gensql",
-                    input_data=None,
-                    agent_config=self.cli.agent_config,
-                    tools=None,
-                    node_name=subagent_name,
-                )
+                # Use print() instead of console.print() to avoid blocking in web mode
+                print(f"Creating new {subagent_name} session...")
+                # Create ChatAgenticNode if node_type is 'chat', otherwise GenSQLAgenticNode
+                if node_type_from_config == 'chat':
+                    node = ChatAgenticNode(
+                        node_id=f"{subagent_name}_cli",
+                        description=f"Chat node for {subagent_name}",
+                        node_type="chat",
+                        input_data=None,
+                        agent_config=self.cli.agent_config,
+                        tools=None,
+                        node_name=subagent_name,
+                    )
+                    return node
+                else:
+                    from datus.agent.node.gen_sql_agentic_node import GenSQLAgenticNode
+
+                    return GenSQLAgenticNode(
+                        node_id=f"{subagent_name}_cli",
+                        description=f"SQL generation node for {subagent_name}",
+                        node_type="gensql",
+                        input_data=None,
+                        agent_config=self.cli.agent_config,
+                        tools=None,
+                        node_name=subagent_name,
+                    )
         else:
             # Create ChatAgenticNode for default chat
-            self.console.print("[dim]Creating new chat session...[/]")
+            print("Creating new chat session...")
             return ChatAgenticNode(
                 node_id="chat_cli",
                 description="Chat node for CLI interactions",
@@ -200,6 +222,11 @@ class ChatCommands:
         else:
             from datus.schemas.chat_agentic_node_models import ChatNodeInput
 
+            # Get tools configuration from current_node's node_config
+            tools_spec = ""
+            if hasattr(current_node, 'node_config') and current_node.node_config:
+                tools_spec = current_node.node_config.get('tools', '')
+
             return (
                 ChatNodeInput(
                     user_message=user_message,
@@ -210,6 +237,7 @@ class ChatCommands:
                     metrics=at_metrics,
                     reference_sql=at_sqls,
                     plan_mode=plan_mode,
+                    tools=tools_spec,
                 ),
                 "chat",
             )
