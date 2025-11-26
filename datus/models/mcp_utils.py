@@ -18,7 +18,9 @@ async def _safe_connect_server(server_name: str, server, max_retries: int = 3, c
 
     for attempt in range(max_retries):
         try:
-            logger.info(f"[MCP] Attempting to connect to server '{server_name}' (attempt {attempt + 1}/{max_retries}, timeout={connection_timeout}s)")
+            logger.info(
+                f"[MCP] Attempting to connect to server '{server_name}' (attempt {attempt + 1}/{max_retries}, timeout={connection_timeout}s)"
+            )
 
             provider = server  # assume already created via Provider.from_process(...)
             # async context here ensures lifecycle is tracked
@@ -89,6 +91,7 @@ async def multiple_mcp_servers(mcp_servers: Dict[str, Any]):
             except Exception as e:
                 logger.error(f"[MCP] Failed to start MCP server '{server_name}': {type(e).__name__}: {str(e)}")
                 import traceback
+
                 logger.debug(f"[MCP] Traceback for server '{server_name}':\n{traceback.format_exc()}")
 
         if not connected_servers:

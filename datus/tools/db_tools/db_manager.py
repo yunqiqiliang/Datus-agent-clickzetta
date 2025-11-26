@@ -11,7 +11,8 @@ from sqlalchemy.engine.url import URL, make_url
 
 from datus.configuration.agent_config import DbConfig
 from datus.tools.db_tools.base import BaseSqlConnector
-from datus.tools.db_tools.config import ConnectionConfig, DuckDBConfig, SQLiteConfig
+from datus.tools.db_tools.config import (ConnectionConfig, DuckDBConfig,
+                                         SQLiteConfig)
 from datus.tools.db_tools.registry import connector_registry
 from datus.utils.constants import DBType
 from datus.utils.exceptions import DatusException, ErrorCode

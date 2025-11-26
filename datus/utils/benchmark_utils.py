@@ -23,7 +23,8 @@ from collections import OrderedDict, defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, MutableMapping, Optional, Protocol, Sequence, Tuple
+from typing import (Any, Dict, Iterable, List, Mapping, MutableMapping,
+                    Optional, Protocol, Sequence, Tuple)
 
 import pandas as pd
 import yaml
@@ -2150,7 +2151,8 @@ def _log_accuracy_summary(accuracy_report: Dict[str, Any]) -> None:
         "",
     ]
 
-    logger.info(f'\n\n{"\n".join(report_lines)}')
+    separator = "\n"
+    logger.info(f'\n\n{separator.join(report_lines)}')
 
 
 def _ensure_task_identifier(task: Dict[str, Any], task_id_key: str, position: int) -> Dict[str, Any]:

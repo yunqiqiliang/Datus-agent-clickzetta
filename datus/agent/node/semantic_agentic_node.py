@@ -15,8 +15,10 @@ from typing import Any, AsyncGenerator, Dict, Literal, Optional
 from datus.agent.node.agentic_node import AgenticNode
 from datus.cli.generation_hooks import GenerationHooks
 from datus.configuration.agent_config import AgentConfig
-from datus.schemas.action_history import ActionHistory, ActionHistoryManager, ActionRole, ActionStatus
-from datus.schemas.semantic_agentic_node_models import SemanticNodeInput, SemanticNodeResult
+from datus.schemas.action_history import (ActionHistory, ActionHistoryManager,
+                                          ActionRole, ActionStatus)
+from datus.schemas.semantic_agentic_node_models import (SemanticNodeInput,
+                                                        SemanticNodeResult)
 from datus.tools.db_tools.db_manager import db_manager_instance
 from datus.tools.func_tool import DBFuncTool
 from datus.tools.func_tool.filesystem_tool import FilesystemFuncTool
@@ -430,7 +432,8 @@ class SemanticAgenticNode(AgenticNode):
                 enhanced_parts.append(context_part_str)
 
             if enhanced_parts:
-                enhanced_message = f"{'\\n\\n'.join(enhanced_parts)}\\n\\nUser question: {user_input.user_message}"
+                separator = '\n\n'
+                enhanced_message = f"{separator.join(enhanced_parts)}\n\nUser question: {user_input.user_message}"
 
             # Create assistant action for processing
             assistant_action = ActionHistory.create_action(

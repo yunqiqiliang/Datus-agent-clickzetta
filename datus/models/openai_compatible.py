@@ -12,10 +12,12 @@ from pathlib import Path
 from typing import Any, AsyncGenerator, Dict, List, Optional, Union
 
 import yaml
-from agents import Agent, ModelSettings, OpenAIChatCompletionsModel, Runner, SQLiteSession, Tool, set_tracing_disabled
+from agents import (Agent, ModelSettings, OpenAIChatCompletionsModel, Runner,
+                    SQLiteSession, Tool, set_tracing_disabled)
 from agents.exceptions import MaxTurnsExceeded
 from agents.mcp import MCPServerStdio
-from openai import APIConnectionError, APIError, APITimeoutError, AsyncOpenAI, OpenAI, RateLimitError
+from openai import (APIConnectionError, APIError, APITimeoutError, AsyncOpenAI,
+                    OpenAI, RateLimitError)
 from pydantic import AnyUrl
 
 from datus.configuration.agent_config import ModelConfig
@@ -26,7 +28,8 @@ from datus.schemas.action_history import ActionHistory, ActionHistoryManager
 from datus.utils.exceptions import DatusException, ErrorCode
 from datus.utils.json_utils import to_str
 from datus.utils.loggings import get_logger
-from datus.utils.traceable_utils import create_openai_client, optional_traceable
+from datus.utils.traceable_utils import (create_openai_client,
+                                         optional_traceable)
 
 logger = get_logger(__name__)
 
@@ -598,6 +601,7 @@ class OpenAICompatibleModel(LLMBaseModel):
         """
         # Custom JSON encoder
         self._setup_custom_json_encoder()
+
         async def _stream_operation():
             async_client = create_openai_client(
                 AsyncOpenAI, self.api_key, self.base_url, default_headers=self.default_headers
@@ -646,7 +650,9 @@ class OpenAICompatibleModel(LLMBaseModel):
                     # After streaming completes, generate final summary report
                     import uuid
 
-                    from datus.schemas.action_history import ActionHistory, ActionRole, ActionStatus
+                    from datus.schemas.action_history import (ActionHistory,
+                                                              ActionRole,
+                                                              ActionStatus)
 
                     # Phase 1: Stream events with detailed progress
                     # Track tool calls and results for immediate feedback

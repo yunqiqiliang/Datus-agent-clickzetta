@@ -6,14 +6,8 @@
 Datus Agent FastAPI service package.
 """
 
-from .models import (
-    FeedbackRequest,
-    FeedbackResponse,
-    HealthResponse,
-    RunWorkflowRequest,
-    RunWorkflowResponse,
-    TokenResponse,
-)
+from .models import (FeedbackRequest, FeedbackResponse, HealthResponse,
+                     RunWorkflowRequest, RunWorkflowResponse, TokenResponse)
 from .service import create_app, service
 
 __all__ = [

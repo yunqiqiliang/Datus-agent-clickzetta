@@ -15,9 +15,8 @@ def patch_agents_typing_issue():
     """
     try:
         import agents.models.chatcmpl_converter as converter
-        from openai.types.chat.chat_completion_message_function_tool_call_param import (
-            ChatCompletionMessageFunctionToolCallParam,
-        )
+        from openai.types.chat.chat_completion_message_function_tool_call_param import \
+            ChatCompletionMessageFunctionToolCallParam
 
         # Store the original items_to_messages function
         original_items_to_messages = converter.Converter.items_to_messages

@@ -47,8 +47,9 @@ class ToolMetadataExtractor:
         """Get the first available MCP server name from agent config."""
         try:
             from datus.agent.agent import Agent
-            if hasattr(Agent, '_default_agent_config') and Agent._default_agent_config:
-                if hasattr(Agent._default_agent_config, 'mcp_servers') and Agent._default_agent_config.mcp_servers:
+
+            if hasattr(Agent, "_default_agent_config") and Agent._default_agent_config:
+                if hasattr(Agent._default_agent_config, "mcp_servers") and Agent._default_agent_config.mcp_servers:
                     return list(Agent._default_agent_config.mcp_servers.keys())[0]
         except Exception:
             pass

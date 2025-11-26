@@ -22,7 +22,8 @@ from rich.table import Table
 
 from datus.agent.node.chat_agentic_node import ChatAgenticNode
 from datus.cli.action_history_display import ActionHistoryDisplay
-from datus.schemas.action_history import ActionHistory, ActionRole, ActionStatus
+from datus.schemas.action_history import (ActionHistory, ActionRole,
+                                          ActionStatus)
 from datus.schemas.node_models import SQLContext
 from datus.utils.loggings import get_logger
 
@@ -100,7 +101,8 @@ class ChatCommands:
         if subagent_name:
             # Use SemanticAgenticNode for gen_semantic_model and gen_metrics
             if subagent_name in ["gen_semantic_model", "gen_metrics"]:
-                from datus.agent.node.semantic_agentic_node import SemanticAgenticNode
+                from datus.agent.node.semantic_agentic_node import \
+                    SemanticAgenticNode
 
                 print(f"Creating new {subagent_name} session...")
                 return SemanticAgenticNode(
@@ -110,7 +112,8 @@ class ChatCommands:
                 )
             # Use SqlSummaryAgenticNode for gen_sql_summary
             elif subagent_name == "gen_sql_summary":
-                from datus.agent.node.sql_summary_agentic_node import SqlSummaryAgenticNode
+                from datus.agent.node.sql_summary_agentic_node import \
+                    SqlSummaryAgenticNode
 
                 print(f"Creating new {subagent_name} session...")
                 return SqlSummaryAgenticNode(
@@ -121,17 +124,20 @@ class ChatCommands:
             else:
                 # Check node_type from configuration to create appropriate node
                 node_type_from_config = None
-                if hasattr(self.cli.agent_config, 'agentic_nodes') and subagent_name in self.cli.agent_config.agentic_nodes:
+                if (
+                    hasattr(self.cli.agent_config, "agentic_nodes")
+                    and subagent_name in self.cli.agent_config.agentic_nodes
+                ):
                     node_config = self.cli.agent_config.agentic_nodes[subagent_name]
                     if isinstance(node_config, dict):
-                        node_type_from_config = node_config.get('node_type')
-                    elif hasattr(node_config, 'node_type'):
+                        node_type_from_config = node_config.get("node_type")
+                    elif hasattr(node_config, "node_type"):
                         node_type_from_config = node_config.node_type
 
                 # Use print() instead of console.print() to avoid blocking in web mode
                 print(f"Creating new {subagent_name} session...")
                 # Create ChatAgenticNode if node_type is 'chat', otherwise GenSQLAgenticNode
-                if node_type_from_config == 'chat':
+                if node_type_from_config == "chat":
                     node = ChatAgenticNode(
                         node_id=f"{subagent_name}_cli",
                         description=f"Chat node for {subagent_name}",
@@ -143,7 +149,8 @@ class ChatCommands:
                     )
                     return node
                 else:
-                    from datus.agent.node.gen_sql_agentic_node import GenSQLAgenticNode
+                    from datus.agent.node.gen_sql_agentic_node import \
+                        GenSQLAgenticNode
 
                     return GenSQLAgenticNode(
                         node_id=f"{subagent_name}_cli",
@@ -172,10 +179,12 @@ class ChatCommands:
         """Create node input based on node type - shared logic for CLI and web"""
         from datus.agent.node.gen_sql_agentic_node import GenSQLAgenticNode
         from datus.agent.node.semantic_agentic_node import SemanticAgenticNode
-        from datus.agent.node.sql_summary_agentic_node import SqlSummaryAgenticNode
+        from datus.agent.node.sql_summary_agentic_node import \
+            SqlSummaryAgenticNode
 
         if isinstance(current_node, SemanticAgenticNode):
-            from datus.schemas.semantic_agentic_node_models import SemanticNodeInput
+            from datus.schemas.semantic_agentic_node_models import \
+                SemanticNodeInput
 
             return (
                 SemanticNodeInput(
@@ -189,7 +198,8 @@ class ChatCommands:
                 "semantic",
             )
         elif isinstance(current_node, SqlSummaryAgenticNode):
-            from datus.schemas.sql_summary_agentic_node_models import SqlSummaryNodeInput
+            from datus.schemas.sql_summary_agentic_node_models import \
+                SqlSummaryNodeInput
 
             return (
                 SqlSummaryNodeInput(
@@ -203,7 +213,8 @@ class ChatCommands:
                 "sql_summary",
             )
         elif isinstance(current_node, GenSQLAgenticNode):
-            from datus.schemas.gen_sql_agentic_node_models import GenSQLNodeInput
+            from datus.schemas.gen_sql_agentic_node_models import \
+                GenSQLNodeInput
 
             return (
                 GenSQLNodeInput(
@@ -224,8 +235,8 @@ class ChatCommands:
 
             # Get tools configuration from current_node's node_config
             tools_spec = ""
-            if hasattr(current_node, 'node_config') and current_node.node_config:
-                tools_spec = current_node.node_config.get('tools', '')
+            if hasattr(current_node, "node_config") and current_node.node_config:
+                tools_spec = current_node.node_config.get("tools", "")
 
             return (
                 ChatNodeInput(

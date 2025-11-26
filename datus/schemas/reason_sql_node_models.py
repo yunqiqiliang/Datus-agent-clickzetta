@@ -6,7 +6,8 @@ from typing import List, Optional  # noqa: F401
 
 from pydantic import Field
 
-from datus.schemas.node_models import ExecuteSQLResult, GenerateSQLInput, SQLContext
+from datus.schemas.node_models import (ExecuteSQLResult, GenerateSQLInput,
+                                       SQLContext)
 
 
 # Reuse the GenerateSQLInput and ExecuteSQLResult for reasoning node

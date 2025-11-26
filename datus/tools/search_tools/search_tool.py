@@ -6,7 +6,8 @@ import os
 from typing import List
 
 from datus.configuration.agent_config import AgentConfig
-from datus.schemas.doc_search_node_models import DocSearchInput, DocSearchResult
+from datus.schemas.doc_search_node_models import (DocSearchInput,
+                                                  DocSearchResult)
 from datus.storage.document.store import DocumentStore, document_store
 from datus.tools.base import BaseTool
 from datus.utils.loggings import get_logger

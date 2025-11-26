@@ -266,6 +266,7 @@ class UIComponents:
         if not readonly_mode:
             # Create unique ID for this SQL block with timestamp to avoid duplicates
             import time
+
             sql_id = hashlib.md5(f"{sql}{time.time()}".encode()).hexdigest()[:8]
 
             if st.button("👍 Success", key=f"save_{sql_id}", help="Save this query as a success story"):

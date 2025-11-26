@@ -8,7 +8,8 @@ from typing import Dict, List, Optional
 import pyarrow as pa
 
 from datus.storage.base import BaseEmbeddingStore
-from datus.storage.embedding_models import EmbeddingModel, get_document_embedding_model
+from datus.storage.embedding_models import (EmbeddingModel,
+                                            get_document_embedding_model)
 from datus.storage.lancedb_conditions import and_, build_where, eq
 
 logger = logging.getLogger(__name__)

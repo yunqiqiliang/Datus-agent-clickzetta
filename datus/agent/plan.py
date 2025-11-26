@@ -90,7 +90,8 @@ def _process_workflow_config(
                     parallel_children = value
                     node_id = f"{node_id_prefix}_{current_index}"
 
-                    from datus.schemas.parallel_node_models import ParallelInput
+                    from datus.schemas.parallel_node_models import \
+                        ParallelInput
 
                     parallel_input = ParallelInput(
                         child_nodes=parallel_children, shared_input=None  # Will be set up during execution
@@ -111,7 +112,8 @@ def _process_workflow_config(
                     # Create a selection node (if it's specified as dict with criteria)
                     node_id = f"{node_id_prefix}_{current_index}"
 
-                    from datus.schemas.parallel_node_models import SelectionInput
+                    from datus.schemas.parallel_node_models import \
+                        SelectionInput
 
                     selection_criteria = value if isinstance(value, str) else "best_quality"
                     selection_input = SelectionInput(

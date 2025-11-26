@@ -14,20 +14,21 @@ from pydantic import ValidationError
 from datus.agent.workflow_runner import WorkflowRunner
 from datus.configuration.agent_config import AgentConfig, BenchmarkConfig
 from datus.models.base import LLMBaseModel
-
 # Import model implementations
 from datus.schemas.action_history import ActionHistory, ActionHistoryManager
 from datus.schemas.agent_models import SubAgentConfig
 from datus.schemas.node_models import SqlTask
 from datus.storage.ext_knowledge.ext_knowledge_init import init_ext_knowledge
 from datus.storage.ext_knowledge.store import ExtKnowledgeStore
-from datus.storage.metric.metrics_init import init_semantic_yaml_metrics, init_success_story_metrics
+from datus.storage.metric.metrics_init import (init_semantic_yaml_metrics,
+                                               init_success_story_metrics)
 from datus.storage.metric.store import SemanticMetricsRAG
 from datus.storage.schema_metadata import SchemaWithValueRAG
 from datus.storage.schema_metadata.benchmark_init import init_snowflake_schema
 from datus.storage.schema_metadata.benchmark_init_bird import init_dev_schema
 from datus.storage.schema_metadata.local_init import init_local_schema
-from datus.storage.sub_agent_kb_bootstrap import SUPPORTED_COMPONENTS as SUB_AGENT_COMPONENTS
+from datus.storage.sub_agent_kb_bootstrap import \
+    SUPPORTED_COMPONENTS as SUB_AGENT_COMPONENTS
 from datus.storage.sub_agent_kb_bootstrap import SubAgentBootstrapper
 from datus.tools.db_tools.db_manager import DBManager, db_manager_instance
 from datus.utils.benchmark_utils import load_benchmark_tasks
@@ -411,7 +412,8 @@ class Agent:
 
                 # Initialize reference SQL storage
                 from datus.storage.reference_sql import ReferenceSqlRAG
-                from datus.storage.reference_sql.reference_sql_init import init_reference_sql
+                from datus.storage.reference_sql.reference_sql_init import \
+                    init_reference_sql
 
                 self.reference_sql_store = ReferenceSqlRAG(self.global_config)
                 result = init_reference_sql(

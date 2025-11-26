@@ -19,13 +19,15 @@ from prompt_toolkit.document import Document
 from prompt_toolkit.filters import Condition
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.layout import WindowAlign
-from prompt_toolkit.layout.containers import Float, FloatContainer, HSplit, VSplit, Window
+from prompt_toolkit.layout.containers import (Float, FloatContainer, HSplit,
+                                              VSplit, Window)
 from prompt_toolkit.layout.controls import BufferControl, FormattedTextControl
 from prompt_toolkit.layout.dimension import Dimension
 from prompt_toolkit.layout.layout import Layout
 from prompt_toolkit.lexers import PygmentsLexer
 from prompt_toolkit.styles import Style
-from prompt_toolkit.widgets import Box, Button, CheckboxList, Dialog, Frame, Label, TextArea
+from prompt_toolkit.widgets import (Box, Button, CheckboxList, Dialog, Frame,
+                                    Label, TextArea)
 from pygments.lexers.data import YamlLexer
 from pygments.lexers.html import HtmlLexer
 

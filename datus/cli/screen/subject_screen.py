@@ -12,7 +12,8 @@ from rich.table import Table
 from textual import events, work
 from textual.app import ComposeResult
 from textual.binding import Binding
-from textual.containers import Container, Horizontal, ScrollableContainer, Vertical
+from textual.containers import (Container, Horizontal, ScrollableContainer,
+                                Vertical)
 from textual.screen import ModalScreen
 from textual.widget import Widget
 from textual.widgets import Footer, Header, Label, Static
@@ -20,7 +21,8 @@ from textual.widgets import Tree as TextualTree
 from textual.widgets._tree import TreeNode
 from textual.worker import get_current_worker
 
-from datus.cli.screen.base_widgets import EditableTree, FocusableStatic, InputWithLabel, ParentSelectionTree
+from datus.cli.screen.base_widgets import (EditableTree, FocusableStatic,
+                                           InputWithLabel, ParentSelectionTree)
 from datus.cli.screen.context_screen import ContextScreen
 from datus.cli.subject_rich_utils import build_historical_sql_tags
 from datus.configuration.agent_config import AgentConfig

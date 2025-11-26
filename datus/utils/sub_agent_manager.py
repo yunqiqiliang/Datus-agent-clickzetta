@@ -10,7 +10,9 @@ from datus.configuration.agent_config import AgentConfig
 from datus.configuration.agent_config_loader import ConfigurationManager
 from datus.prompts.prompt_manager import PromptManager, prompt_manager
 from datus.schemas.agent_models import SubAgentConfig
-from datus.storage.sub_agent_kb_bootstrap import BootstrapResult, SubAgentBootstrapper, SubAgentBootstrapStrategy
+from datus.storage.sub_agent_kb_bootstrap import (BootstrapResult,
+                                                  SubAgentBootstrapper,
+                                                  SubAgentBootstrapStrategy)
 from datus.utils.loggings import get_logger
 
 logger = get_logger(__name__)

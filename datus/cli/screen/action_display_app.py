@@ -13,10 +13,12 @@ import pyperclip
 from rich.syntax import Syntax
 from rich.table import Table
 from textual.binding import Binding
-from textual.containers import Horizontal, Vertical, VerticalGroup, VerticalScroll
+from textual.containers import (Horizontal, Vertical, VerticalGroup,
+                                VerticalScroll)
 from textual.screen import Screen
 from textual.widget import Widget
-from textual.widgets import Button, Collapsible, DataTable, Footer, Header, Label, Static, TextArea
+from textual.widgets import (Button, Collapsible, DataTable, Footer, Header,
+                             Label, Static, TextArea)
 
 from datus.cli.action_history_display import BaseActionContentGenerator
 from datus.cli.screen.base_app import BaseApp

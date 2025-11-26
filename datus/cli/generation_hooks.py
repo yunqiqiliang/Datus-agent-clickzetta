@@ -427,7 +427,9 @@ class GenerationHooks(AgentHooks):
 
             import yaml
 
-            from datus.storage.metric.init_utils import existing_semantic_metrics, gen_metric_id, gen_semantic_model_id
+            from datus.storage.metric.init_utils import (
+                existing_semantic_metrics, gen_metric_id,
+                gen_semantic_model_id)
             from datus.storage.metric.store import SemanticMetricsRAG
 
             # Load YAML file
@@ -574,7 +576,8 @@ class GenerationHooks(AgentHooks):
         try:
             import yaml
 
-            from datus.storage.reference_sql.init_utils import exists_reference_sql, gen_reference_sql_id
+            from datus.storage.reference_sql.init_utils import (
+                exists_reference_sql, gen_reference_sql_id)
 
             # Load YAML file
             with open(file_path, "r", encoding="utf-8") as f:

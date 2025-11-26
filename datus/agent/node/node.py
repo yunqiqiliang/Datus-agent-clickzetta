@@ -14,23 +14,20 @@ from datus.configuration.agent_config import AgentConfig
 from datus.configuration.node_type import NodeType
 from datus.models.base import LLMBaseModel
 from datus.schemas.action_history import ActionHistory, ActionHistoryManager
-from datus.schemas.chat_agentic_node_models import ChatNodeInput, ChatNodeResult
-from datus.schemas.date_parser_node_models import DateParserInput, DateParserResult
+from datus.schemas.chat_agentic_node_models import (ChatNodeInput,
+                                                    ChatNodeResult)
+from datus.schemas.date_parser_node_models import (DateParserInput,
+                                                   DateParserResult)
 from datus.schemas.fix_node_models import FixInput
-from datus.schemas.gen_sql_agentic_node_models import GenSQLNodeInput, GenSQLNodeResult
-from datus.schemas.node_models import (
-    BaseInput,
-    BaseResult,
-    ExecuteSQLInput,
-    ExecuteSQLResult,
-    GenerateSQLInput,
-    GenerateSQLResult,
-    OutputInput,
-    OutputResult,
-    ReflectionResult,
-)
+from datus.schemas.gen_sql_agentic_node_models import (GenSQLNodeInput,
+                                                       GenSQLNodeResult)
+from datus.schemas.node_models import (BaseInput, BaseResult, ExecuteSQLInput,
+                                       ExecuteSQLResult, GenerateSQLInput,
+                                       GenerateSQLResult, OutputInput,
+                                       OutputResult, ReflectionResult)
 from datus.schemas.reason_sql_node_models import ReasoningResult
-from datus.schemas.schema_linking_node_models import SchemaLinkingInput, SchemaLinkingResult
+from datus.schemas.schema_linking_node_models import (SchemaLinkingInput,
+                                                      SchemaLinkingResult)
 from datus.tools.db_tools.base import BaseSqlConnector
 from datus.tools.db_tools.db_manager import db_manager_instance
 from datus.utils.loggings import get_logger
@@ -57,26 +54,13 @@ class Node(ABC):
         tools: Optional[List[Tool]] = None,
         node_name: Optional[str] = None,
     ):
-        from datus.agent.node import (
-            BeginNode,
-            ChatAgenticNode,
-            CompareNode,
-            DateParserNode,
-            DocSearchNode,
-            ExecuteSQLNode,
-            FixNode,
-            GenerateSQLNode,
-            GenSQLAgenticNode,
-            HitlNode,
-            OutputNode,
-            ParallelNode,
-            ReasonSQLNode,
-            ReflectNode,
-            SchemaLinkingNode,
-            SearchMetricsNode,
-            SelectionNode,
-            SubworkflowNode,
-        )
+        from datus.agent.node import (BeginNode, ChatAgenticNode, CompareNode,
+                                      DateParserNode, DocSearchNode,
+                                      ExecuteSQLNode, FixNode, GenerateSQLNode,
+                                      GenSQLAgenticNode, HitlNode, OutputNode,
+                                      ParallelNode, ReasonSQLNode, ReflectNode,
+                                      SchemaLinkingNode, SearchMetricsNode,
+                                      SelectionNode, SubworkflowNode)
 
         if node_type == NodeType.TYPE_SCHEMA_LINKING:
             return SchemaLinkingNode(node_id, description, node_type, input_data, agent_config)
@@ -116,11 +100,15 @@ class Node(ABC):
             return GenSQLAgenticNode(node_id, description, node_type, input_data, agent_config, tools, node_name)
         elif node_type == NodeType.TYPE_MCP:
             # Use new universal MCP architecture (backward compatibility removed for simplicity)
-            from datus.agent.node.universal_mcp_node import UniversalMCPAgenticNode
+            from datus.agent.node.universal_mcp_node import \
+                UniversalMCPAgenticNode
+
             return UniversalMCPAgenticNode(node_id, description, input_data, agent_config)
         elif node_type == NodeType.TYPE_UNIVERSAL_MCP:
             # Universal MCP with semantic analysis and zero hardcoding
-            from datus.agent.node.universal_mcp_node import UniversalMCPAgenticNode
+            from datus.agent.node.universal_mcp_node import \
+                UniversalMCPAgenticNode
+
             return UniversalMCPAgenticNode(node_id, description, input_data, agent_config)
         else:
             raise ValueError(f"Invalid node type: {node_type}")

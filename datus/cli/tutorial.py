@@ -2,7 +2,8 @@ from pathlib import Path
 from typing import Any, Dict
 
 from datus.cli.interactive_init import console, create_agent
-from datus.configuration.agent_config_loader import configuration_manager, load_agent_config
+from datus.configuration.agent_config_loader import (configuration_manager,
+                                                     load_agent_config)
 from datus.schemas.agent_models import SubAgentConfig
 from datus.utils.loggings import get_logger, print_rich_exception
 from datus.utils.path_manager import get_path_manager
@@ -44,7 +45,8 @@ class BenchmarkTutorial:
             self.namespace_name not in agent_config.benchmark_configs
             or self.namespace_name not in agent_config.namespaces
         ):
-            from datus.configuration.agent_config_loader import configuration_manager
+            from datus.configuration.agent_config_loader import \
+                configuration_manager
 
             namespace_config = {
                 "california_schools": {
@@ -105,7 +107,8 @@ class BenchmarkTutorial:
                     return 1
             console.print("Configuration is ready.")
             california_schools_path = self.benchmark_path / self.namespace_name
-            from datus.cli.interactive_init import init_metadata_and_log_result, init_sql_and_log_result
+            from datus.cli.interactive_init import (
+                init_metadata_and_log_result, init_sql_and_log_result)
 
             console.print("[bold yellow][2/5] Initialize Metadata using command: [/bold yellow]")
             console.print(

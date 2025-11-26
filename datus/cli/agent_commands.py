@@ -22,7 +22,8 @@ from datus.cli.subject_rich_utils import build_historical_sql_tags
 from datus.configuration.node_type import NodeType
 from datus.schemas.base import BaseInput
 from datus.schemas.compare_node_models import CompareInput
-from datus.schemas.node_models import ExecuteSQLInput, GenerateSQLInput, OutputInput, SqlTask
+from datus.schemas.node_models import (ExecuteSQLInput, GenerateSQLInput,
+                                       OutputInput, SqlTask)
 from datus.schemas.reason_sql_node_models import ReasoningInput
 from datus.schemas.schema_linking_node_models import SchemaLinkingInput
 from datus.tools.func_tool.context_search import ContextSearchTools

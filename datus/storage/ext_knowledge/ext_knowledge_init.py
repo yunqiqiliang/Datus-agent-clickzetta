@@ -10,7 +10,8 @@ from typing import Set
 
 import pandas as pd
 
-from datus.storage.ext_knowledge.init_utils import exists_ext_knowledge, gen_ext_knowledge_id
+from datus.storage.ext_knowledge.init_utils import (exists_ext_knowledge,
+                                                    gen_ext_knowledge_id)
 from datus.storage.ext_knowledge.store import ExtKnowledgeStore
 from datus.utils.loggings import get_logger
 

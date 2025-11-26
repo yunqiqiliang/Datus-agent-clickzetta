@@ -9,7 +9,8 @@ import pandas as pd
 import pyarrow as pa
 
 from datus.storage import BaseEmbeddingStore
-from datus.storage.embedding_models import EmbeddingModel, get_document_embedding_model
+from datus.storage.embedding_models import (EmbeddingModel,
+                                            get_document_embedding_model)
 from datus.utils.exceptions import DatusException, ErrorCode
 
 

@@ -20,7 +20,8 @@ from typing import Dict, List, Optional
 
 import structlog
 
-from datus.schemas.action_history import ActionHistory, ActionRole, ActionStatus
+from datus.schemas.action_history import (ActionHistory, ActionRole,
+                                          ActionStatus)
 
 logger = structlog.get_logger(__name__)
 

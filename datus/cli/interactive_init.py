@@ -20,7 +20,8 @@ from rich.prompt import Confirm, Prompt
 from rich.table import Table
 
 from datus.cli.init_util import detect_db_connectivity
-from datus.utils.loggings import configure_logging, get_logger, print_rich_exception
+from datus.utils.loggings import (configure_logging, get_logger,
+                                  print_rich_exception)
 from datus.utils.resource_utils import copy_data_file, read_data_file_text
 
 logger = get_logger(__name__)

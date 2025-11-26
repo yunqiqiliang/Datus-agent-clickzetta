@@ -16,7 +16,8 @@ from typing import List, Optional, Tuple
 
 import structlog
 
-from datus.schemas.action_history import ActionHistory, ActionRole, ActionStatus
+from datus.schemas.action_history import (ActionHistory, ActionRole,
+                                          ActionStatus)
 
 logger = structlog.get_logger(__name__)
 
@@ -34,7 +35,7 @@ class ChatExecutor:
         self.last_actions = []
 
         # CRITICAL: Also clear the global CLI ActionHistoryManager to prevent response mixing
-        if cli and hasattr(cli, 'actions') and hasattr(cli.actions, 'clear'):
+        if cli and hasattr(cli, "actions") and hasattr(cli.actions, "clear"):
             cli.actions.clear()
         if not cli or not cli.chat_commands:
             yield "Error: Please load configuration first!"
@@ -97,6 +98,7 @@ class ChatExecutor:
             # Execute async generator with proper event loop handling
             loop = asyncio.new_event_loop()
             try:
+
                 async def run_stream():
                     """Wrapper to iterate the async generator to completion"""
                     try:
@@ -104,6 +106,7 @@ class ChatExecutor:
                             yield message
                     except StopAsyncIteration:
                         pass
+
                 async_gen = run_stream()
                 while True:
                     try:

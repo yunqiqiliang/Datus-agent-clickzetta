@@ -15,10 +15,13 @@ from agents.mcp import MCPServerStdio
 from datus.agent.node.agentic_node import AgenticNode
 from datus.agent.workflow import Workflow
 from datus.configuration.agent_config import AgentConfig
-from datus.schemas.action_history import ActionHistory, ActionHistoryManager, ActionRole, ActionStatus
-from datus.schemas.chat_agentic_node_models import ChatNodeInput, ChatNodeResult
+from datus.schemas.action_history import (ActionHistory, ActionHistoryManager,
+                                          ActionRole, ActionStatus)
+from datus.schemas.chat_agentic_node_models import (ChatNodeInput,
+                                                    ChatNodeResult)
 from datus.tools.db_tools.db_manager import db_manager_instance
-from datus.tools.func_tool import ContextSearchTools, DateParsingTools, DBFuncTool, FilesystemFuncTool
+from datus.tools.func_tool import (ContextSearchTools, DateParsingTools,
+                                   DBFuncTool, FilesystemFuncTool)
 from datus.utils.loggings import get_logger
 
 logger = get_logger(__name__)
@@ -77,7 +80,7 @@ class ChatAgenticNode(AgenticNode):
         # Get node configuration dict for MCP server setup
         # Priority: configured_node_name > node_type from agentic_nodes
         node_config_dict = {}
-        if agent_config and hasattr(agent_config, 'agentic_nodes'):
+        if agent_config and hasattr(agent_config, "agentic_nodes"):
             # First try configured node name (e.g., "clickzetta_mcp_server_220_sse")
             if node_name and node_name in agent_config.agentic_nodes:
                 node_config_dict = agent_config.agentic_nodes[node_name]
@@ -86,9 +89,7 @@ class ChatAgenticNode(AgenticNode):
                 node_config_dict = agent_config.agentic_nodes[node_type]
         # Initialize MCP servers based on configuration
         mcp_servers = self._setup_mcp_servers(
-            agent_config=agent_config,
-            input_data=input_data,
-            node_config=node_config_dict
+            agent_config=agent_config, input_data=input_data, node_config=node_config_dict
         )
         # Call parent constructor with all required Node parameters
         super().__init__(
@@ -110,6 +111,7 @@ class ChatAgenticNode(AgenticNode):
         self.plan_hooks = None
         # Setup tools after initialization
         self.setup_tools()
+
     def get_node_name(self) -> str:
         """
         Get the configured node name for this chat agentic node.
@@ -335,7 +337,7 @@ class ChatAgenticNode(AgenticNode):
         self,
         agent_config: Optional[AgentConfig] = None,
         input_data: Optional[ChatNodeInput] = None,
-        node_config: Optional[Dict] = None
+        node_config: Optional[Dict] = None,
     ) -> Dict[str, MCPServerStdio]:
         """
         Set up MCP servers based on global mcp_servers configuration.
@@ -354,39 +356,41 @@ class ChatAgenticNode(AgenticNode):
         mcp_servers = {}
 
         # Use passed agent_config or fall back to self.agent_config
-        config = agent_config or getattr(self, 'agent_config', None)
+        config = agent_config or getattr(self, "agent_config", None)
         if not config:
             logger.warning("No agent config available for MCP server setup")
             return mcp_servers
 
         # Check if tools pattern requests MCP tools
         # Priority: input_data.tools > node_config['tools'] > self.node_config['tools']
-        tools_pattern = ''
-        if input_data and hasattr(input_data, 'tools'):
-            tools_pattern = input_data.tools or ''
-        elif node_config and 'tools' in node_config:
-            tools_pattern = node_config.get('tools', '')
-        elif hasattr(self, 'node_config'):
-            tools_pattern = self.node_config.get('tools', '')
+        tools_pattern = ""
+        if input_data and hasattr(input_data, "tools"):
+            tools_pattern = input_data.tools or ""
+        elif node_config and "tools" in node_config:
+            tools_pattern = node_config.get("tools", "")
+        elif hasattr(self, "node_config"):
+            tools_pattern = self.node_config.get("tools", "")
 
         # Check for MCP servers in multiple places:
         # 1. From node_config.mcp_servers (direct config)
         # 2. From agent_config.mcp_servers if tools pattern includes 'mcp_tool'
 
         # Check if node_config has direct mcp_servers configuration
-        has_node_mcp_config = node_config and 'mcp_servers' in node_config and node_config['mcp_servers']
-        has_tools_mcp_pattern = tools_pattern and 'mcp_tool' in tools_pattern
+        has_node_mcp_config = node_config and "mcp_servers" in node_config and node_config["mcp_servers"]
+        has_tools_mcp_pattern = tools_pattern and "mcp_tool" in tools_pattern
 
         if not has_node_mcp_config and not has_tools_mcp_pattern:
-            logger.info("Neither node mcp_servers config nor tools pattern requests MCP tools, skipping MCP server setup")
+            logger.info(
+                "Neither node mcp_servers config nor tools pattern requests MCP tools, skipping MCP server setup"
+            )
             return mcp_servers
 
         # Get MCP servers from configuration
         # Priority: node_config.mcp_servers > agent_config.mcp_servers > auto-discovery
         if has_node_mcp_config:
-            mcp_config = node_config['mcp_servers']
+            mcp_config = node_config["mcp_servers"]
             logger.info(f"Setting up MCP servers from node configuration: {list(mcp_config.keys())}")
-        elif hasattr(config, 'mcp_servers') and config.mcp_servers:
+        elif hasattr(config, "mcp_servers") and config.mcp_servers:
             mcp_config = config.mcp_servers
             logger.info(f"Setting up MCP servers from agent configuration: {list(mcp_config.keys())}")
         elif has_tools_mcp_pattern:
@@ -394,6 +398,7 @@ class ChatAgenticNode(AgenticNode):
             logger.info("Tools pattern includes 'mcp_tool', auto-discovering available MCP servers...")
             try:
                 from datus.tools.mcp_tools.mcp_manager import MCPManager
+
                 mcp_manager = MCPManager()
                 available_servers = mcp_manager.list_servers()
 
@@ -429,7 +434,6 @@ class ChatAgenticNode(AgenticNode):
             logger.debug(f"MCP server '{name}': type={type(server)}, instance={server}")
 
         return mcp_servers
-
 
     async def execute_stream(
         self, action_history_manager: Optional[ActionHistoryManager] = None
@@ -495,7 +499,8 @@ class ChatAgenticNode(AgenticNode):
             system_instruction = self._get_system_prompt(conversation_summary, user_input.prompt_version)
 
             # Add database context to user message if provided
-            from datus.agent.node.gen_sql_agentic_node import build_enhanced_message
+            from datus.agent.node.gen_sql_agentic_node import \
+                build_enhanced_message
 
             enhanced_message = build_enhanced_message(
                 user_message=user_input.user_message,

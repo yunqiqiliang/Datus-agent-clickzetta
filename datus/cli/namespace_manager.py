@@ -17,7 +17,8 @@ from rich.prompt import Confirm, Prompt
 
 from datus.cli.init_util import detect_db_connectivity
 from datus.configuration.agent_config import DbConfig, file_stem_from_uri
-from datus.configuration.agent_config_loader import configuration_manager, load_agent_config
+from datus.configuration.agent_config_loader import (configuration_manager,
+                                                     load_agent_config)
 from datus.utils.constants import DBType
 from datus.utils.exceptions import DatusException, ErrorCode
 from datus.utils.loggings import get_logger

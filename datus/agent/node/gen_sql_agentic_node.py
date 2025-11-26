@@ -18,9 +18,11 @@ from agents.mcp import MCPServerStdio
 from datus.agent.node.agentic_node import AgenticNode
 from datus.agent.workflow import Workflow
 from datus.configuration.agent_config import AgentConfig
-from datus.schemas.action_history import ActionHistory, ActionHistoryManager, ActionRole, ActionStatus
+from datus.schemas.action_history import (ActionHistory, ActionHistoryManager,
+                                          ActionRole, ActionStatus)
 from datus.schemas.agent_models import SubAgentConfig
-from datus.schemas.gen_sql_agentic_node_models import GenSQLNodeInput, GenSQLNodeResult
+from datus.schemas.gen_sql_agentic_node_models import (GenSQLNodeInput,
+                                                       GenSQLNodeResult)
 from datus.schemas.node_models import Metric, ReferenceSql, TableSchema
 from datus.tools.db_tools.db_manager import db_manager_instance
 from datus.tools.func_tool import ContextSearchTools, DBFuncTool
@@ -816,6 +818,7 @@ def build_enhanced_message(
         enhanced_parts.append(f"Reference SQL: \n{to_str([item.model_dump() for item in reference_sql])}")
 
     if enhanced_parts:
-        enhanced_message = f"{'\n\n'.join(enhanced_parts)}\n\nUser question: {user_message}"
+        separator = '\n\n'
+        enhanced_message = f"{separator.join(enhanced_parts)}\n\nUser question: {user_message}"
 
     return enhanced_message

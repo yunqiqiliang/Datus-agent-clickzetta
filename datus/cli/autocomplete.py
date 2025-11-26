@@ -23,7 +23,8 @@ from datus.schemas.node_models import Metric, ReferenceSql, TableSchema
 from datus.utils.constants import SYS_SUB_AGENTS, DBType
 from datus.utils.loggings import get_logger
 from datus.utils.path_utils import get_file_fuzzy_matches
-from datus.utils.reference_paths import REFERENCE_PATH_REGEX, normalize_reference_path
+from datus.utils.reference_paths import (REFERENCE_PATH_REGEX,
+                                         normalize_reference_path)
 
 logger = get_logger(__name__)
 

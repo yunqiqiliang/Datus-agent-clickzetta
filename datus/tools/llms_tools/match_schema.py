@@ -10,7 +10,8 @@ import pyarrow as pa
 from datus.models.base import LLMBaseModel
 from datus.prompts.schema_lineage import gen_prompt, gen_summary_prompt
 from datus.schemas.node_models import TableSchema
-from datus.schemas.schema_linking_node_models import SchemaLinkingInput, SchemaLinkingResult
+from datus.schemas.schema_linking_node_models import (SchemaLinkingInput,
+                                                      SchemaLinkingResult)
 from datus.storage.schema_metadata import SchemaStorage
 from datus.tools.base import BaseTool
 from datus.utils.constants import DBType

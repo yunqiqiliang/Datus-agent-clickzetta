@@ -25,13 +25,16 @@ from rich.table import Table
 
 from datus.agent.workflow_runner import WorkflowRunner
 from datus.cli.agent_commands import AgentCommands
-from datus.cli.autocomplete import AtReferenceCompleter, CustomPygmentsStyle, CustomSqlLexer, SubagentCompleter
+from datus.cli.autocomplete import (AtReferenceCompleter, CustomPygmentsStyle,
+                                    CustomSqlLexer, SubagentCompleter)
 from datus.cli.chat_commands import ChatCommands
 from datus.cli.context_commands import ContextCommands
 from datus.cli.metadata_commands import MetadataCommands
 from datus.cli.sub_agent_commands import SubAgentCommands
-from datus.configuration.agent_config_loader import configuration_manager, load_agent_config
-from datus.schemas.action_history import ActionHistory, ActionHistoryManager, ActionRole, ActionStatus
+from datus.configuration.agent_config_loader import (configuration_manager,
+                                                     load_agent_config)
+from datus.schemas.action_history import (ActionHistory, ActionHistoryManager,
+                                          ActionRole, ActionStatus)
 from datus.schemas.node_models import SQLContext
 from datus.tools.db_tools import BaseSqlConnector
 from datus.tools.db_tools.db_manager import db_manager_instance

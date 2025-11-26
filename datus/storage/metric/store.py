@@ -9,7 +9,8 @@ import pyarrow as pa
 
 from datus.configuration.agent_config import AgentConfig
 from datus.storage.base import BaseEmbeddingStore, EmbeddingModel
-from datus.storage.lancedb_conditions import And, WhereExpr, and_, build_where, eq, in_
+from datus.storage.lancedb_conditions import (And, WhereExpr, and_,
+                                              build_where, eq, in_)
 
 logger = logging.getLogger(__file__)
 

@@ -9,7 +9,8 @@ from typing import List, Literal, Optional
 from pydantic import Field, field_validator
 
 from datus.schemas.base import TABLE_TYPE, BaseInput, BaseResult
-from datus.schemas.node_models import SQLContext, SqlTask, TableSchema, TableValue
+from datus.schemas.node_models import (SQLContext, SqlTask, TableSchema,
+                                       TableValue)
 from datus.utils.constants import DBType
 
 

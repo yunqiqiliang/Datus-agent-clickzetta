@@ -13,28 +13,24 @@ from typing import Any, AsyncGenerator, Dict, List, Optional, Union
 
 import anthropic
 import httpx
-from agents import (
-    Agent,
-    OpenAIChatCompletionsModel,
-    RunContextWrapper,
-    Runner,
-    SQLiteSession,
-    Usage,
-    set_tracing_disabled,
-)
+from agents import (Agent, OpenAIChatCompletionsModel, RunContextWrapper,
+                    Runner, SQLiteSession, Usage, set_tracing_disabled)
 from agents.exceptions import MaxTurnsExceeded
 from agents.mcp import MCPServerStdio
-from openai import APIConnectionError, APIError, APITimeoutError, AsyncOpenAI, OpenAI, RateLimitError
+from openai import (APIConnectionError, APIError, APITimeoutError, AsyncOpenAI,
+                    OpenAI, RateLimitError)
 from pydantic import AnyUrl
 
 from datus.models.base import LLMBaseModel
 from datus.models.mcp_utils import multiple_mcp_servers
-from datus.schemas.action_history import ActionHistory, ActionHistoryManager, ActionRole, ActionStatus
+from datus.schemas.action_history import (ActionHistory, ActionHistoryManager,
+                                          ActionRole, ActionStatus)
 from datus.schemas.node_models import SQLContext
 from datus.utils.exceptions import DatusException, ErrorCode
 from datus.utils.json_utils import extract_json_str, to_str
 from datus.utils.loggings import get_logger
-from datus.utils.traceable_utils import create_openai_client, optional_traceable
+from datus.utils.traceable_utils import (create_openai_client,
+                                         optional_traceable)
 
 logger = get_logger(__name__)
 
@@ -691,7 +687,8 @@ class ClaudeModel(LLMBaseModel):
             # Extract SQL contexts from result (if any)
             sql_contexts = []
             if hasattr(result, "final_output"):
-                from datus.models.mcp_result_extractors import extract_sql_contexts
+                from datus.models.mcp_result_extractors import \
+                    extract_sql_contexts
 
                 sql_contexts = extract_sql_contexts(result)
 

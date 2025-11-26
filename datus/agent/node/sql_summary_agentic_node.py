@@ -15,8 +15,10 @@ from typing import AsyncGenerator, Optional
 from datus.agent.node.agentic_node import AgenticNode
 from datus.cli.generation_hooks import GenerationHooks
 from datus.configuration.agent_config import AgentConfig
-from datus.schemas.action_history import ActionHistory, ActionHistoryManager, ActionRole, ActionStatus
-from datus.schemas.sql_summary_agentic_node_models import SqlSummaryNodeInput, SqlSummaryNodeResult
+from datus.schemas.action_history import (ActionHistory, ActionHistoryManager,
+                                          ActionRole, ActionStatus)
+from datus.schemas.sql_summary_agentic_node_models import (
+    SqlSummaryNodeInput, SqlSummaryNodeResult)
 from datus.tools.func_tool.filesystem_tool import FilesystemFuncTool
 from datus.tools.func_tool.generation_tools import GenerationTools
 from datus.utils.loggings import get_logger
@@ -398,7 +400,8 @@ class SqlSummaryAgenticNode(AgenticNode):
                 enhanced_parts.append(context_part_str)
 
             if enhanced_parts:
-                enhanced_message = f"{'\\n\\n'.join(enhanced_parts)}\\n\\nUser question: {user_input.user_message}"
+                separator = '\n\n'
+                enhanced_message = f"{separator.join(enhanced_parts)}\n\nUser question: {user_input.user_message}"
 
             # Create assistant action for processing
             assistant_action = ActionHistory.create_action(
