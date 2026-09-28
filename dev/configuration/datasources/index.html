@@ -8,32 +8,32 @@
       
       
       
-        <link rel="canonical" href="https://docs.datus.ai/dev/configuration/datasources/">
+        <link rel="canonical" href="https://docs.datus.ai/dev/dev/configuration/datasources/">
       
       
-        <link rel="prev" href="../benchmark/">
+        <link rel="prev" href="../image_tool/">
       
       
-        <link rel="next" href="../semantic_layer/">
+        <link rel="next" href="sqlite/">
       
       
         
-          <link rel="alternate" href="./" hreflang="en">
+          <link rel="alternate" href="/dev/" hreflang="en">
         
-          <link rel="alternate" href="../../zh/configuration/datasources/" hreflang="zh">
+          <link rel="alternate" href="/zh/dev/" hreflang="zh">
         
       
       
       <link rel="icon" href="../../assets/logo-light.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>Datasources - Datus Docs</title>
+        <title>Overview - Datus Docs</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -54,16 +54,6 @@
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
-  
-
-
-  
-  
-
-<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-8HMXHZDV7F"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-8HMXHZDV7F",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-8HMXHZDV7F",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
-  
-    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
-  
 
     
     
@@ -86,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#datasource-configuration" class="md-skip">
+        <a href="#datasources" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Datasources
+              Overview
             
           </span>
         </div>
@@ -180,13 +170,13 @@
       <ul class="md-select__list">
         
           <li class="md-select__item">
-            <a href="./" hreflang="en" class="md-select__link">
+            <a href="/dev/" hreflang="en" class="md-select__link">
               English
             </a>
           </li>
         
           <li class="md-select__item">
-            <a href="../../zh/configuration/datasources/" hreflang="zh" class="md-select__link">
+            <a href="/zh/dev/" hreflang="zh" class="md-select__link">
               中文
             </a>
           </li>
@@ -396,6 +386,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -461,6 +455,8 @@
     
       
         
+          
+        
       
         
       
@@ -482,8 +478,9 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
         
           
-          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
-            
+          <div class="md-nav__link md-nav__container">
+            <a href="../../getting_started/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -497,8 +494,14 @@
   
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_2">
@@ -510,6 +513,8 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -525,35 +530,7 @@
   <span class="md-ellipsis">
     
   
-    Quickstart
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../getting_started/data_engineering_quickstart/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Data Engineering Quickstart
+    Install and First Query
   
 
     
@@ -581,7 +558,91 @@
   <span class="md-ellipsis">
     
   
-    Contextual Data Engineering
+    Build a Context-Rich Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2_4" id="__nav_1_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenario Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scenario Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/data_engineering_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    End-to-End Data Engineering
   
 
     
@@ -609,7 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Dashboard Copilot
+    Turn a Dashboard into a Copilot
   
 
     
@@ -631,6 +692,14 @@
 
               
             
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
               
                 
   
@@ -639,6 +708,10 @@
   
     
     
+      
+        
+      
+        
       
         
       
@@ -904,6 +977,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../cli/package_command/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Command
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../cli/reference/" class="md-nav__link">
         
   
@@ -940,6 +1041,34 @@
     
   
     Plan Mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/other_commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other Commands
   
 
     
@@ -1124,14 +1253,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../subagent/gen_dashboard/" class="md-nav__link">
+      <a href="../../subagent/semantic_modeling/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Generate Dashboard
+    Semantic Modeling
   
 
     
@@ -1152,70 +1281,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../subagent/gen_metrics/" class="md-nav__link">
+      <a href="../../subagent/ask_metrics/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Generate Metrics
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../subagent/gen_semantic_model/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Generate Semantic Model
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../subagent/scheduler/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Scheduler
+    Ask Metrics
   
 
     
@@ -1313,6 +1386,756 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../subagent/gen_visual_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTML Report Generation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../subagent/gen_visual_dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTML Dashboard Generation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_5" id="__nav_1_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skills
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Skills
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_5_2" id="__nav_1_5_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Built-in Skills
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Built-in Skills
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/init/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Init
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/build_kb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build KB
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/dashboard_bootstrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard Bootstrap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/storage_classify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Classify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/extract_knowledge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extract Knowledge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/memory_organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/session_summarize/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Session Summarize
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugin
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_3" id="__nav_1_6_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin List
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugin List
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/airflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Airflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/s3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/eks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EKS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/k8s/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    K8s
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/flink/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flink
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1375,10 +2198,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_8" >
         
           
-          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_8" id="__nav_1_8_label" tabindex="0">
             
   
   
@@ -1396,8 +2219,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1535,10 +2358,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" >
         
           
-          <label class="md-nav__link" for="__nav_1_7" id="__nav_1_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
             
   
   
@@ -1556,8 +2379,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1582,34 +2405,6 @@
     
   
     Introduction
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../knowledge_base/ext_knowledge/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    External Knowledge
   
 
     
@@ -1666,6 +2461,34 @@
     
   
     Metadata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../knowledge_base/metadata_fts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metadata Full-text Search
   
 
     
@@ -1827,10 +2650,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_10" >
         
           
-          <label class="md-nav__link" for="__nav_1_8" id="__nav_1_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_10" id="__nav_1_10_label" tabindex="0">
             
   
   
@@ -1848,8 +2671,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1996,6 +2819,8 @@
       
         
       
+        
+      
     
     
     
@@ -2007,10 +2832,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" >
         
           
-          <label class="md-nav__link" for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="0">
             
   
   
@@ -2028,8 +2853,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_9">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_11">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2151,6 +2976,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2184,6 +3037,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -2195,10 +3056,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_10" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_12" checked>
         
           
-          <label class="md-nav__link" for="__nav_1_10" id="__nav_1_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_12" id="__nav_1_12_label" tabindex="0">
             
   
   
@@ -2216,8 +3077,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_1_10">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_12_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_12">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2270,6 +3131,34 @@
     
   
     Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Context Compaction
   
 
     
@@ -2343,12 +3232,132 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql_policy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL Policy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../web_tool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../image_tool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Image Reading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
       
         
       
@@ -2369,17 +3378,17 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_10_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_12_9" checked>
         
           
-          <label class="md-nav__link" for="__nav_1_10_5" id="__nav_1_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_12_9" id="__nav_1_12_9_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
     
   
-    Services
+    Datasources
   
 
     
@@ -2390,12 +3399,12 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_10_5_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_1_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_12_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_12_9">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Services
+    Datasources
   
 
           </label>
@@ -2424,7 +3433,7 @@
   <span class="md-ellipsis">
     
   
-    Datasources
+    Overview
   
 
     
@@ -2442,7 +3451,7 @@
   <span class="md-ellipsis">
     
   
-    Datasources
+    Overview
   
 
     
@@ -2468,10 +3477,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#choose-a-datasource" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Choose a datasource
       
     </span>
   </a>
@@ -2479,10 +3488,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration-structure" class="md-nav__link">
+  <a href="#common-profile-keys" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Structure
+        Common profile keys
       
     </span>
   </a>
@@ -2490,10 +3499,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#service-sections" class="md-nav__link">
+  <a href="#file-datasource-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Service Sections
+        File datasource patterns
       
     </span>
   </a>
@@ -2501,193 +3510,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#supported-database-types" class="md-nav__link">
+  <a href="#add-test-and-select-a-datasource" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Supported Database Types
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Supported Database Types">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#snowflake" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Snowflake
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#starrocks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        StarRocks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sqlite" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SQLite
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#duckdb" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        DuckDB
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mysql" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MySQL
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#postgresql" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PostgreSQL
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#path-pattern-multiple-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Path Pattern (Multiple Files)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration Parameters
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuration Parameters">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#common-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Common Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#database-specific-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Database-Specific Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#managing-databases" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Managing Databases
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Managing Databases">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#interactive-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Interactive Configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cli-commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        CLI Commands
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#specify-a-custom-config" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Specify a Custom Config
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#default-database-selection" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Default Database Selection
+        Add, test, and select a datasource
       
     </span>
   </a>
@@ -2695,38 +3521,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#security-considerations" class="md-nav__link">
+  <a href="#troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Security Considerations
+        Troubleshooting
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Security Considerations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#credential-management" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Credential Management
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
+  <a href="#related-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        See Also
+        Related documentation
       
     </span>
   </a>
@@ -2749,14 +3558,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../semantic_layer/" class="md-nav__link">
+      <a href="sqlite/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Semantic Layer
+    SQLite
   
 
     
@@ -2777,14 +3586,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../bi_platforms/" class="md-nav__link">
+      <a href="duckdb/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    BI Platforms
+    DuckDB
   
 
     
@@ -2805,14 +3614,518 @@
   
   
     <li class="md-nav__item">
-      <a href="../schedulers/" class="md-nav__link">
+      <a href="mysql/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Schedulers
+    MySQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="postgresql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PostgreSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="greenplum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Greenplum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="redshift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Amazon Redshift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="snowflake/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Snowflake
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bigquery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google BigQuery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="starrocks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StarRocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="doris/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Apache Doris
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tidb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TiDB
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="clickhouse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ClickHouse
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="trino/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trino
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="spark/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spark SQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="clickzetta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ClickZetta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hologres/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hologres
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="maxcompute/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MaxCompute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="oracle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Oracle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="gaussdb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GaussDB / openGauss
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dws/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GaussDB(DWS)
   
 
     
@@ -2926,10 +4239,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_13" >
         
           
-          <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_13" id="__nav_1_13_label" tabindex="0">
             
   
   
@@ -2947,8 +4260,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_11_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_11">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_13">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2992,9 +4305,33 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../adapters/semantic_adapters/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_13_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_13_2" id="__nav_1_13_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -3008,7 +4345,135 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_13_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_13_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semantic Adapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adapters/semantic_adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adapters/metricflow_semantic_adapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MetricFlow Semantic Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adapters/osi_semantic_adapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OSI Semantic Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adapters/dosi_semantic_adapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dosi Semantic Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3100,10 +4565,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_12" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_14" >
         
           
-          <label class="md-nav__link" for="__nav_1_12" id="__nav_1_12_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_14" id="__nav_1_14_label" tabindex="0">
             
   
   
@@ -3121,8 +4586,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_12_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_12">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_14">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3179,96 +4644,6 @@
       
         
       
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_13" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_13" id="__nav_1_13_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metricflow
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_13_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_13">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Metricflow
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../metricflow/introduction/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Introduction
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-      
-        
-      
         
       
         
@@ -3284,10 +4659,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_14" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_15" >
         
           
-          <label class="md-nav__link" for="__nav_1_14" id="__nav_1_14_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_15" id="__nav_1_15_label" tabindex="0">
             
   
   
@@ -3305,8 +4680,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_14_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_14">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_15">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3351,14 +4726,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../integration/skills/" class="md-nav__link">
+      <a href="../../integration/validation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Skills
+    Validation
   
 
     
@@ -3430,10 +4805,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_15" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_16" >
         
           
-          <label class="md-nav__link" for="__nav_1_15" id="__nav_1_15_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_16" id="__nav_1_16_label" tabindex="0">
             
   
   
@@ -3451,8 +4826,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_15_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_15">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_16">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3513,8 +4888,6 @@
       
         
       
-        
-      
     
     
     
@@ -3526,7 +4899,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_16" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_17" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -3548,14 +4921,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_1_16" id="__nav_1_16_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_1_17" id="__nav_1_17_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_16_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_16">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_17_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_17">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3574,42 +4947,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../develop/Architecture/" class="md-nav__link">
+      <a href="../../develop/observability/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../develop/Contributing/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Contributing
+    Observability
   
 
     
@@ -3626,6 +4971,34 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vscode_extension/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VSCode Extension
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -3692,10 +5065,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#choose-a-datasource" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Choose a datasource
       
     </span>
   </a>
@@ -3703,10 +5076,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration-structure" class="md-nav__link">
+  <a href="#common-profile-keys" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Structure
+        Common profile keys
       
     </span>
   </a>
@@ -3714,10 +5087,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#service-sections" class="md-nav__link">
+  <a href="#file-datasource-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Service Sections
+        File datasource patterns
       
     </span>
   </a>
@@ -3725,193 +5098,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#supported-database-types" class="md-nav__link">
+  <a href="#add-test-and-select-a-datasource" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Supported Database Types
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Supported Database Types">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#snowflake" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Snowflake
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#starrocks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        StarRocks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sqlite" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SQLite
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#duckdb" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        DuckDB
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mysql" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MySQL
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#postgresql" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PostgreSQL
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#path-pattern-multiple-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Path Pattern (Multiple Files)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration Parameters
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuration Parameters">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#common-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Common Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#database-specific-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Database-Specific Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#managing-databases" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Managing Databases
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Managing Databases">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#interactive-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Interactive Configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cli-commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        CLI Commands
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#specify-a-custom-config" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Specify a Custom Config
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#default-database-selection" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Default Database Selection
+        Add, test, and select a datasource
       
     </span>
   </a>
@@ -3919,38 +5109,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#security-considerations" class="md-nav__link">
+  <a href="#troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Security Considerations
+        Troubleshooting
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Security Considerations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#credential-management" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Credential Management
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
+  <a href="#related-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        See Also
+        Related documentation
       
     </span>
   </a>
@@ -3982,264 +5155,259 @@
   
 
 
-<h1 id="datasource-configuration">Datasource Configuration<a class="headerlink" href="#datasource-configuration" title="Permanent link">&para;</a></h1>
-<p>Configure database connections under <code>agent.services.datasources</code>.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The runtime services in Datus Agent live under <code>agent.services</code> in <code>agent.yml</code>. This page focuses on database connections in <code>services.datasources</code>. Semantic adapters, BI platforms, and schedulers are documented on their sibling pages.</p>
-<p>Key features:</p>
-<ul>
-<li><strong>Universal Connectivity</strong>: Support for cloud data warehouses (Snowflake, StarRocks), local databases (SQLite, DuckDB), and more</li>
-<li><strong>Credential Security</strong>: Environment variable-based credential management (<code>${ENV_VAR}</code> syntax)</li>
-<li><strong>Default Database</strong>: Mark one database as <code>default: true</code> for auto-selection</li>
-<li><strong>Plugin Adapters</strong>: Install additional database adapters via <code>datus-agent configure</code></li>
-<li><strong>Dynamic Discovery</strong>: Glob pattern-based database discovery for multiple database files</li>
-</ul>
-<blockquote>
-<p><strong>Note</strong>: The earlier <code>services.databases</code> key has been renamed to <code>services.datasources</code>. Rename the key manually in your <code>agent.yml</code> — the runtime rejects the old name.</p>
-</blockquote>
-<h2 id="configuration-structure">Configuration Structure<a class="headerlink" href="#configuration-structure" title="Permanent link">&para;</a></h2>
-<p>Datasources are configured under <code>agent.services.datasources</code>. Each entry is an independent database connection:</p>
+<h1 id="datasources">Datasources<a class="headerlink" href="#datasources" title="Permanent link">&para;</a></h1>
+<p>A datasource is a named database connection used by Datus for SQL execution, metadata discovery, and knowledge-base indexing. Configure datasources under <code>agent.services.datasources</code> in <code>agent.yml</code>.</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">agent</span><span class="p">:</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">services</span><span class="p">:</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">datasources</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">      </span><span class="nt">my_snowflake</span><span class="p">:</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${SNOWFLAKE_ACCOUNT}</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${SNOWFLAKE_USER}</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${SNOWFLAKE_PASSWORD}</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="nt">my_duckdb</span><span class="p">:</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">duckdb</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">        </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./data/analytics.duckdb</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="nt">semantic_layer</span><span class="p">:</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">      </span><span class="nt">metricflow</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span><span class="nt">bi_platforms</span><span class="p">:</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">      </span><span class="nt">superset</span><span class="p">:</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">superset</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">        </span><span class="nt">api_base_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://localhost:8088</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">        </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${SUPERSET_USER}</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">        </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${SUPERSET_PASSWORD}</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">    </span><span class="nt">schedulers</span><span class="p">:</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">      </span><span class="nt">airflow_prod</span><span class="p">:</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">airflow</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">        </span><span class="nt">api_base_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${AIRFLOW_URL}</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">        </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${AIRFLOW_USER}</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">        </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${AIRFLOW_PASSWORD}</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">        </span><span class="nt">dags_folder</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${AIRFLOW_DAGS_DIR}</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">      </span><span class="nt">analytics</span><span class="p">:</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${POSTGRES_HOST}</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${POSTGRES_USER}</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${POSTGRES_PASSWORD}</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">analytics</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">        </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">public</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </span></code></pre></div>
-<h2 id="service-sections">Service Sections<a class="headerlink" href="#service-sections" title="Permanent link">&para;</a></h2>
+<p>Each key under <code>datasources</code> is the datasource name. Names may contain letters, numbers, underscores, and hyphens. Set <code>default: true</code> on at most one entry; when only one datasource exists, Datus selects it automatically.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The configuration path remains <code>agent.services.datasources</code>. Configure semantic adapters under <a href="../../adapters/semantic_adapters/">Adapters</a>, and prefer <a href="../../plugin/introduction/">plugins</a> for integrations such as Airflow.</p>
+</div>
+<h2 id="choose-a-datasource">Choose a datasource<a class="headerlink" href="#choose-a-datasource" title="Permanent link">&para;</a></h2>
+<p>SQLite and DuckDB are built into Datus. Every other datasource is provided by an independently installable <code>datus-&lt;type&gt;</code> adapter. Datus can install a missing adapter when you add the datasource with <code>/datasource</code>; you can also install the package explicitly.</p>
 <table>
 <thead>
 <tr>
-<th>Section</th>
-<th>Purpose</th>
-<th>Selector</th>
+<th>Datasource</th>
+<th><code>type</code></th>
+<th>Package</th>
+<th>Namespace</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>services.datasources</code></td>
-<td>Database connections used by SQL and KB operations</td>
-<td><code>--datasource</code> / current database / default database</td>
+<td><a href="sqlite/">SQLite</a></td>
+<td><code>sqlite</code></td>
+<td>built in</td>
+<td>database file → table</td>
 </tr>
 <tr>
-<td><code>services.semantic_layer</code></td>
-<td>Semantic adapter configuration such as MetricFlow</td>
-<td><code>semantic_adapter</code></td>
+<td><a href="duckdb/">DuckDB</a></td>
+<td><code>duckdb</code></td>
+<td>built in</td>
+<td>database → schema → table</td>
 </tr>
 <tr>
-<td><code>services.bi_platforms</code></td>
-<td>BI platform credentials and dataset materialization config</td>
-<td><code>bi_platform</code></td>
+<td><a href="mysql/">MySQL</a></td>
+<td><code>mysql</code></td>
+<td><code>datus-mysql</code></td>
+<td>database → table</td>
 </tr>
 <tr>
-<td><code>services.schedulers</code></td>
-<td>Scheduler service instances such as Airflow</td>
-<td><code>scheduler_service</code></td>
+<td><a href="postgresql/">PostgreSQL</a></td>
+<td><code>postgresql</code></td>
+<td><code>datus-postgresql</code></td>
+<td>database → schema → table</td>
+</tr>
+<tr>
+<td><a href="greenplum/">Greenplum</a></td>
+<td><code>greenplum</code></td>
+<td><code>datus-greenplum</code></td>
+<td>database → schema → table</td>
+</tr>
+<tr>
+<td><a href="redshift/">Amazon Redshift</a></td>
+<td><code>redshift</code></td>
+<td><code>datus-redshift</code></td>
+<td>database → schema → table</td>
+</tr>
+<tr>
+<td><a href="snowflake/">Snowflake</a></td>
+<td><code>snowflake</code></td>
+<td><code>datus-snowflake</code></td>
+<td>database → schema → table</td>
+</tr>
+<tr>
+<td><a href="bigquery/">Google BigQuery</a></td>
+<td><code>bigquery</code></td>
+<td><code>datus-bigquery</code></td>
+<td>project → dataset → table</td>
+</tr>
+<tr>
+<td><a href="starrocks/">StarRocks</a></td>
+<td><code>starrocks</code></td>
+<td><code>datus-starrocks</code></td>
+<td>catalog → database → table</td>
+</tr>
+<tr>
+<td><a href="doris/">Apache Doris</a></td>
+<td><code>doris</code></td>
+<td><code>datus-doris</code></td>
+<td>catalog → database → table</td>
+</tr>
+<tr>
+<td><a href="tidb/">TiDB</a></td>
+<td><code>tidb</code></td>
+<td><code>datus-tidb</code></td>
+<td>database → table</td>
+</tr>
+<tr>
+<td><a href="clickhouse/">ClickHouse</a></td>
+<td><code>clickhouse</code></td>
+<td><code>datus-clickhouse</code></td>
+<td>database → table</td>
+</tr>
+<tr>
+<td><a href="trino/">Trino</a></td>
+<td><code>trino</code></td>
+<td><code>datus-trino</code></td>
+<td>catalog → schema → table</td>
+</tr>
+<tr>
+<td><a href="hive/">Hive</a></td>
+<td><code>hive</code></td>
+<td><code>datus-hive</code></td>
+<td>database → table</td>
+</tr>
+<tr>
+<td><a href="spark/">Spark SQL</a></td>
+<td><code>spark</code></td>
+<td><code>datus-spark</code></td>
+<td>database → table</td>
+</tr>
+<tr>
+<td><a href="clickzetta/">ClickZetta</a></td>
+<td><code>clickzetta</code></td>
+<td><code>datus-clickzetta</code></td>
+<td>instance/workspace → schema → table</td>
+</tr>
+<tr>
+<td><a href="hologres/">Hologres</a></td>
+<td><code>hologres</code></td>
+<td><code>datus-hologres</code></td>
+<td>database → schema → table</td>
+</tr>
+<tr>
+<td><a href="maxcompute/">MaxCompute</a></td>
+<td><code>maxcompute</code></td>
+<td><code>datus-maxcompute</code></td>
+<td>project → optional schema → table</td>
+</tr>
+<tr>
+<td><a href="oracle/">Oracle</a></td>
+<td><code>oracle</code></td>
+<td><code>datus-oracle</code></td>
+<td>schema → table</td>
+</tr>
+<tr>
+<td><a href="gaussdb/">GaussDB / openGauss</a></td>
+<td><code>gaussdb</code></td>
+<td><code>datus-gaussdb</code></td>
+<td>database → schema → table</td>
+</tr>
+<tr>
+<td><a href="dws/">GaussDB(DWS)</a></td>
+<td><code>dws</code></td>
+<td><code>datus-dws</code></td>
+<td>database → schema → table</td>
 </tr>
 </tbody>
 </table>
-<h2 id="supported-database-types">Supported Database Types<a class="headerlink" href="#supported-database-types" title="Permanent link">&para;</a></h2>
-<h3 id="snowflake">Snowflake<a class="headerlink" href="#snowflake" title="Permanent link">&para;</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">my_snowflake</span><span class="p">:</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">snowflake</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${SNOWFLAKE_ACCOUNT}</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${SNOWFLAKE_USER}</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${SNOWFLAKE_PASSWORD}</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${SNOWFLAKE_DATABASE}</span><span class="w">    </span><span class="c1"># Optional</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${SNOWFLAKE_SCHEMA}</span><span class="w">        </span><span class="c1"># Optional</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${SNOWFLAKE_WAREHOUSE}</span><span class="w">  </span><span class="c1"># Optional</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">                      </span><span class="c1"># Optional: mark as default</span>
-</span></code></pre></div>
-<h3 id="starrocks">StarRocks<a class="headerlink" href="#starrocks" title="Permanent link">&para;</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">my_starrocks</span><span class="p">:</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">starrocks</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${STARROCKS_HOST}</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${STARROCKS_PORT}</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${STARROCKS_USER}</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${STARROCKS_PASSWORD}</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${STARROCKS_DATABASE}</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="nt">catalog</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${STARROCKS_CATALOG}</span><span class="w">      </span><span class="c1"># Optional</span>
-</span></code></pre></div>
-<h3 id="sqlite">SQLite<a class="headerlink" href="#sqlite" title="Permanent link">&para;</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">my_sqlite</span><span class="p">:</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sqlite</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sqlite:////Users/xxx/data/orders.db</span>
-</span></code></pre></div>
-<h3 id="duckdb">DuckDB<a class="headerlink" href="#duckdb" title="Permanent link">&para;</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">my_duckdb</span><span class="p">:</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">duckdb</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">duckdb:////Users/xxx/data/analytics.duckdb</span>
-</span></code></pre></div>
-<h3 id="mysql">MySQL<a class="headerlink" href="#mysql" title="Permanent link">&para;</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">my_mysql</span><span class="p">:</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3306</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${MYSQL_USER}</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${MYSQL_PASSWORD}</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">analytics</span>
-</span></code></pre></div>
-<h3 id="postgresql">PostgreSQL<a class="headerlink" href="#postgresql" title="Permanent link">&para;</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">my_postgresql</span><span class="p">:</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${POSTGRES_USER}</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${POSTGRES_PASSWORD}</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">analytics</span>
-</span></code></pre></div>
-<h3 id="path-pattern-multiple-files">Path Pattern (Multiple Files)<a class="headerlink" href="#path-pattern-multiple-files" title="Permanent link">&para;</a></h3>
-<p>Use glob patterns to auto-discover database files:</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">bird_benchmark</span><span class="p">:</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sqlite</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">path_pattern</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">benchmark/bird/dev_20240627/dev_databases/**/*.sqlite</span>
-</span></code></pre></div>
-<p>Supported patterns: <code>*.sqlite</code>, <code>**/*.sqlite</code>, <code>data/2024/*.db</code></p>
-<h2 id="configuration-parameters">Configuration Parameters<a class="headerlink" href="#configuration-parameters" title="Permanent link">&para;</a></h2>
-<h3 id="common-parameters">Common Parameters<a class="headerlink" href="#common-parameters" title="Permanent link">&para;</a></h3>
+<h2 id="common-profile-keys">Common profile keys<a class="headerlink" href="#common-profile-keys" title="Permanent link">&para;</a></h2>
+<p>Each datasource page documents only its type-specific connection keys. The following profile keys are handled by Datus and apply to every datasource:</p>
 <table>
 <thead>
 <tr>
-<th>Parameter</th>
-<th>Required</th>
-<th>Description</th>
+<th>Key</th>
+<th>Type</th>
+<th style="text-align: right;">Required</th>
+<th>Default</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>type</code></td>
-<td>Yes</td>
-<td>Database type: <code>sqlite</code>, <code>duckdb</code>, <code>snowflake</code>, <code>starrocks</code>, <code>mysql</code>, <code>postgresql</code></td>
+<td>string</td>
+<td style="text-align: right;">yes</td>
+<td>—</td>
+<td>Adapter type from the table above.</td>
 </tr>
 <tr>
 <td><code>default</code></td>
-<td>No</td>
-<td>Set to <code>true</code> to mark as default database</td>
-</tr>
-<tr>
-<td><code>uri</code></td>
-<td>For file DBs</td>
-<td>Connection URI for SQLite/DuckDB</td>
-</tr>
-<tr>
-<td><code>host</code></td>
-<td>For server DBs</td>
-<td>Database server hostname</td>
-</tr>
-<tr>
-<td><code>port</code></td>
-<td>For server DBs</td>
-<td>Database server port</td>
-</tr>
-<tr>
-<td><code>username</code></td>
-<td>For server DBs</td>
-<td>Database username</td>
-</tr>
-<tr>
-<td><code>password</code></td>
-<td>For server DBs</td>
-<td>Database password</td>
-</tr>
-<tr>
-<td><code>database</code></td>
-<td>No</td>
-<td>Database/schema name</td>
+<td>boolean</td>
+<td style="text-align: right;">no</td>
+<td><code>false</code></td>
+<td>Marks this entry as the default datasource.</td>
 </tr>
 </tbody>
 </table>
-<h3 id="database-specific-parameters">Database-Specific Parameters<a class="headerlink" href="#database-specific-parameters" title="Permanent link">&para;</a></h3>
+<p>Adapter models reject unknown keys, so copy the field names exactly. Use environment variables for credentials:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${DB_USERNAME}</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${DB_PASSWORD}</span>
+</span></code></pre></div>
+<p><code>${NAME:-fallback}</code> supplies a fallback. A missing <code>${NAME}</code> expands to a visible missing-value marker and the connection will fail rather than silently using an empty credential.</p>
+<h2 id="file-datasource-patterns">File datasource patterns<a class="headerlink" href="#file-datasource-patterns" title="Permanent link">&para;</a></h2>
+<p>SQLite and DuckDB can bind one datasource to several files with <code>path_pattern</code> instead of <code>uri</code>:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">agent</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">services</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">datasources</span><span class="p">:</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">      </span><span class="nt">benchmark</span><span class="p">:</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sqlite</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">        </span><span class="nt">path_pattern</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">benchmark/databases/**/*.sqlite</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">        </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">california_schools</span><span class="w">  </span><span class="c1"># optional initial file stem</span>
+</span></code></pre></div>
+<p>The matched files become databases within one datasource. Datus skips the entry at startup when the pattern matches no files.</p>
+<h2 id="add-test-and-select-a-datasource">Add, test, and select a datasource<a class="headerlink" href="#add-test-and-select-a-datasource" title="Permanent link">&para;</a></h2>
+<p>The recommended path is the interactive datasource manager:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>datus
+</span></code></pre></div>
+<p>Run <code>/datasource</code> in the CLI. Adding or editing an entry validates its fields, installs a missing adapter, tests connectivity, and writes the result to the active <code>agent.yml</code> selected by <code>--config</code> or the normal configuration search order. Use <code>/datasource &lt;name&gt;</code> to switch the current session.</p>
+<p>For a manually edited file, start Datus with the target entry. Connector construction and the initial metadata load surface configuration, network, and authentication failures:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>datus<span class="w"> </span>--config<span class="w"> </span>conf/agent.yml<span class="w"> </span>--datasource<span class="w"> </span>analytics
+</span></code></pre></div>
+<p>Project-specific selection belongs in <code>.datus/config.yml</code>:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">default_datasource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">analytics</span>
+</span></code></pre></div>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause and fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Unsupported value ... for field datasource</code></td>
+<td>The selected name is not a key under <code>agent.services.datasources</code>. Check spelling and the active config file.</td>
+</tr>
+<tr>
+<td>Adapter import or installation error</td>
+<td>Install the package shown in the datasource's page into the same Python environment as <code>datus</code>.</td>
+</tr>
+<tr>
+<td>Unknown or extra field</td>
+<td>The installed adapter validates its own schema. Remove the field or use the exact key documented on that datasource page.</td>
+</tr>
+<tr>
+<td>Connection succeeds but objects are missing</td>
+<td>Check the adapter's namespace fields (<code>catalog</code>, <code>database</code>, <code>schema</code>, or <code>schema_name</code>) and the database user's grants.</td>
+</tr>
+<tr>
+<td>Credential appears literally as <code>&lt;MISSING:...&gt;</code></td>
+<td>Export the referenced environment variable before starting Datus.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related-documentation">Related documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Snowflake</strong>: <code>account</code>, <code>warehouse</code>, <code>role</code>, <code>schema</code></li>
-<li><strong>StarRocks</strong>: <code>catalog</code></li>
-<li><strong>SQLite/DuckDB</strong>: <code>path_pattern</code> for glob-based discovery</li>
-<li><strong>MySQL/PostgreSQL</strong>: <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code>, <code>database</code></li>
-</ul>
-<h2 id="managing-databases">Managing Databases<a class="headerlink" href="#managing-databases" title="Permanent link">&para;</a></h2>
-<h3 id="interactive-configuration">Interactive Configuration<a class="headerlink" href="#interactive-configuration" title="Permanent link">&para;</a></h3>
-<p>Use <code>datus-agent configure</code> to add, delete, or manage databases interactively:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>datus-agent<span class="w"> </span>configure
-</span></code></pre></div>
-<p>This shows your current models and databases, then offers a menu:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Current Databases:
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>┏━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>┃ Name         ┃ Type      ┃ Connection              ┃ Default ┃
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>┡━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>│ demo         │ duckdb    │ ./demo.duckdb           │ *       │
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>│ prod_sf      │ snowflake │ account=my_account      │         │
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>└──────────────┴───────────┴─────────────────────────┴─────────┘
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>What would you like to do?
-</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>  → [add_database] Add a database
-</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>    [delete_database] Delete a database
-</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>    [done] Done
-</span></code></pre></div>
-<p>Database adapter plugins are auto-installed when you select an uninstalled type (e.g., snowflake, mysql).</p>
-<h3 id="cli-commands">CLI Commands<a class="headerlink" href="#cli-commands" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># List all databases</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>datus-agent<span class="w"> </span>service<span class="w"> </span>list
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># Add a database interactively</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>datus-agent<span class="w"> </span>service<span class="w"> </span>add
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1"># Delete a database interactively</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>datus-agent<span class="w"> </span>service<span class="w"> </span>delete
-</span></code></pre></div>
-<h3 id="specify-a-custom-config">Specify a Custom Config<a class="headerlink" href="#specify-a-custom-config" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>datus-agent<span class="w"> </span>service<span class="w"> </span>list<span class="w"> </span>--config<span class="w"> </span>/path/to/agent.yml
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>datus-agent<span class="w"> </span>configure<span class="w"> </span>--config<span class="w"> </span>/path/to/agent.yml
-</span></code></pre></div>
-<h2 id="default-database-selection">Default Database Selection<a class="headerlink" href="#default-database-selection" title="Permanent link">&para;</a></h2>
-<p>When running CLI commands, specify which database to use:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>datus-cli<span class="w"> </span>--datasource<span class="w"> </span>my_duckdb
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>datus-agent<span class="w"> </span>run<span class="w"> </span>--datasource<span class="w"> </span>my_snowflake<span class="w"> </span>--task<span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w"> </span>--task_db_name<span class="w"> </span>ANALYTICS
-</span></code></pre></div>
-<p>If <code>--datasource</code> is not specified:
-1. If a database has <code>default: true</code> → auto-selected
-2. If only one database configured → auto-selected
-3. If multiple without default → shows available list</p>
-<h2 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">&para;</a></h2>
-<h3 id="credential-management">Credential Management<a class="headerlink" href="#credential-management" title="Permanent link">&para;</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Recommended: Using environment variables</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${DB_USERNAME}</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${DB_PASSWORD}</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1"># Avoid: Hardcoded credentials</span>
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;actual_username&quot;</span>
-</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;actual_password&quot;</span>
-</span></code></pre></div>
-<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
-<ul>
-<li><a href="../../adapters/db_adapters/">Database Adapters</a> - Install plugin adapters for MySQL, Snowflake, StarRocks, and more</li>
-<li><a href="../semantic_layer/">Semantic Layer Configuration</a> - Configure semantic adapters</li>
-<li><a href="../bi_platforms/">BI Platforms Configuration</a> - Configure Superset or Grafana</li>
-<li><a href="../schedulers/">Scheduler Configuration</a> - Configure Airflow services</li>
-<li><a href="../../cli-commands/">CLI Commands</a> - Full CLI reference including configure, init, and service commands</li>
+<li><a href="../../adapters/db_adapters/">Database adapter architecture</a></li>
+<li><a href="../sql_policy/">SQL policy and deployment-wide read-only mode</a></li>
+<li><a href="../../plugin/introduction/">Plugin system</a></li>
+<li><a href="../../cli/reference/">CLI reference</a></li>
 </ul>
 
 
@@ -4249,8 +5417,6 @@
 
 
 
-
-  
 
 
 
@@ -4272,7 +5438,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../benchmark/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Benchmark">
+          <a href="../image_tool/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Image Reading">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -4282,20 +5448,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Benchmark
+                Image Reading
               </div>
             </div>
           </a>
         
         
           
-          <a href="../semantic_layer/" class="md-footer__link md-footer__link--next" aria-label="Next: Semantic Layer">
+          <a href="sqlite/" class="md-footer__link md-footer__link--next" aria-label="Next: SQLite">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Semantic Layer
+                SQLite
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -4388,7 +5554,9 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.footer", "navigation.tabs", "navigation.tracking", "navigation.indexes", "content.code.copy", "content.code.select", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/analytics.js"></script>
       
     
   </body>

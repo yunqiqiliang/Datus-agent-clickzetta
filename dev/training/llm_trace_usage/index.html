@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://docs.datus.ai/dev/training/llm_trace_usage/">
+        <link rel="canonical" href="https://docs.datus.ai/dev/dev/training/llm_trace_usage/">
       
       
         <link rel="prev" href="../../integration/memory/">
@@ -18,14 +18,14 @@
       
       
         
-          <link rel="alternate" href="./" hreflang="en">
+          <link rel="alternate" href="/dev/" hreflang="en">
         
-          <link rel="alternate" href="../../zh/training/llm_trace_usage/" hreflang="zh">
+          <link rel="alternate" href="/zh/dev/" hreflang="zh">
         
       
       
       <link rel="icon" href="../../assets/logo-light.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -54,16 +54,6 @@
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
-  
-
-
-  
-  
-
-<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-8HMXHZDV7F"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-8HMXHZDV7F",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-8HMXHZDV7F",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
-  
-    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
-  
 
     
     
@@ -180,13 +170,13 @@
       <ul class="md-select__list">
         
           <li class="md-select__item">
-            <a href="./" hreflang="en" class="md-select__link">
+            <a href="/dev/" hreflang="en" class="md-select__link">
               English
             </a>
           </li>
         
           <li class="md-select__item">
-            <a href="../../zh/training/llm_trace_usage/" hreflang="zh" class="md-select__link">
+            <a href="/zh/dev/" hreflang="zh" class="md-select__link">
               中文
             </a>
           </li>
@@ -396,6 +386,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -461,6 +455,8 @@
     
       
         
+          
+        
       
         
       
@@ -482,8 +478,9 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
         
           
-          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
-            
+          <div class="md-nav__link md-nav__container">
+            <a href="../../getting_started/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -497,8 +494,14 @@
   
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_2">
@@ -510,6 +513,8 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -525,35 +530,7 @@
   <span class="md-ellipsis">
     
   
-    Quickstart
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../getting_started/data_engineering_quickstart/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Data Engineering Quickstart
+    Install and First Query
   
 
     
@@ -581,7 +558,91 @@
   <span class="md-ellipsis">
     
   
-    Contextual Data Engineering
+    Build a Context-Rich Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2_4" id="__nav_1_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenario Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scenario Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/data_engineering_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    End-to-End Data Engineering
   
 
     
@@ -609,7 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Dashboard Copilot
+    Turn a Dashboard into a Copilot
   
 
     
@@ -631,6 +692,14 @@
 
               
             
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
               
                 
   
@@ -639,6 +708,10 @@
   
     
     
+      
+        
+      
+        
       
         
       
@@ -904,6 +977,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../cli/package_command/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Command
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../cli/reference/" class="md-nav__link">
         
   
@@ -940,6 +1041,34 @@
     
   
     Plan Mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/other_commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other Commands
   
 
     
@@ -1124,14 +1253,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../subagent/gen_dashboard/" class="md-nav__link">
+      <a href="../../subagent/semantic_modeling/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Generate Dashboard
+    Semantic Modeling
   
 
     
@@ -1152,70 +1281,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../subagent/gen_metrics/" class="md-nav__link">
+      <a href="../../subagent/ask_metrics/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Generate Metrics
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../subagent/gen_semantic_model/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Generate Semantic Model
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../subagent/scheduler/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Scheduler
+    Ask Metrics
   
 
     
@@ -1313,6 +1386,756 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../subagent/gen_visual_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTML Report Generation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../subagent/gen_visual_dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTML Dashboard Generation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_5" id="__nav_1_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skills
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Skills
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_5_2" id="__nav_1_5_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Built-in Skills
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Built-in Skills
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/init/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Init
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/build_kb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build KB
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/dashboard_bootstrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard Bootstrap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/storage_classify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Classify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/extract_knowledge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extract Knowledge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/memory_organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Organization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../skills/session_summarize/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Session Summarize
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugin
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_3" id="__nav_1_6_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin List
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugin List
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/airflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Airflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/s3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/eks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EKS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/k8s/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    K8s
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugin/flink/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flink
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1375,10 +2198,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_8" >
         
           
-          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_8" id="__nav_1_8_label" tabindex="0">
             
   
   
@@ -1396,8 +2219,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1535,10 +2358,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" >
         
           
-          <label class="md-nav__link" for="__nav_1_7" id="__nav_1_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
             
   
   
@@ -1556,8 +2379,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1582,34 +2405,6 @@
     
   
     Introduction
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../knowledge_base/ext_knowledge/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    External Knowledge
   
 
     
@@ -1666,6 +2461,34 @@
     
   
     Metadata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../knowledge_base/metadata_fts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metadata Full-text Search
   
 
     
@@ -1827,10 +2650,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_10" >
         
           
-          <label class="md-nav__link" for="__nav_1_8" id="__nav_1_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_10" id="__nav_1_10_label" tabindex="0">
             
   
   
@@ -1848,8 +2671,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1996,6 +2819,8 @@
       
         
       
+        
+      
     
     
     
@@ -2007,10 +2832,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" >
         
           
-          <label class="md-nav__link" for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="0">
             
   
   
@@ -2028,8 +2853,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_9">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_11">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2151,6 +2976,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2182,6 +3035,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -2193,10 +3054,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_12" >
         
           
-          <label class="md-nav__link" for="__nav_1_10" id="__nav_1_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_12" id="__nav_1_12_label" tabindex="0">
             
   
   
@@ -2214,8 +3075,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_10">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_12">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2268,6 +3129,34 @@
     
   
     Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/compact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Context Compaction
   
 
     
@@ -2343,8 +3232,128 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../configuration/sql_policy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL Policy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/web_tool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/image_tool/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Image Reading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
       
         
       
@@ -2365,17 +3374,17 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_12_9" >
         
           
-          <label class="md-nav__link" for="__nav_1_10_5" id="__nav_1_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_12_9" id="__nav_1_12_9_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
     
   
-    Services
+    Datasources
   
 
     
@@ -2386,12 +3395,12 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_12_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_12_9">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Services
+    Datasources
   
 
           </label>
@@ -2411,7 +3420,7 @@
   <span class="md-ellipsis">
     
   
-    Datasources
+    Overview
   
 
     
@@ -2432,14 +3441,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../configuration/semantic_layer/" class="md-nav__link">
+      <a href="../../configuration/datasources/sqlite/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Semantic Layer
+    SQLite
   
 
     
@@ -2460,14 +3469,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../configuration/bi_platforms/" class="md-nav__link">
+      <a href="../../configuration/datasources/duckdb/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    BI Platforms
+    DuckDB
   
 
     
@@ -2488,14 +3497,518 @@
   
   
     <li class="md-nav__item">
-      <a href="../../configuration/schedulers/" class="md-nav__link">
+      <a href="../../configuration/datasources/mysql/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Schedulers
+    MySQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/postgresql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PostgreSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/greenplum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Greenplum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/redshift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Amazon Redshift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/snowflake/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Snowflake
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/bigquery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google BigQuery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/starrocks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StarRocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/doris/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Apache Doris
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/tidb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TiDB
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/clickhouse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ClickHouse
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/trino/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trino
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/hive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/spark/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spark SQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/clickzetta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ClickZetta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/hologres/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hologres
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/maxcompute/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MaxCompute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/oracle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Oracle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/gaussdb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GaussDB / openGauss
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/datasources/dws/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GaussDB(DWS)
   
 
     
@@ -2609,10 +4122,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_11" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_13" >
         
           
-          <label class="md-nav__link" for="__nav_1_11" id="__nav_1_11_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_13" id="__nav_1_13_label" tabindex="0">
             
   
   
@@ -2630,8 +4143,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_11_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_11">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_13">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2675,9 +4188,33 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../adapters/semantic_adapters/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_13_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_13_2" id="__nav_1_13_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -2691,7 +4228,135 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_13_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_13_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semantic Adapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adapters/semantic_adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adapters/metricflow_semantic_adapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MetricFlow Semantic Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adapters/osi_semantic_adapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OSI Semantic Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adapters/dosi_semantic_adapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dosi Semantic Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2783,10 +4448,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_12" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_14" >
         
           
-          <label class="md-nav__link" for="__nav_1_12" id="__nav_1_12_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_14" id="__nav_1_14_label" tabindex="0">
             
   
   
@@ -2804,8 +4469,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_12_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_12">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_14">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2862,96 +4527,6 @@
       
         
       
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_13" >
-        
-          
-          <label class="md-nav__link" for="__nav_1_13" id="__nav_1_13_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metricflow
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_13_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_13">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Metricflow
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../metricflow/introduction/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Introduction
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-      
-        
-      
         
       
         
@@ -2967,10 +4542,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_14" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_15" >
         
           
-          <label class="md-nav__link" for="__nav_1_14" id="__nav_1_14_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_15" id="__nav_1_15_label" tabindex="0">
             
   
   
@@ -2988,8 +4563,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_14_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_14">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_15">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3034,14 +4609,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../integration/skills/" class="md-nav__link">
+      <a href="../../integration/validation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Skills
+    Validation
   
 
     
@@ -3115,10 +4690,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_15" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_16" checked>
         
           
-          <label class="md-nav__link" for="__nav_1_15" id="__nav_1_15_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_16" id="__nav_1_16_label" tabindex="0">
             
   
   
@@ -3136,8 +4711,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_15_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_1_15">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_16_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_16">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3420,10 +4995,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#output-with-reasoning-deepseek-reasoner" class="md-nav__link">
+  <a href="#output-with-reasoning-deepseek-v4-flash-thinking-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Output with Reasoning (DeepSeek Reasoner)
+        Output with Reasoning (DeepSeek V4 Flash Thinking Mode)
       
     </span>
   </a>
@@ -3478,8 +5053,6 @@
       
         
       
-        
-      
     
     
     
@@ -3491,7 +5064,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_16" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_17" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -3513,14 +5086,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_1_16" id="__nav_1_16_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_1_17" id="__nav_1_17_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_16_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_16">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_17_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_17">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3539,42 +5112,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../develop/Architecture/" class="md-nav__link">
+      <a href="../../develop/observability/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../develop/Contributing/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Contributing
+    Observability
   
 
     
@@ -3591,6 +5136,34 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vscode_extension/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VSCode Extension
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -3863,10 +5436,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#output-with-reasoning-deepseek-reasoner" class="md-nav__link">
+  <a href="#output-with-reasoning-deepseek-v4-flash-thinking-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Output with Reasoning (DeepSeek Reasoner)
+        Output with Reasoning (DeepSeek V4 Flash Thinking Mode)
       
     </span>
   </a>
@@ -3924,7 +5497,7 @@
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>datus-cli<span class="w"> </span>--datasource<span class="w"> </span>spidersnow<span class="w"> </span>--save_llm_trace
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Main program mode</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>python<span class="w"> </span>-m<span class="w"> </span>datus.main<span class="w"> </span>run<span class="w"> </span>--datasource<span class="w"> </span>bird_sqlite<span class="w"> </span>--task_db_name<span class="w"> </span>test.db<span class="w"> </span>--task<span class="w"> </span><span class="s2">&quot;Query all users&quot;</span><span class="w"> </span>--save_llm_trace
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>python<span class="w"> </span>-m<span class="w"> </span>datus.main<span class="w"> </span>run<span class="w"> </span>--datasource<span class="w"> </span>bird_sqlite<span class="w"> </span>--task_db_name<span class="w"> </span>test.db<span class="w"> </span>--task<span class="w"> </span><span class="s2">"Query all users"</span><span class="w"> </span>--save_llm_trace
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Benchmark mode</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>python<span class="w"> </span>-m<span class="w"> </span>datus.main<span class="w"> </span>benchmark<span class="w"> </span>--datasource<span class="w"> </span>bird_sqlite<span class="w"> </span>--benchmark<span class="w"> </span>bird_dev<span class="w"> </span>--save_llm_trace
@@ -3937,29 +5510,29 @@
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deepseek</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="nt">base_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://api.deepseek.com</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${DEEPSEEK_API_KEY}</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deepseek-chat</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deepseek-v4-flash</span>
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">      </span><span class="nt">save_llm_trace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">  </span><span class="c1"># Enable tracing for this model</span>
 </span></code></pre></div>
 <h2 id="output-format">Output Format<a class="headerlink" href="#output-format" title="Permanent link">&para;</a></h2>
 <p>Trace files are saved in the <code>trajectory_dir/{task_id}/</code> directory (<code>trajectory_dir</code> is the configured trace output base directory, typically <code>{agent.home}/trajectory/{datasource}/{timestamp}/</code>), with each node generating a <code>{node_id}.yml</code> file.</p>
 <h3 id="yaml-file-structure">YAML File Structure<a class="headerlink" href="#yaml-file-structure" title="Permanent link">&para;</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;You</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">helpful</span><span class="nv"> </span><span class="s">SQL</span><span class="nv"> </span><span class="s">assistant.&quot;</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">user_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Generate</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">SQL</span><span class="nv"> </span><span class="s">query</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">select</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">users&quot;</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nt">reason_content</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;This</span><span class="nv"> </span><span class="s">query</span><span class="nv"> </span><span class="s">selects</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">columns</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">users</span><span class="nv"> </span><span class="s">table...&quot;</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nt">output_content</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SELECT</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">FROM</span><span class="nv"> </span><span class="s">users;&quot;</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">"You</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">helpful</span><span class="nv"> </span><span class="s">SQL</span><span class="nv"> </span><span class="s">assistant."</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">user_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">"Generate</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">SQL</span><span class="nv"> </span><span class="s">query</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">select</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">users"</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nt">reason_content</span><span class="p">:</span><span class="w"> </span><span class="s">"This</span><span class="nv"> </span><span class="s">query</span><span class="nv"> </span><span class="s">selects</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">columns</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">users</span><span class="nv"> </span><span class="s">table..."</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nt">output_content</span><span class="p">:</span><span class="w"> </span><span class="s">"SELECT</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">FROM</span><span class="nv"> </span><span class="s">users;"</span>
 </span></code></pre></div>
 <h3 id="field-descriptions">Field Descriptions<a class="headerlink" href="#field-descriptions" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>system_prompt</strong>: System prompt (if using message format)</li>
 <li><strong>user_prompt</strong>: User input prompt</li>
-<li><strong>reason_content</strong>: Reasoning content (only applicable to reasoning models like deepseek-reasoner)</li>
+<li><strong>reason_content</strong>: Reasoning content returned when thinking mode is enabled (for example, with <code>deepseek-v4-flash</code>)</li>
 <li><strong>output_content</strong>: Model output content</li>
 </ul>
 <h2 id="supported-models">Supported Models<a class="headerlink" href="#supported-models" title="Permanent link">&para;</a></h2>
 <p>Currently, LLM trace functionality is primarily implemented in DeepSeek models:</p>
 <ul>
-<li>✅ DeepSeek Chat (deepseek-chat)</li>
-<li>✅ DeepSeek Reasoner (deepseek-reasoner) - includes reasoning content</li>
+<li>✅ DeepSeek V4 Flash (<code>deepseek-v4-flash</code>) - includes reasoning content when thinking mode is enabled</li>
+<li>✅ DeepSeek V4 Pro (<code>deepseek-v4-pro</code>)</li>
 <li>🔄 Other models (OpenAI, Claude, Qwen) have basic interfaces and can be extended</li>
 </ul>
 <h2 id="file-organization">File Organization<a class="headerlink" href="#file-organization" title="Permanent link">&para;</a></h2>
@@ -3982,11 +5555,11 @@
 </span></code></pre></div>
 <h3 id="3-auditing-and-compliance">3. Auditing and Compliance<a class="headerlink" href="#3-auditing-and-compliance" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Record all LLM interactions for auditing</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>python<span class="w"> </span>-m<span class="w"> </span>datus.main<span class="w"> </span>run<span class="w"> </span>--datasource<span class="w"> </span>prod<span class="w"> </span>--task_db_name<span class="w"> </span>analytics<span class="w"> </span>--task<span class="w"> </span><span class="s2">&quot;sensitive query&quot;</span><span class="w"> </span>--save_llm_trace
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>python<span class="w"> </span>-m<span class="w"> </span>datus.main<span class="w"> </span>run<span class="w"> </span>--datasource<span class="w"> </span>prod<span class="w"> </span>--task_db_name<span class="w"> </span>analytics<span class="w"> </span>--task<span class="w"> </span><span class="s2">"sensitive query"</span><span class="w"> </span>--save_llm_trace
 </span></code></pre></div>
 <h3 id="4-mcp-call-tracing">4. MCP Call Tracing<a class="headerlink" href="#4-mcp-call-tracing" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Enable detailed tracing of MCP calls, including the entire function call process</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>python<span class="w"> </span>-m<span class="w"> </span>datus.main<span class="w"> </span>run<span class="w"> </span>--datasource<span class="w"> </span>bird_sqlite<span class="w"> </span>--task_db_name<span class="w"> </span>test.db<span class="w"> </span>--task<span class="w"> </span><span class="s2">&quot;Complex query&quot;</span><span class="w"> </span>--save_llm_trace
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>python<span class="w"> </span>-m<span class="w"> </span>datus.main<span class="w"> </span>run<span class="w"> </span>--datasource<span class="w"> </span>bird_sqlite<span class="w"> </span>--task_db_name<span class="w"> </span>test.db<span class="w"> </span>--task<span class="w"> </span><span class="s2">"Complex query"</span><span class="w"> </span>--save_llm_trace
 </span></code></pre></div>
 <h2 id="important-notes">Important Notes<a class="headerlink" href="#important-notes" title="Permanent link">&para;</a></h2>
 <ol>
@@ -3997,20 +5570,20 @@
 </ol>
 <h2 id="example-outputs">Example Outputs<a class="headerlink" href="#example-outputs" title="Permanent link">&para;</a></h2>
 <h3 id="simple-prompt">Simple Prompt<a class="headerlink" href="#simple-prompt" title="Permanent link">&para;</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nt">user_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Create</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">query</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">find</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">active</span><span class="nv"> </span><span class="s">users&quot;</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nt">reason_content</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nt">output_content</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SELECT</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">FROM</span><span class="nv"> </span><span class="s">users</span><span class="nv"> </span><span class="s">WHERE</span><span class="nv"> </span><span class="s">status</span><span class="nv"> </span><span class="s">=</span><span class="nv"> </span><span class="s">&#39;active&#39;;&quot;</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nt">user_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">"Create</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">query</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">find</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">active</span><span class="nv"> </span><span class="s">users"</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nt">reason_content</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nt">output_content</span><span class="p">:</span><span class="w"> </span><span class="s">"SELECT</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">FROM</span><span class="nv"> </span><span class="s">users</span><span class="nv"> </span><span class="s">WHERE</span><span class="nv"> </span><span class="s">status</span><span class="nv"> </span><span class="s">=</span><span class="nv"> </span><span class="s">'active';"</span>
 </span></code></pre></div>
-<h3 id="output-with-reasoning-deepseek-reasoner">Output with Reasoning (DeepSeek Reasoner)<a class="headerlink" href="#output-with-reasoning-deepseek-reasoner" title="Permanent link">&para;</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;You</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">an</span><span class="nv"> </span><span class="s">expert</span><span class="nv"> </span><span class="s">SQL</span><span class="nv"> </span><span class="s">developer.&quot;</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nt">user_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Find</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">top</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">customers</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">revenue&quot;</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="nt">reason_content</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;I</span><span class="nv"> </span><span class="s">need</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">join</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">customers</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">orders</span><span class="nv"> </span><span class="s">tables,</span><span class="nv"> </span><span class="s">sum</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">order</span><span class="nv"> </span><span class="s">amounts,</span><span class="nv"> </span><span class="s">group</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">customer,</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">limit</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">top</span><span class="nv"> </span><span class="s">5...&quot;</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="nt">output_content</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SELECT</span><span class="nv"> </span><span class="s">c.name,</span><span class="nv"> </span><span class="s">SUM(o.amount)</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">total_revenue</span><span class="nv"> </span><span class="s">FROM</span><span class="nv"> </span><span class="s">customers</span><span class="nv"> </span><span class="s">c</span><span class="nv"> </span><span class="s">JOIN</span><span class="nv"> </span><span class="s">orders</span><span class="nv"> </span><span class="s">o</span><span class="nv"> </span><span class="s">ON</span><span class="nv"> </span><span class="s">c.id</span><span class="nv"> </span><span class="s">=</span><span class="nv"> </span><span class="s">o.customer_id</span><span class="nv"> </span><span class="s">GROUP</span><span class="nv"> </span><span class="s">BY</span><span class="nv"> </span><span class="s">c.id</span><span class="nv"> </span><span class="s">ORDER</span><span class="nv"> </span><span class="s">BY</span><span class="nv"> </span><span class="s">total_revenue</span><span class="nv"> </span><span class="s">DESC</span><span class="nv"> </span><span class="s">LIMIT</span><span class="nv"> </span><span class="s">5;&quot;</span>
+<h3 id="output-with-reasoning-deepseek-v4-flash-thinking-mode">Output with Reasoning (DeepSeek V4 Flash Thinking Mode)<a class="headerlink" href="#output-with-reasoning-deepseek-v4-flash-thinking-mode" title="Permanent link">&para;</a></h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">"You</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">an</span><span class="nv"> </span><span class="s">expert</span><span class="nv"> </span><span class="s">SQL</span><span class="nv"> </span><span class="s">developer."</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nt">user_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">"Find</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">top</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">customers</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">revenue"</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="nt">reason_content</span><span class="p">:</span><span class="w"> </span><span class="s">"I</span><span class="nv"> </span><span class="s">need</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">join</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">customers</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">orders</span><span class="nv"> </span><span class="s">tables,</span><span class="nv"> </span><span class="s">sum</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">order</span><span class="nv"> </span><span class="s">amounts,</span><span class="nv"> </span><span class="s">group</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">customer,</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">limit</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">top</span><span class="nv"> </span><span class="s">5..."</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="nt">output_content</span><span class="p">:</span><span class="w"> </span><span class="s">"SELECT</span><span class="nv"> </span><span class="s">c.name,</span><span class="nv"> </span><span class="s">SUM(o.amount)</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">total_revenue</span><span class="nv"> </span><span class="s">FROM</span><span class="nv"> </span><span class="s">customers</span><span class="nv"> </span><span class="s">c</span><span class="nv"> </span><span class="s">JOIN</span><span class="nv"> </span><span class="s">orders</span><span class="nv"> </span><span class="s">o</span><span class="nv"> </span><span class="s">ON</span><span class="nv"> </span><span class="s">c.id</span><span class="nv"> </span><span class="s">=</span><span class="nv"> </span><span class="s">o.customer_id</span><span class="nv"> </span><span class="s">GROUP</span><span class="nv"> </span><span class="s">BY</span><span class="nv"> </span><span class="s">c.id</span><span class="nv"> </span><span class="s">ORDER</span><span class="nv"> </span><span class="s">BY</span><span class="nv"> </span><span class="s">total_revenue</span><span class="nv"> </span><span class="s">DESC</span><span class="nv"> </span><span class="s">LIMIT</span><span class="nv"> </span><span class="s">5;"</span>
 </span></code></pre></div>
 <h3 id="mcp-call-tracing-deepseek-model">MCP Call Tracing (DeepSeek Model)<a class="headerlink" href="#mcp-call-tracing-deepseek-model" title="Permanent link">&para;</a></h3>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;You</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">snowflake</span><span class="nv"> </span><span class="s">expert.&quot;</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nt">user_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Instruction:</span><span class="nv"> </span><span class="s">Generate</span><span class="nv"> </span><span class="s">SQL</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">data</span><span class="nv"> </span><span class="s">analysis\n\nUser</span><span class="nv"> </span><span class="s">Prompt:</span><span class="nv"> </span><span class="s">Find</span><span class="nv"> </span><span class="s">recent</span><span class="nv"> </span><span class="s">transactions&quot;</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">system_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">"You</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">snowflake</span><span class="nv"> </span><span class="s">expert."</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nt">user_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">"Instruction:</span><span class="nv"> </span><span class="s">Generate</span><span class="nv"> </span><span class="s">SQL</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">data</span><span class="nv"> </span><span class="s">analysis\n\nUser</span><span class="nv"> </span><span class="s">Prompt:</span><span class="nv"> </span><span class="s">Find</span><span class="nv"> </span><span class="s">recent</span><span class="nv"> </span><span class="s">transactions"</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nt">reason_content</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="no">=== MCP Conversation Started ===</span>
 </span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="no">Instruction: You are a snowflake expert. Generate SQL queries and execute them.</span>
@@ -4019,30 +5592,30 @@
 </span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
 </span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">  </span><span class="no">=== MCP Server Started ===</span>
 </span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">  </span><span class="no">Agent created: MCP_Agent</span>
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">  </span><span class="no">Output type: &lt;class &#39;str&#39;&gt;</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">  </span><span class="no">Output type: &lt;class 'str'&gt;</span>
 </span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>
 </span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">  </span><span class="no">=== Agent Execution Started ===</span>
 </span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
 </span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">  </span><span class="no">=== Result Analysis ===</span>
-</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">  </span><span class="no">Result type: &lt;class &#39;agents.runner.Result&#39;&gt;</span>
-</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">  </span><span class="no">Result attributes: [&#39;final_output&#39;, &#39;messages&#39;, &#39;run_id&#39;, &#39;iteration_count&#39;, &#39;total_cost&#39;]</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">  </span><span class="no">Result type: &lt;class 'agents.runner.Result'&gt;</span>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">  </span><span class="no">Result attributes: ['final_output', 'messages', 'run_id', 'iteration_count', 'total_cost']</span>
 </span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>
 </span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="w">  </span><span class="no">=== Conversation Messages ===</span>
 </span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">  </span><span class="no">Message 1 (user):</span>
 </span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="w">    </span><span class="no">Content: Find recent transactions from the database</span>
 </span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>
 </span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="w">  </span><span class="no">Message 2 (assistant):</span>
-</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">    </span><span class="no">Content: I&#39;ll help you find recent transactions. Let me query the database.</span>
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">    </span><span class="no">Content: I'll help you find recent transactions. Let me query the database.</span>
 </span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="w">    </span><span class="no">Tool Calls:</span>
-</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="w">      </span><span class="no">1. read_query({&quot;query&quot;: &quot;SELECT * FROM transactions WHERE created_at &gt;= CURRENT_DATE - INTERVAL &#39;7 days&#39; ORDER BY created_at DESC LIMIT 100&quot;})</span>
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="w">      </span><span class="no">1. read_query({"query": "SELECT * FROM transactions WHERE created_at &gt;= CURRENT_DATE - INTERVAL '7 days' ORDER BY created_at DESC LIMIT 100"})</span>
 </span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>
 </span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="w">  </span><span class="no">Message 3 (user):</span>
 </span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="w">    </span><span class="no">Content: Tool result: [transaction data...]</span>
 </span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a>
 </span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="w">  </span><span class="no">=== Tool Execution Results ===</span>
 </span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="w">  </span><span class="no">Tool Output 1:</span>
-</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a><span class="w">    </span><span class="no">Content: SELECT * FROM transactions WHERE created_at &gt;= CURRENT_DATE - INTERVAL &#39;7 days&#39; ORDER BY created_at DESC LIMIT 100</span>
-</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a><span class="w">    </span><span class="no">Results: [{&quot;id&quot;: 1, &quot;amount&quot;: 100.00, &quot;created_at&quot;: &quot;2024-01-15&quot;}...]</span>
+</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a><span class="w">    </span><span class="no">Content: SELECT * FROM transactions WHERE created_at &gt;= CURRENT_DATE - INTERVAL '7 days' ORDER BY created_at DESC LIMIT 100</span>
+</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a><span class="w">    </span><span class="no">Results: [{"id": 1, "amount": 100.00, "created_at": "2024-01-15"}...]</span>
 </span><span id="__span-10-35"><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a>
 </span><span id="__span-10-36"><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a><span class="w">  </span><span class="no">=== Agent Execution Completed ===</span>
 </span><span id="__span-10-37"><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a><span class="w">  </span><span class="no">Final Output: Here are the recent transactions from the last 7 days: [results summary]</span>
@@ -4050,7 +5623,7 @@
 </span><span id="__span-10-39"><a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a><span class="w">  </span><span class="no">Run ID: run_123456</span>
 </span><span id="__span-10-40"><a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a><span class="w">  </span><span class="no">Iteration count: 3</span>
 </span><span id="__span-10-41"><a id="__codelineno-10-41" name="__codelineno-10-41" href="#__codelineno-10-41"></a><span class="w">  </span><span class="no">Total cost: 0.025</span>
-</span><span id="__span-10-42"><a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a><span class="nt">output_content</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Here</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">recent</span><span class="nv"> </span><span class="s">transactions</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">last</span><span class="nv"> </span><span class="s">7</span><span class="nv"> </span><span class="s">days:</span><span class="nv"> </span><span class="s">[results</span><span class="nv"> </span><span class="s">summary]&quot;</span>
+</span><span id="__span-10-42"><a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a><span class="nt">output_content</span><span class="p">:</span><span class="w"> </span><span class="s">"Here</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">recent</span><span class="nv"> </span><span class="s">transactions</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">last</span><span class="nv"> </span><span class="s">7</span><span class="nv"> </span><span class="s">days:</span><span class="nv"> </span><span class="s">[results</span><span class="nv"> </span><span class="s">summary]"</span>
 </span></code></pre></div>
 
 
@@ -4060,8 +5633,6 @@
 
 
 
-
-  
 
 
 
@@ -4199,7 +5770,9 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.footer", "navigation.tabs", "navigation.tracking", "navigation.indexes", "content.code.copy", "content.code.select", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/analytics.js"></script>
       
     
   </body>
