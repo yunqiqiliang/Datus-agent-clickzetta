@@ -1117,6 +1117,18 @@ class TestExplorerServiceOSIAuthoring:
         # content is irrelevant since the adapter supplies the returned YAML.
         monkeypatch.setattr(svc.metric_rag, "get_metrics_detail", lambda parent, name, *a, **k: [{"name": name}])
 
+    async def test_get_metric_reports_a_metric_gone_from_its_file(self, real_agent_config, tmp_path, monkeypatch):
+        adapter = self._osi_adapter(tmp_path)
+        svc = ExplorerService(agent_config=real_agent_config)
+        self._wire(svc, monkeypatch, adapter)
+        model_file = tmp_path / "jeff_shop_live" / "jeff_shop_live.yml"
+        model_file.write_text(self.SAMPLE.split("    metrics:\n")[0])
+
+        result = await svc.get_metric(["operations", "daily", "daily_order_count"])
+
+        assert result.success is False
+        assert "no longer in its semantic model file" in result.errorMessage
+
     async def test_get_metric_returns_osi_native_yaml(self, real_agent_config, tmp_path, monkeypatch):
         import yaml
 
@@ -1276,6 +1288,45 @@ class TestExplorerServiceOSIAuthoring:
         on_disk = yaml.safe_load((tmp_path / "jeff_shop_live" / "jeff_shop_live.yml").read_text())
         assert on_disk["semantic_model"][0]["metrics"] == []
 
+    async def test_delete_fails_when_the_adapter_is_unavailable(self, real_agent_config, tmp_path, monkeypatch):
+        """A KB-only delete would leave the metric in YAML to come back on the next reconcile."""
+        adapter = self._osi_adapter(tmp_path)
+        svc = ExplorerService(agent_config=real_agent_config)
+        self._wire(svc, monkeypatch, adapter, adapter_type="dosi")
+        monkeypatch.setattr(svc, "_semantic_adapter", lambda: None)
+        kb_deleted = await self._metric_under(svc, monkeypatch, ["operations", "daily"], "daily_order_count")
+        before = (tmp_path / "jeff_shop_live" / "jeff_shop_live.yml").read_text()
+
+        for request in (
+            DeleteSubjectInput(type=SubjectNodeType.METRIC, subject_path=["operations", "daily", "daily_order_count"]),
+            DeleteSubjectInput(type=SubjectNodeType.DIRECTORY, subject_path=["operations"]),
+        ):
+            result = await svc.delete_subject(request)
+            assert result.success is False
+            assert "adapter is unavailable" in result.errorMessage
+
+        assert kb_deleted == []
+        assert (tmp_path / "jeff_shop_live" / "jeff_shop_live.yml").read_text() == before
+        assert svc.subject_tree_store.get_node_by_path(["operations", "daily"])["name"] == "daily"
+
+    async def test_delete_metric_forgets_the_file_digest(self, real_agent_config, tmp_path, monkeypatch):
+        """Reverting the file afterwards must read as a change, not as already projected."""
+        from datus.storage.semantic_model.sync_state import load_digests, record_digests
+
+        adapter = self._osi_adapter(tmp_path)
+        svc = ExplorerService(agent_config=real_agent_config)
+        self._wire(svc, monkeypatch, adapter, adapter_type="dosi")
+        monkeypatch.setattr(svc.metric_rag, "delete_metric", lambda *a, **k: {"success": True})
+        model_file = str((tmp_path / "jeff_shop_live" / "jeff_shop_live.yml").resolve())
+        record_digests(real_agent_config, svc.datasource_id, {model_file: "before"})
+
+        result = await svc.delete_subject(
+            DeleteSubjectInput(type=SubjectNodeType.METRIC, subject_path=["operations", "daily", "daily_order_count"])
+        )
+
+        assert result.success is True, result.errorMessage
+        assert model_file not in load_digests(real_agent_config, svc.datasource_id)
+
     async def test_create_metric_rolls_back_on_kb_sync_failure(self, real_agent_config, tmp_path, monkeypatch):
         import yaml
 
@@ -1377,6 +1428,135 @@ class TestExplorerServiceOSIAuthoring:
         )
         assert result.success is True, result.errorMessage
         assert kb_deleted["called"] is True  # stale KB row cleaned up
+
+    @staticmethod
+    async def _metric_under(svc, monkeypatch, subject_path, metric_name):
+        """Index ``metric_name`` in the KB under ``subject_path``; returns the KB deletes."""
+        await svc.create_directory(CreateDirectoryInput(subject_path=subject_path))
+        node_id = svc.subject_tree_store.get_node_by_path(subject_path)["node_id"]
+        monkeypatch.setattr(
+            svc.metric_rag.storage,
+            "list_entries",
+            lambda nid, *a, **k: [{"name": metric_name}] if nid == node_id else [],
+        )
+        kb_deleted = []
+        monkeypatch.setattr(
+            svc.metric_rag,
+            "delete_metric",
+            lambda path, name: kb_deleted.append((list(path), name)) or {"success": True},
+        )
+        return kb_deleted
+
+    async def test_delete_directory_removes_nested_metrics_from_osi_file(
+        self, real_agent_config, tmp_path, monkeypatch
+    ):
+        import yaml
+
+        adapter = self._osi_adapter(tmp_path)
+        svc = ExplorerService(agent_config=real_agent_config)
+        self._wire(svc, monkeypatch, adapter, adapter_type="dosi")
+        kb_deleted = await self._metric_under(svc, monkeypatch, ["operations", "daily"], "daily_order_count")
+
+        result = await svc.delete_subject(
+            DeleteSubjectInput(type=SubjectNodeType.DIRECTORY, subject_path=["operations"])
+        )
+
+        assert result.success is True, result.errorMessage
+        on_disk = yaml.safe_load((tmp_path / "jeff_shop_live" / "jeff_shop_live.yml").read_text())
+        assert on_disk["semantic_model"][0]["metrics"] == []
+        assert kb_deleted == [(["operations", "daily"], "daily_order_count")]
+        assert svc.subject_tree_store.get_node_by_path(["operations"]) is None
+
+    async def test_delete_directory_keeps_tree_when_metric_file_delete_fails(
+        self, real_agent_config, tmp_path, monkeypatch
+    ):
+        adapter = self._osi_adapter(tmp_path)
+        svc = ExplorerService(agent_config=real_agent_config)
+        self._wire(svc, monkeypatch, adapter, adapter_type="dosi")
+        kb_deleted = await self._metric_under(svc, monkeypatch, ["operations", "daily"], "daily_order_count")
+
+        def boom(*a, **k):
+            raise OSError("disk full")
+
+        monkeypatch.setattr(adapter, "delete_metric_source", boom)
+
+        result = await svc.delete_subject(
+            DeleteSubjectInput(type=SubjectNodeType.DIRECTORY, subject_path=["operations"])
+        )
+
+        assert result.success is False
+        assert "disk full" in result.errorMessage
+        assert kb_deleted == []
+        assert svc.subject_tree_store.get_node_by_path(["operations", "daily"])["name"] == "daily"
+
+    async def test_delete_directory_with_metrics_is_query_only_without_dosi(
+        self, real_agent_config, tmp_path, monkeypatch
+    ):
+        adapter = self._osi_adapter(tmp_path)
+        svc = ExplorerService(agent_config=real_agent_config)
+        self._wire(svc, monkeypatch, adapter, adapter_type="metricflow")
+        kb_deleted = await self._metric_under(svc, monkeypatch, ["operations", "daily"], "daily_order_count")
+
+        result = await svc.delete_subject(
+            DeleteSubjectInput(type=SubjectNodeType.DIRECTORY, subject_path=["operations"])
+        )
+
+        assert result.success is False
+        assert "query-only" in result.errorMessage
+        assert kb_deleted == []
+        assert svc.subject_tree_store.get_node_by_path(["operations"])["name"] == "operations"
+
+    @pytest.mark.parametrize("adapter_type", ["dosi", "metricflow"])
+    async def test_delete_directory_rejects_out_of_scope_metrics(
+        self, real_agent_config, tmp_path, monkeypatch, adapter_type
+    ):
+        adapter = self._osi_adapter(tmp_path)
+        svc = ExplorerService(agent_config=real_agent_config)
+        self._wire(svc, monkeypatch, adapter, adapter_type=adapter_type)
+        kb_deleted = await self._metric_under(svc, monkeypatch, ["operations", "daily"], "daily_order_count")
+        node_id = svc.subject_tree_store.get_node_by_path(["operations", "daily"])["node_id"]
+        # The metric exists in the datasource but is hidden by the sub-agent filter.
+        monkeypatch.setattr(svc.metric_rag, "_sub_agent_filter", object())
+        monkeypatch.setattr(
+            svc.metric_rag.storage,
+            "list_entries",
+            lambda nid, extra_conditions=None, **k: (
+                [{"name": "daily_order_count"}] if nid == node_id and len(extra_conditions or []) < 2 else []
+            ),
+        )
+        before = (tmp_path / "jeff_shop_live" / "jeff_shop_live.yml").read_text()
+
+        result = await svc.delete_subject(
+            DeleteSubjectInput(type=SubjectNodeType.DIRECTORY, subject_path=["operations"])
+        )
+
+        assert result.success is False
+        assert "scope" in result.errorMessage
+        assert kb_deleted == []
+        assert (tmp_path / "jeff_shop_live" / "jeff_shop_live.yml").read_text() == before
+        assert svc.subject_tree_store.get_node_by_path(["operations", "daily"])["name"] == "daily"
+
+
+@pytest.mark.asyncio
+async def test_reconcile_subject_reports_the_outcome(real_agent_config, monkeypatch):
+    from datus.api.models.explorer_models import ReconcileSubjectInput
+    from datus.storage.semantic_model.reconcile import SemanticReconcileResult
+
+    calls = []
+
+    def fake(agent_config, paths):
+        calls.append((agent_config, list(paths)))
+        return SemanticReconcileResult(pruned_files=["/p/orders.yml"], removed_subject_paths=[["sales"]])
+
+    monkeypatch.setattr("datus.storage.semantic_model.reconcile.reconcile_semantic_artifacts", fake)
+    svc = ExplorerService(agent_config=real_agent_config)
+
+    result = await svc.reconcile_subject(ReconcileSubjectInput(paths=["subject/semantic_models/a.yml"]))
+
+    assert result.success is True
+    assert result.data.pruned_files == ["/p/orders.yml"]
+    assert result.data.removed_subject_paths == [["sales"]]
+    assert calls == [(real_agent_config, ["subject/semantic_models/a.yml"])]
 
 
 class TestExplorerServiceSubAgentScope:

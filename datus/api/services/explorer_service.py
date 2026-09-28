@@ -17,6 +17,8 @@ from datus.api.models.explorer_models import (
     MetricInfo,
     MetricPreviewData,
     MetricPreviewInput,
+    ReconcileSubjectData,
+    ReconcileSubjectInput,
     ReferenceSQLInfo,
     ReferenceSQLInput,
     RenameSubjectInput,
@@ -717,7 +719,15 @@ class ExplorerService:
                     )
                 except AuthoringNotSupportedError:
                     pass  # adapter has no file source; fall back to KB reconstruction
-                except Exception as e:  # noqa: BLE001 - fall back on any read failure
+                except Exception as e:  # noqa: BLE001 - fall back on any other read failure
+                    # A metric gone from its source file must not be dressed up
+                    # from its stale KB row as if it still existed.
+                    if self._is_metric_absent_error(e):
+                        return Result[MetricInfo](
+                            success=False,
+                            errorCode=ErrorCode.PROVIDER_CONFIG_ERROR,
+                            errorMessage=f"Metric {metric_name} is no longer in its semantic model file",
+                        )
                     logger.warning(f"Adapter read_metric_source failed, using KB fallback: {e}")
 
             # Fallback: reconstruct MetricFlow-shaped YAML from the KB projection.
@@ -1266,6 +1276,102 @@ class ExplorerService:
                 errorMessage=str(e),
             )
 
+    async def reconcile_subject(self, request: ReconcileSubjectInput) -> Result[ReconcileSubjectData]:
+        """Re-project changed semantic YAML and drop what deleted files projected."""
+        from datus.storage.semantic_model.reconcile import reconcile_semantic_artifacts
+
+        try:
+            outcome = await asyncio.to_thread(reconcile_semantic_artifacts, self.agent_config, request.paths)
+        except Exception as e:
+            logger.error(f"Failed to reconcile subject tree: {e}")
+            from datus.api.models.config_models import ErrorCode
+
+            return Result[ReconcileSubjectData](
+                success=False,
+                errorCode=ErrorCode.TOOL_EXECUTION_ERROR,
+                errorMessage=str(e),
+            )
+        return Result[ReconcileSubjectData](
+            success=True,
+            data=ReconcileSubjectData(
+                synced_files=outcome.synced_files,
+                pruned_files=outcome.pruned_files,
+                removed_subject_paths=outcome.removed_subject_paths,
+                failures=outcome.failures,
+            ),
+        )
+
+    async def _delete_metric_source_and_kb(
+        self, adapter: Any, parent_path: List[str], metric_name: str
+    ) -> Optional["Result[dict]"]:
+        """Delete a metric from its source file, then its KB row.
+
+        Returns ``None`` on success, else the failed ``Result``.
+        """
+        from datus.api.models.config_models import ErrorCode
+
+        # Remove the metric from its source file first (the file is the
+        # source of truth), then drop the KB row below. The adapter owns
+        # the format-correct file edit; metric_rag.delete_metric's own
+        # file handling is then a no-op since the metric is already gone.
+        if adapter is None:
+            # A KB-only delete would leave the metric in YAML to revive on the
+            # next reconcile, so an unavailable adapter fails the request.
+            return Result[dict](
+                success=False,
+                errorCode=ErrorCode.PROVIDER_CONFIG_ERROR,
+                errorMessage="Semantic adapter is unavailable; cannot remove the metric from its source file",
+            )
+        touched_files = self._metric_yaml_paths(parent_path, metric_name)
+        try:
+            mutation = await asyncio.to_thread(adapter.delete_metric_source, metric_name, subject_path=parent_path)
+            touched_files.update(getattr(mutation, "affected_paths", None) or [])
+            if getattr(mutation, "file_path", None):
+                touched_files.add(mutation.file_path)
+        except Exception as e:  # noqa: BLE001
+            # Only a genuine "not found" is a benign fallback to KB
+            # cleanup (file/KB drift). Real failures (I/O, lock, parse)
+            # must fail the request, or the file keeps the metric while
+            # the KB row is dropped and it "revives" on the next
+            # re-index — breaking the YAML-source-of-truth invariant.
+            if not self._is_metric_absent_error(e):
+                logger.error(f"Failed to delete metric from source file: {e}")
+                return Result[dict](
+                    success=False,
+                    errorCode=ErrorCode.TOOL_EXECUTION_ERROR,
+                    errorMessage=f"Failed to remove metric from source file: {e}",
+                )
+            logger.warning(f"Metric already absent from source file, continuing to KB cleanup: {e}")
+
+        result = self.metric_rag.delete_metric(parent_path, metric_name)
+        # The KB no longer is the full projection its recorded digest vouches
+        # for; left in place, reverting the file would read as unchanged.
+        self._forget_projection_digests(touched_files)
+        if not result.get("success", False):
+            return Result[dict](
+                success=False,
+                errorCode=ErrorCode.PROVIDER_CONFIG_ERROR,
+                errorMessage=result.get("message", f"Failed to delete metric: {metric_name}"),
+            )
+        return None
+
+    def _metric_yaml_paths(self, parent_path: List[str], metric_name: str) -> set:
+        # Scoped like delete_metric; a row outside the scope is covered by the
+        # adapter's own (unscoped) file_path, and no file found means none to forget.
+        try:
+            rows = self.metric_rag.search_all_metrics(
+                subject_path=[*parent_path, metric_name], select_fields=["yaml_path"]
+            )
+        except Exception:  # noqa: BLE001 - only used to invalidate digests
+            return set()
+        return {row["yaml_path"] for row in rows if row.get("yaml_path")}
+
+    def _forget_projection_digests(self, yaml_paths: set) -> None:
+        from datus.storage.semantic_model.sync_state import forget_digests
+
+        if yaml_paths:
+            forget_digests(self.agent_config, self.datasource_id, yaml_paths)
+
     async def delete_subject(self, request: DeleteSubjectInput) -> Result[dict]:
         """Delete subject from the subject tree.
 
@@ -1313,27 +1419,58 @@ class ExplorerService:
                 # Get all descendant nodes
                 descendants = self.subject_tree_store.get_descendants(node_id)
 
-                candidate_node_ids = [node_id] + [d["node_id"] for d in descendants]
-                if any(self.metric_rag.storage.list_entries(candidate_id) for candidate_id in candidate_node_ids):
-                    return self._semantic_agent_required_rejection()
-
-                # Delete all entries for this node and its descendants
                 all_node_ids = [node_id] + [d["node_id"] for d in descendants]
+                node_paths = {nid: self.subject_tree_store.get_full_path(nid) for nid in all_node_ids}
+                # Enumerate with the same scope ``delete_metric`` applies, or a row
+                # it cannot see fails every retry after its source is already gone.
+                sub_agent_conditions = self.metric_rag._sub_agent_conditions()
+                metrics_by_node = {
+                    nid: self.metric_rag.storage.list_entries(nid, extra_conditions=sub_agent_conditions)
+                    for nid in all_node_ids
+                }
+
+                # A scoped caller must not drop a directory whose out-of-scope
+                # metrics would stay in YAML and revive it on the next re-index.
+                if self.metric_rag._sub_agent_filter:
+                    from datus.storage.datasource_scope import datasource_condition
+
+                    in_datasource = [datasource_condition(self.metric_rag.datasource_id)]
+                    if any(
+                        len(self.metric_rag.storage.list_entries(nid, extra_conditions=in_datasource))
+                        > len(metrics_by_node[nid])
+                        for nid in all_node_ids
+                    ):
+                        return Result[dict](
+                            success=False,
+                            errorCode=ErrorCode.INVALID_PARAMETERS,
+                            errorMessage=(
+                                f"Directory {'/'.join(request.subject_path)} contains metrics "
+                                "outside this subagent's scope"
+                            ),
+                        )
+
+                # Metrics live in the YAML source of truth, so each one goes
+                # through the same file-then-KB delete as a single metric.
+                if any(metrics_by_node.values()):
+                    rejection = self._semantic_mutation_rejection()
+                    if rejection is not None:
+                        return rejection
+
+                adapter = self._semantic_adapter() if any(metrics_by_node.values()) else None
 
                 for nid in all_node_ids:
-                    # Get the path for this node to pass to delete methods
-                    node_path = self.subject_tree_store.get_full_path(nid)
+                    node_path = node_paths[nid]
 
-                    # Delete metrics
-                    try:
-                        metrics = self.metric_rag.storage.list_entries(nid)
-                        for metric in metrics:
-                            metric_name = metric.get("name", "")
-                            if metric_name:
-                                self.metric_rag.delete_metric(node_path, metric_name)
-                                logger.info(f"Deleted metric '{metric_name}' from node {nid}")
-                    except Exception as ex:
-                        logger.debug(f"Error deleting metrics for node {nid}: {ex}")
+                    # A failure stops before the tree node goes, so a retry
+                    # resumes instead of leaving metrics under a missing directory.
+                    for metric in metrics_by_node[nid]:
+                        metric_name = metric.get("name", "")
+                        if not metric_name:
+                            continue
+                        failure = await self._delete_metric_source_and_kb(adapter, node_path, metric_name)
+                        if failure is not None:
+                            return failure
+                        logger.info(f"Deleted metric '{metric_name}' from node {nid}")
 
                     # Delete reference_sqls
                     try:
@@ -1370,36 +1507,9 @@ class ExplorerService:
                 parent_path = request.subject_path[:-1] if len(request.subject_path) > 1 else []
                 metric_name = request.subject_path[-1]
 
-                # Remove the metric from its source file first (the file is the
-                # source of truth), then drop the KB row below. The adapter owns
-                # the format-correct file edit; metric_rag.delete_metric's own
-                # file handling is then a no-op since the metric is already gone.
-                adapter = self._semantic_adapter()
-                if adapter is not None:
-                    try:
-                        await asyncio.to_thread(adapter.delete_metric_source, metric_name, subject_path=parent_path)
-                    except Exception as e:  # noqa: BLE001
-                        # Only a genuine "not found" is a benign fallback to KB
-                        # cleanup (file/KB drift). Real failures (I/O, lock, parse)
-                        # must fail the request, or the file keeps the metric while
-                        # the KB row is dropped and it "revives" on the next
-                        # re-index — breaking the YAML-source-of-truth invariant.
-                        if not self._is_metric_absent_error(e):
-                            logger.error(f"Failed to delete metric from source file: {e}")
-                            return Result[dict](
-                                success=False,
-                                errorCode=ErrorCode.TOOL_EXECUTION_ERROR,
-                                errorMessage=f"Failed to remove metric from source file: {e}",
-                            )
-                        logger.warning(f"Metric already absent from source file, continuing to KB cleanup: {e}")
-
-                result = self.metric_rag.delete_metric(parent_path, metric_name)
-                if not result.get("success", False):
-                    return Result[dict](
-                        success=False,
-                        errorCode=ErrorCode.PROVIDER_CONFIG_ERROR,
-                        errorMessage=result.get("message", f"Failed to delete metric: {metric_name}"),
-                    )
+                failure = await self._delete_metric_source_and_kb(self._semantic_adapter(), parent_path, metric_name)
+                if failure is not None:
+                    return failure
 
                 logger.info(f"Successfully deleted metric: {metric_name}")
                 return Result[dict](success=True, data={})
